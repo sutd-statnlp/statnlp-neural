@@ -81,7 +81,6 @@ class NetworkModel(nn.Module):
                 all_loss = 0  ### scalar
 
                 start_time = time.time()
-
                 for i in range(len(self._all_instances)):
                     inst = self._all_instances[i]
                     if inst.get_instance_id() > 0:
@@ -89,7 +88,11 @@ class NetworkModel(nn.Module):
                         negative_network = self.get_network(i + 1)
                         network.nn_output = self._fm.build_nn_graph(inst)
                         negative_network.nn_output = network.nn_output
+                end_time = time.time()
+                fwd_diff_time = end_time - start_time
+                print('Nueral Forward:', '\tTime=', fwd_diff_time)
 
+                start_time = time.time()
                 for i in range(len(self._all_instances)):
                     loss = self.forward(self.get_network(i))
                     all_loss -= loss
