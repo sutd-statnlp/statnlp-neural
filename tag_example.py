@@ -227,12 +227,12 @@ class TagReader():
             else:
                 fields = line.split(' ')
                 input = fields[0]
-                output = fields[1]
+                output = fields[2]
 
-                # if output.endswith("NP"):
-                #     output = "NP"
-                # else:
-                #     output = "O"
+                if output.endswith("NP"):
+                    output = "NP"
+                else:
+                    output = "O"
 
                 if not output in TagReader.label2id_map:
                     output_id = len(TagReader.label2id_map)
@@ -252,9 +252,9 @@ if __name__ == "__main__":
     train_file = "sample_train.txt"
     test_file = "sample_test.txt"
 
-    data_size = 10
+    data_size = 1000
 
-    train_insts = TagReader.read_insts(train_file, True, 3)
+    train_insts = TagReader.read_insts(train_file, True, data_size)
     test_insts = TagReader.read_insts(test_file, False, data_size)
     TagReader.label2id_map["<ROOT>"] = len(TagReader.label2id_map)
     # print('Insts:')

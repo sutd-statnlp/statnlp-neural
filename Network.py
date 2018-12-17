@@ -16,6 +16,7 @@ class Network:
         self.fm = fm
         self.gnp = fm._param_g
         self.nodeid2labelid = {}
+        self.node2hyperedge = {}
 
     def get_network_id(self):
         return self.network_id
@@ -58,21 +59,38 @@ class Network:
         if len(children_list_k) > 0:
 
             size = len(children_list_k)
-            for_expr = torch.zeros(size)
+            # for_expr = torch.zeros(size)
             trans = torch.zeros(size)
             ## parent_k -> children_k_index -> tuple_id
+            # for_list = []
+            # trans_list = []
+            emission = self.fm.extract_helper(self, k)
+            # emission = emission.expand(size)
+            score_list = []
             for children_k_index in range(len(children_list_k)):
                 children_k = children_list_k[children_k_index]
-                for_expr[children_k_index] = sum([self.inside_scores[child_k] for child_k in children_k])
+                # for_expr[children_k_index] = sum([self.inside_scores[child_k] for child_k in children_k])
                 #torch.tensor(np.sum(np.take(self.inside_scores, children_k), dtype=float))
-
-                trans[children_k_index] = self.gnp.transition(current_label_id, tuple([self.get_label_id(child_k) for child_k in children_k]))
+                # for_list.append(sum([self.inside_scores[child_k] for child_k in children_k]).unsqueeze(0) if len(
+                #     children_k) > 0 else torch.tensor([0.0]))
+                # trans_list.append(
+                #         self.gnp.transition_mat[current_label_id][self.node2hyperedge[k][children_k_index]].unsqueeze(0))
+                # trans[children_k_index] = self.gnp.transition(current_label_id, tuple([self.get_label_id(child_k) for child_k in children_k]))
+                leng = len(children_k)
+                s1 = self.inside_scores[children_k[0]] if leng == 1 else (
+                            self.inside_scores[children_k[0]] + self.inside_scores[
+                        children_k[1]]) if leng == 2 else torch.tensor(0.0)
+                s2 = self.gnp.transition_mat[current_label_id][self.node2hyperedge[k][children_k_index]]
+                s3 = emission
+                score_list.append((s1 + s2 + s3).unsqueeze(0))
+                # trans[children_k_index] = self.gnp.transition_mat[current_label_id][self.node2hyperedge[k][children_k_index]]
 
             ## emission
-            emission = self.fm.extract_helper(self, k)
-            emission = emission.expand(size)
-            score = for_expr + trans + emission
+            # for_expr = torch.cat(for_list)
+            # trans = torch.cat(trans_list)
 
+            # score = for_expr + trans + emission
+            score = torch.cat(score_list)
             self.inside_scores[k] = log_sum_exp(score)
         else:  # This is a sink node
             self.inside_scores[k] = torch.tensor(0)
@@ -100,10 +118,13 @@ class Network:
 
         children_list_k = self.get_children(k)
         parent_label_id = self.get_label_id(k)
+        self.node2hyperedge[k] = []
         for children_k_index in range(len(children_list_k)):
             children_k = children_list_k[children_k_index]
             rhs = tuple([self.get_label_id(child_k) for child_k in children_k])
-            self.gnp.add_transition((parent_label_id, rhs))
+            # self.gnp.add_transition((parent_label_id, rhs))
+            tuple_id = self.gnp.add_transition((parent_label_id, rhs))
+            self.node2hyperedge[k].append(tuple_id)
 
 
 
