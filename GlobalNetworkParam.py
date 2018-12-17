@@ -22,14 +22,22 @@ class GlobalNetworkParam(nn.Module):
         return self._size
 
 
-    def transition(self, parent_label_id, children_label_ids):
-        tuple_id = self.tuple2id[children_label_ids]
+    def transition(self, parent_label_id, tuple_id):
+        # tuple_id = self.tuple2id[children_label_ids]
         return self.transition_mat[parent_label_id][tuple_id]
 
 
     def finalize_transition(self):
         self.tuple_size = len(self.tuple2id)
-        self.transition_mat = nn.Parameter(torch.zeros(self.label_size, self.tuple_size))
+
+        self.transition_mat = []
+        for i in range(self.label_size):
+            x = []
+            for j in range(self.tuple_size):
+                x.append(nn.Parameter(torch.tensor(0.0)))
+            self.transition_mat.append(x)
+
+        # self.transition_mat = nn.Parameter(torch.zeros(self.label_size, self.tuple_size))
 
 
     def add_transition(self, transition):
@@ -38,7 +46,7 @@ class GlobalNetworkParam(nn.Module):
         if children_label_ids not in self.tuple2id:
             tuple2id_size = len(self.tuple2id)
             self.tuple2id[children_label_ids] = tuple2id_size
-
+        return self.tuple2id[children_label_ids]
         # self.transition_mat[parent_label_id][self.tuple2id[children_label_ids]] = 0
 
 

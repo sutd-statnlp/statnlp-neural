@@ -6,6 +6,8 @@ import math
 import numpy as np
 import torch.autograd as autograd
 from Utils import *
+import time
+import torch.nn.functional as F
 
 
 class Network:
@@ -17,6 +19,8 @@ class Network:
         self.gnp = fm._param_g
         self.nodeid2labelid = {}
 
+        self.node2hyperedge = {}
+
     def get_network_id(self):
         return self.network_id
 
@@ -27,15 +31,17 @@ class Network:
     def get_instance(self):
         return self.inst
 
-
-
     def inside(self):
+
+        # start_time = time.time()
         self.inside_scores = [torch.tensor(0)] * self.count_nodes()
         for k in range(self.count_nodes()):
             self.get_inside(k)
         if math.isinf(self.get_insides()) and self.get_insides() > 0:
             raise Exception("Error: network (ID=", self.network_id, ") has zero inside score")
-
+        # end_time = time.time()
+        # diff = end_time - start_time
+        # print('Inside:', '\tTime=', diff)
 
         weight = self.get_instance().weight
         return self.get_insides() * weight
@@ -58,25 +64,40 @@ class Network:
         if len(children_list_k) > 0:
 
             size = len(children_list_k)
-            for_expr = torch.zeros(size)
-            trans = torch.zeros(size)
+            # for_expr = torch.zeros(size)
+            # trans = torch.zeros(size)
             ## parent_k -> children_k_index -> tuple_id
-            for children_k_index in range(len(children_list_k)):
-                children_k = children_list_k[children_k_index]
-                for_expr[children_k_index] = sum([self.inside_scores[child_k] for child_k in children_k])
-                #torch.tensor(np.sum(np.take(self.inside_scores, children_k), dtype=float))
-
-                trans[children_k_index] = self.gnp.transition(current_label_id, tuple([self.get_label_id(child_k) for child_k in children_k]))
-
-            ## emission
+            children_k_index = 0
+            # for_list = []
+            # tran_list = []
             emission = self.fm.extract_helper(self, k)
-            emission = emission.expand(size)
-            score = for_expr + trans + emission
+            score_list = []
+            for children_k in children_list_k:
+                # children_k = children_list_k[children_k_index]
 
-            self.inside_scores[k] = log_sum_exp(score)
+                # for_list.append( sum([self.inside_scores[child_k] for child_k in children_k]).unsqueeze(0) if len(children_k) > 0 else torch.tensor([0.0]))
+                leng = len(children_k)
+                # for_list.append(self.inside_scores[children_k[0]].unsqueeze(0) if leng == 1 else (
+                #             self.inside_scores[children_k[0]] + self.inside_scores[children_k[1]]).unsqueeze(
+                #     0) if leng == 2 else torch.tensor([0.0]))
+
+                # torch.tensor(np.sum(np.take(self.inside_scores, children_k), dtype=float))
+
+                # trans[children_k_index] = self.gnp.transition(current_label_id, tuple(
+                # [self.get_label_id(child_k) for child_k in children_k]))
+                # tran_list.append(
+                #     self.gnp.transition_mat[current_label_id][self.node2hyperedge[k][children_k_index]].unsqueeze(0))
+                score_list.append((self.inside_scores[children_k[0]] if leng == 1 else (
+                            self.inside_scores[children_k[0]] + self.inside_scores[
+                        children_k[1]]) if leng == 2 else torch.tensor(0.0)
+                                                          + self.gnp.transition_mat[current_label_id][
+                                                              self.node2hyperedge[k][
+                                                                  children_k_index]] + emission).unsqueeze(0))
+                children_k_index = children_k_index + 1
+
+            self.inside_scores[k] = log_sum_exp(torch.cat(score_list))
         else:  # This is a sink node
             self.inside_scores[k] = torch.tensor(0)
-
 
     def get_label_id(self, node_k):
         if node_k not in self.nodeid2labelid:
@@ -84,11 +105,9 @@ class Network:
 
         return self.nodeid2labelid[node_k]
 
-
     def touch(self):
         for k in range(self.count_nodes()):
             self.touch_node(k)
-
 
     def touch_node(self, k):
         '''
@@ -100,49 +119,43 @@ class Network:
 
         children_list_k = self.get_children(k)
         parent_label_id = self.get_label_id(k)
+        self.node2hyperedge[k] = []
         for children_k_index in range(len(children_list_k)):
             children_k = children_list_k[children_k_index]
             rhs = tuple([self.get_label_id(child_k) for child_k in children_k])
-            self.gnp.add_transition((parent_label_id, rhs))
-
-
+            # self.gnp.add_transition((parent_label_id, rhs))
+            tuple_id = self.gnp.add_transition((parent_label_id, rhs))
+            self.node2hyperedge[k].append(tuple_id)
 
     def get_node_array(self, k):
         node = self.get_node(k)
         return NetworkIDMapper.to_hybrid_node_array(node)
 
-
     @abstractmethod
     def get_children(self, k) -> np.ndarray:
         pass
-
 
     @abstractmethod
     def get_node(self, k):
         pass
 
-
     @abstractmethod
     def count_nodes(self) -> int:
         pass
-
 
     @abstractmethod
     def is_removed(self, k):
         pass
 
     def max(self):
-        self._max = [torch.tensor(0.0)] * self.count_nodes() # self.getMaxSharedArray()
-        self._max_paths = [torch.tensor(0)] * self.count_nodes() # self.getMaxPathSharedArray()
+        self._max = [torch.tensor(0.0)] * self.count_nodes()  # self.getMaxSharedArray()
+        self._max_paths = [torch.tensor(0)] * self.count_nodes()  # self.getMaxPathSharedArray()
         for k in range(self.count_nodes()):
             self.maxk(k)
-
-
 
     def get_max_path(self, k):
 
         return self._max_paths[k]
-
 
     def maxk(self, k):
         if self.is_removed(k):
@@ -158,11 +171,11 @@ class Network:
         for children_k_index in range(len(children_list_k)):
             children_k = children_list_k[children_k_index]
 
+            # fa = self.param.extract(self, k, children_k, children_k_index)
+            # score = fa.get_score(self.param)
 
-            #fa = self.param.extract(self, k, children_k, children_k_index)
-            #score = fa.get_score(self.param)
-
-            transition = self.gnp.transition(current_label_id, tuple([self.get_label_id(child_k) for child_k in children_k]))
+            transition = self.gnp.transition(current_label_id,
+                                             tuple([self.get_label_id(child_k) for child_k in children_k]))
             score = transition + emission
 
             score += sum([self._max[child_k] for child_k in children_k])
