@@ -227,7 +227,7 @@ class TagReader():
             else:
                 fields = line.split(' ')
                 input = fields[0]
-                output = fields[2]
+                output = fields[-1]
 
                 if output.endswith("NP"):
                     output = "NP"
@@ -252,7 +252,7 @@ if __name__ == "__main__":
     train_file = "sample_train.txt"
     test_file = "sample_test.txt"
 
-    data_size = 1000
+    data_size = 500
 
     train_insts = TagReader.read_insts(train_file, True, data_size)
     test_insts = TagReader.read_insts(test_file, False, data_size)
