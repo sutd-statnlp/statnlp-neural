@@ -108,7 +108,7 @@ class NetworkModel(nn.Module):
             #bwd_diff_time = end_time - start_time
             #print('Backward:', '\tTime=', bwd_diff_time)
 
-            print(colored("Iteration ", 'yellow'), NetworkModel.Iter, ": Obj=", all_loss.item(), '\tTime=', end_time - start_time)
+            print(colored("Iteration ", 'yellow'), NetworkModel.Iter, ": Obj=", all_loss.item(), '\tTime=', end_time - start_time, flush=True)
             NetworkModel.Iter += 1
 
             self.decode(dev_insts)

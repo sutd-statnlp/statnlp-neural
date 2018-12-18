@@ -55,7 +55,7 @@ def load_emb_glove(path, word2idx, random_embedding_dim = 100):
     embedding_dim = -1
     embedding = dict()
 
-    print("reading the pretraing embedding: %s" % (path))
+    print("reading the pretraing embedding: %s" % (path), flush=True)
     if path is None:
         print("pretrain embedding in None, using random embedding")
     else:
