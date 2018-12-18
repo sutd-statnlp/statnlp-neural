@@ -414,6 +414,7 @@ if __name__ == "__main__":
         inst.word_seq = torch.tensor([vocab2id[word] for word in inst.input])
 
 
+
     print(colored('#instances', 'red'), len(train_insts))
     print(TagReader.label2id_map)
     # Make up some training data
@@ -434,8 +435,8 @@ if __name__ == "__main__":
     # tag_to_ix = {"B": 0, "I": 1, "O": 2, START_TAG: 3, STOP_TAG: 4}
 
     model = BiLSTM_CRF(len(vocab2id), TagReader.label2id_map, EMBEDDING_DIM, HIDDEN_DIM)
-    optimizer = optim.SGD(model.parameters(), lr=0.01, weight_decay=1e-4)
-
+    #optimizer = optim.SGD(model.parameters(), lr=0.01, weight_decay=1e-4)
+    optimizer = torch.optim.LBFGS(model.parameters())
     # Check predictions before training
     # with torch.no_grad():
     #     precheck_sent = prepare_sequence(training_data[0][0], word_to_ix)
@@ -443,46 +444,75 @@ if __name__ == "__main__":
     #     print(model(precheck_sent))
 
     # Make sure prepare_sequence from earlier in the LSTM section is loaded
-    for epoch in range(
-            300):  # again, normally you would NOT do 300 epochs, it is toy data
+    for epoch in range(300):  # again, normally you would NOT do 300 epochs, it is toy data
 
         all_loss = 0
         fwd_diff_time = 0
         bwd_diff_time = 0
 
-        for inst in train_insts:
-            # Step 1. Remember that Pytorch accumulates gradients.
-            # We need to clear them out before each instance
-            model.zero_grad()
+        # for inst in train_insts:
+        #     # Step 1. Remember that Pytorch accumulates gradients.
+        #     # We need to clear them out before each instance
+        #     model.zero_grad()
+        #
+        #     sentence = inst.input
+        #     tags = inst.output
+        #
+        #     # Step 2. Get our inputs ready for the network, that is,
+        #     # turn them into Tensors of word indices.
+        #     sentence_in = prepare_sequence(sentence, vocab2id)
+        #     targets = torch.tensor([TagReader.label2id_map[t] for t in tags], dtype=torch.long)
+        #
+        #     # Step 3. Run our forward pass.
+        #     start_time = time.time()
+        #     loss = model.neg_log_likelihood(sentence_in, targets)
+        #     end_time = time.time()
+        #     fwd_diff_time += end_time - start_time
+        #
+        #
+        #     all_loss -= loss
+        #     # Step 4. Compute the loss, gradients, and update the parameters by
+        #     # calling optimizer.step()
+        #     start_time = time.time()
+        #     loss.backward()
+        #     end_time = time.time()
+        #     bwd_diff_time += end_time - start_time
+        def closure():
 
-            sentence = inst.input
-            tags = inst.output
+            optimizer.zero_grad()
 
-            # Step 2. Get our inputs ready for the network, that is,
-            # turn them into Tensors of word indices.
-            sentence_in = prepare_sequence(sentence, vocab2id)
-            targets = torch.tensor([TagReader.label2id_map[t] for t in tags], dtype=torch.long)
+            all_loss = 0  ### scalar
+            fwd_diff_time = 0
+            bwd_diff_time = 0
 
-            # Step 3. Run our forward pass.
-            start_time = time.time()
-            loss = model.neg_log_likelihood(sentence_in, targets)
-            end_time = time.time()
-            fwd_diff_time += end_time - start_time
+            for inst in train_insts:
 
 
-            all_loss -= loss
-            # Step 4. Compute the loss, gradients, and update the parameters by
-            # calling optimizer.step()
-            start_time = time.time()
-            loss.backward()
-            end_time = time.time()
-            bwd_diff_time += end_time - start_time
+                start_time = time.time()
+                targets = torch.tensor([TagReader.label2id_map[t] for t in inst.output], dtype=torch.long)
+                loss = model.neg_log_likelihood(inst.word_seq, targets)
+                end_time = time.time()
+                fwd_diff_time += end_time - start_time
 
 
-            optimizer.step()
-        print('Forward:', '\tTime=', fwd_diff_time)
-        print('Backward:', '\tTime=', bwd_diff_time)
-        print(colored("Iteration ", 'yellow'), epoch, ": Obj=", all_loss.item(), '\tTime=',fwd_diff_time + bwd_diff_time)
+                all_loss -= loss
+                # Step 4. Compute the loss, gradients, and update the parameters by
+                # calling optimizer.step()
+                start_time = time.time()
+                loss.backward()
+                end_time = time.time()
+                bwd_diff_time += end_time - start_time
+
+            print('Forward:', '\tTime=', fwd_diff_time)
+            print('Backward:', '\tTime=', bwd_diff_time)
+            print(colored("Iteration ", 'yellow'), epoch, ": Obj=", all_loss.item(), '\tTime=',
+                  fwd_diff_time + bwd_diff_time)
+
+            return all_loss
+
+
+        optimizer.step(closure)
+
 
     # Check predictions after training
     with torch.no_grad():
