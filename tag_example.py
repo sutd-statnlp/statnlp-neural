@@ -230,7 +230,7 @@ if __name__ == "__main__":
 
     gnp = GlobalNetworkParam(len(TagReader.label2id_map))
     fm = TagFeatureManager(gnp, len(vocab2id))
-    fm.load_pretrain(None, vocab2id)
+    fm.load_pretrain('data/glove.6B.100d.txt', vocab2id)
     print(list(TagReader.label2id_map.keys()))
     compiler = TagNetworkCompiler(list(TagReader.label2id_map.keys()))
 
