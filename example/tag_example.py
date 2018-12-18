@@ -1,60 +1,16 @@
-from NetworkCompiler import NetworkCompiler
+from hypergraph.NetworkCompiler import NetworkCompiler
 import numpy as np
-from NetworkIDMapper import NetworkIDMapper
-from BaseNetwork import BaseNetwork
-from GlobalNetworkParam import GlobalNetworkParam
-from Instance import Instance
-from FeatureManager import FeatureManager
-from FeatureArray import FeatureArray
-from NetworkModel import NetworkModel
-from enum import Enum
-import torch
-from Utils import *
+from hypergraph.NetworkIDMapper import NetworkIDMapper
+from hypergraph.BaseNetwork import BaseNetwork
+from hypergraph.GlobalNetworkParam import GlobalNetworkParam
+from hypergraph.FeatureManager import FeatureManager
+from hypergraph.NetworkModel import NetworkModel
+import torch.nn as nn
+from hypergraph.Utils import *
+from common.LinearInstance import LinearInstance
+from example.eval import nereval
 
-
-class TagSemiInstance(Instance):
-    def __init__(self, instance_id, weight, input, output):
-        super().__init__(instance_id, weight, input, output)
-
-    def size(self):
-        #print('input:', self.input)
-        return len(self.input)
-
-    def duplicate(self):
-
-        dup = TagSemiInstance(self.instance_id, self.weight, self.input, self.output)
-        #print('dup input:', dup.get_input())
-        return dup
-
-    def removeOutput(self):
-        self.output = None
-
-    def removePrediction(self):
-        self.prediction = None
-
-    def get_input(self):
-        return self.input
-
-    def get_output(self):
-        return self.output
-
-    def get_prediction(self):
-        return self.prediction
-
-    def set_prediction(self, prediction):
-        self.prediction = prediction
-
-    def has_output(self):
-        return self.output != None
-
-    def has_prediction(self):
-        return self.prediction != None
-
-    def __str__(self):
-        return 'input:' + str(self.input) + '\toutput:' + str(self.output) + ' is_labeled:' + str(self.is_labeled)
-
-
-class TagSemiNetworkCompiler(NetworkCompiler):
+class TagNetworkCompiler(NetworkCompiler):
 
     def __init__(self, labels):
         super().__init__()
@@ -73,10 +29,10 @@ class TagSemiNetworkCompiler(NetworkCompiler):
         self._all_children = None
         self._max_size = 100
 
-        self.build_generic_network()
+        # self.build_generic_network()
 
     def to_root(self, size):
-        return self.to_node(size - 1, len(self.labels), 2)
+        return self.to_node(size - 1, len(self.labels) - 1, 2)
 
     def to_tag(self, pos, label_id):
         return self.to_node(pos, label_id, 1)
@@ -107,22 +63,13 @@ class TagSemiNetworkCompiler(NetworkCompiler):
         return network
 
     def compile_unlabeled(self, network_id, inst, param):
-        root = self.to_root(inst.size())
 
-        root_idx = self._all_nodes.index(root)
-        num_nodes = root_idx + 1
-        network = BaseNetwork.NetworkBuilder.quick_build(network_id, inst, self._all_nodes, self._all_children,
-                                                         num_nodes,
-                                                         param, self)
-        return network
-
-    def build_generic_network(self, ):
         builder = BaseNetwork.NetworkBuilder.builder()
         leaf = self.to_leaf()
         builder.add_node(leaf)
 
         children = [leaf]
-        for i in range(self._max_size):
+        for i in range(inst.size()):
             current = [None for k in range(len(self.labels))]
             for l in range(len(self.labels)):
                 tag_node = self.to_tag(i, l)
@@ -131,23 +78,26 @@ class TagSemiNetworkCompiler(NetworkCompiler):
                     builder.add_edge(tag_node, [child])
                 current[l] = tag_node
 
-
             children = current
-            root = self.to_root(i + 1)
-            builder.add_node(root)
-            for child in children:
-                builder.add_edge(root, [child])
-        network = builder.build(None, None, None, None)
-        self._all_nodes = network.get_all_nodes()
-        self._all_children = network.get_all_children()
+        root = self.to_root(inst.size())
+        builder.add_node(root)
+        for child in children:
+            builder.add_edge(root, [child])
+        network = builder.build(network_id, inst, param, self)
+        return network
 
+    # def build_generic_network(self, ):
+    #
+    #     network = builder.build(None, None, None, None)
+    #     self._all_nodes = network.get_all_nodes()
+    #     self._all_children = network.get_all_children()
 
     def decompile(self, network):
         inst = network.get_instance()
 
         size = inst.size()
         root_node = self.to_root(size)
-        curr_idx = self._all_nodes.index(root_node)
+        curr_idx = network.count_nodes() - 1 #self._all_nodes.index(root_node)
         prediction = [None for i in range(size)]
         for i in range(size):
             children = network.get_max_path(curr_idx)[0]
@@ -161,46 +111,52 @@ class TagSemiNetworkCompiler(NetworkCompiler):
 
 
 class TagFeatureManager(FeatureManager):
-    def __init__(self, param_g):
+    def __init__(self, param_g, voc_size):
         super().__init__(param_g)
+        self.token_embed = 100
+        self.word_embed = nn.Embedding(voc_size, self.token_embed)
+        self.rnn = nn.LSTM(self.token_embed, self.token_embed, batch_first=True,bidirectional=True)
+
+        self.linear = nn.Linear(self.token_embed * 2, param_g.label_size)
+
+
+    def load_pretrain(self, path, word2idx):
+        emb = load_emb_glove(path, word2idx, self.token_embed)
+        self.word_embed.from_pretrained(torch.FloatTensor(emb), freeze=False)
 
     # @abstractmethod
     # def extract_helper(self, network, parent_k, children_k, children_k_index):
     #     pass
-    def extract_helper(self, network, parent_k, children_k, children_k_index):
-        parent_arr = network.get_node_array(parent_k)
-        node_type_id = parent_arr[2]
-        if node_type_id == 0 or node_type_id == 2:
-            return FeatureArray.EMPTY
-        inst = network.get_instance()
-        size = inst.size()
-        sent = inst.get_input()
+    def build_nn_graph(self, instance):
+
+        word_vec = self.word_embed(instance.word_seq).unsqueeze(0)
+
+        lstm_out, _ = self.rnn(word_vec, None)
+        linear_output = self.linear(lstm_out).squeeze(0)
+        return linear_output
+
+
+    def extract_helper(self, network, parent_k):
+        parent_arr = network.get_node_array(parent_k)  # pos, label_id, node_type
         pos = parent_arr[0]
+        label_id = parent_arr[1]
+        node_type = parent_arr[2]
 
-        fs = []
-        label_id = str(parent_arr[1])
+        if node_type == 0 or node_type == 2: #Start, End
+            return torch.tensor(0.0)
+        else:
+            nn_output = network.nn_output
+            return nn_output[pos][label_id]
 
-        w = sent[pos]
-        lw = sent[pos - 1] if pos - 1 >= 0 else "START"
-        rw = sent[pos + 1] if pos + 1 < size else "END"
-        # print(label_id)
-        fs.append(self._param_g.to_feature(network, "unigram", label_id, w))
 
-        child_arr = network.get_node_array(children_k[0])
-        child_node_type_id = child_arr[2]
-
-        child_label_id = str(child_arr[1])
-        child_label_id = "START" if child_node_type_id == 0 else child_label_id
-        fs.append(self._param_g.to_feature(network, "transition", label_id, child_label_id))
-
-        # print('parent_arr:', parent_arr)
-        # print(fs)
-        return self.create_feature_array(network, fs)
+    def get_label_id(self, network, parent_k):
+        parent_arr = network.get_node_array(parent_k)
+        return parent_arr[1]
 
 
 class TagReader():
     label2id_map = {}
-
+    label2id_map["<START>"] = 0
     @staticmethod
     def read_insts(file, is_labeled, number):
         insts = []
@@ -211,13 +167,12 @@ class TagReader():
             line = line.strip()
 
             if len(line) == 0:
-                inst = TagInstance(len(insts) + 1, 1, inputs, outputs)
+                inst = LinearInstance(len(insts) + 1, 1, inputs, outputs)
                 if is_labeled:
                     inst.set_labeled()
                 else:
                     inst.set_unlabeled()
                 insts.append(inst)
-
 
                 inputs = []
                 outputs = []
@@ -226,14 +181,14 @@ class TagReader():
                     break
 
             else:
-                fields = line.split(' ')
+                fields = line.split()
                 input = fields[0]
-                output = fields[2]
+                output = fields[-1]
 
-                if output.endswith("NP"):
-                    output = "NP"
-                else:
-                    output = "O"
+                # if output.endswith("NP"):
+                #     output = "NP"
+                # else:
+                #     output = "O"
 
                 if not output in TagReader.label2id_map:
                     output_id = len(TagReader.label2id_map)
@@ -250,29 +205,39 @@ class TagReader():
 
 
 if __name__ == "__main__":
-    train_file = "sample_train.txt"
-    test_file = "sample_test.txt"
+    train_file = "data/conll/train.txt.bieos"
+    dev_file = "data/conll/dev.txt.bieos"
+    test_file = "data/conll/test.txt.bieos"
 
-    train_insts = TagReader.read_insts(train_file, True, 10)
+    data_size = -1
+    num_iter = 100
 
-    # print('Insts:')
-    # print_insts(train_insts)
+    train_insts = TagReader.read_insts(train_file, True, data_size)
+    dev_insts = TagReader.read_insts(dev_file, False, data_size)
+    test_insts = TagReader.read_insts(test_file, False, data_size)
+    TagReader.label2id_map["<ROOT>"] = len(TagReader.label2id_map)
 
+    vocab2id = {}
+    for inst in train_insts + dev_insts + test_insts:
+        for word in inst.input:
+            if word not in vocab2id:
+                vocab2id[word] = len(vocab2id)
 
+    for inst in train_insts + dev_insts + test_insts:
+        inst.word_seq = torch.tensor([vocab2id[word] for word in inst.input])
 
     torch.manual_seed(1)
 
-    gnp = GlobalNetworkParam()
-    fm = TagFeatureManager(gnp)
+    gnp = GlobalNetworkParam(len(TagReader.label2id_map))
+    fm = TagFeatureManager(gnp, len(vocab2id))
+    fm.load_pretrain(None, vocab2id)
     print(list(TagReader.label2id_map.keys()))
     compiler = TagNetworkCompiler(list(TagReader.label2id_map.keys()))
 
-    print('CAPACITY:', NetworkIDMapper.CAPACITY)
+    evaluator = nereval()
+    model = NetworkModel(fm, compiler, evaluator)
+    model.learn(train_insts, num_iter, dev_insts)
 
-    model = NetworkModel(fm, compiler)
-    model.train(train_insts, 20)
-
-    test_insts = TagReader.read_insts(test_file, False, 10)
     results = model.test(test_insts)
 
     print()
@@ -288,8 +253,4 @@ if __name__ == "__main__":
         print("resulit is :", results[i].get_prediction())
 
     print("accuracy: ", str(corr*1.0 / total))
-
-
-
-
 

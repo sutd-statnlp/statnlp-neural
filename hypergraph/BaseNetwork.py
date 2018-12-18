@@ -1,6 +1,6 @@
-from TableLookupNetwork import TableLookupNetwork
-from NetworkIDMapper import NetworkIDMapper
-from Utils import *
+from hypergraph.TableLookupNetwork import TableLookupNetwork
+from hypergraph.NetworkIDMapper import NetworkIDMapper
+from hypergraph.Utils import *
 
 
 class BaseNetwork(TableLookupNetwork):

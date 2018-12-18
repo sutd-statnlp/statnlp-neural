@@ -33,15 +33,15 @@ class GlobalNetworkParam(nn.Module):
         for i in range(self.label_size):
             x = []
             for j in range(self.tuple_size):
-                x.append(nn.Parameter(torch.tensor(0.0)))
+                x.append(nn.Parameter(torch.tensor([0.0])))
             self.transition_mat.append(x)
         # self.transition_mat = nn.Parameter(torch.zeros(self.label_size, self.tuple_size))
-
+        self.locked = True
 
     def add_transition(self, transition):
-        parent_label_id, children_label_ids = transition
 
-        if children_label_ids not in self.tuple2id:
+        parent_label_id, children_label_ids = transition
+        if not self.locked and children_label_ids not in self.tuple2id:
             tuple2id_size = len(self.tuple2id)
             self.tuple2id[children_label_ids] = tuple2id_size
 

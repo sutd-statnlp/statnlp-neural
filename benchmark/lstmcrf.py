@@ -117,10 +117,8 @@ you could probably use this tagger for real tasks.
 # Author: Robert Guthrie
 
 import torch
-import torch.autograd as autograd
 import torch.nn as nn
-import torch.optim as optim
-from Instance import Instance
+from hypergraph.Instance import Instance
 from termcolor import colored
 import time
 torch.manual_seed(1)
@@ -367,10 +365,10 @@ class TagReader():
                 input = fields[0]
                 output = fields[-1]
 
-                if output.endswith("NP"):
-                    output = "NP"
-                else:
-                    output = "O"
+                # if output.endswith("NP"):
+                #     output = "NP"
+                # else:
+                #     output = "O"
 
                 if not output in TagReader.label2id_map:
                     output_id = len(TagReader.label2id_map)

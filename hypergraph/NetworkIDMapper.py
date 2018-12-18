@@ -1,7 +1,6 @@
 from __future__ import print_function
-import numpy as np
-from NetworkConfig import *
-from Utils import *
+from hypergraph.NetworkConfig import *
+from hypergraph.Utils import *
 
 
 

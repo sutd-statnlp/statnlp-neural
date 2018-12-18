@@ -1,4 +1,4 @@
-from Network import Network
+from hypergraph.Network import Network
 
 
 class TableLookupNetwork(Network):
