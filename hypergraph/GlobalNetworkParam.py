@@ -26,16 +26,9 @@ class GlobalNetworkParam(nn.Module):
         # tuple_id = self.tuple2id[children_label_ids]
         return self.transition_mat[parent_label_id][tuple_id]
 
-
     def finalize_transition(self):
         self.tuple_size = len(self.tuple2id)
-        self.transition_mat = []
-        for i in range(self.label_size):
-            x = []
-            for j in range(self.tuple_size):
-                x.append(nn.Parameter(torch.tensor([0.0])))
-            self.transition_mat.append(x)
-        # self.transition_mat = nn.Parameter(torch.zeros(self.label_size, self.tuple_size))
+        self.transition_mat = nn.Parameter(torch.randn(self.label_size, self.tuple_size))
         self.locked = True
 
     def add_transition(self, transition):

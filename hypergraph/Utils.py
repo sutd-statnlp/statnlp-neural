@@ -61,7 +61,7 @@ def load_emb_glove(path, word2idx, random_embedding_dim = 100):
     else:
 
         with open(path, 'r', encoding='utf-8') as file:
-            for line in tqdm(file.readlines()):
+            for line in file.readlines():
                 line = line.strip()
                 if len(line) == 0:
                     continue

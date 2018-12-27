@@ -14,7 +14,10 @@ class Network:
         self.fm = fm
         self.gnp = fm._param_g
         self.nodeid2labelid = {}
-        self.node2hyperedge = {}
+        self.node2hyperedge = []
+
+        self.nodeid2childrenids = []
+
 
     def get_network_id(self):
         return self.network_id
@@ -26,15 +29,15 @@ class Network:
     def get_instance(self):
         return self.inst
 
-
-
     def inside(self):
-        self.inside_scores = [torch.tensor([-math.inf])] * self.count_nodes()  #[torch.tensor([0.0])] * self.count_nodes()
+        # self.inside_scores = [torch.tensor([-math.inf])] * (self.count_nodes() + 1)  #[torch.tensor([0.0])] * self.count_nodes()
+        self.inside_scores = torch.Tensor(self.count_nodes() + 1).fill_(-math.inf)
+        self.inside_scores[-1] = 0
+
         for k in range(self.count_nodes()):
             self.get_inside(k)
         if math.isinf(self.get_insides()) and self.get_insides() > 0:
             raise Exception("Error: network (ID=", self.network_id, ") has zero inside score")
-
 
         weight = self.get_instance().weight
         return self.get_insides() * weight
@@ -43,56 +46,28 @@ class Network:
         return self.inside_scores[self.count_nodes() - 1]
 
     def get_inside(self, k):
-        # if self.is_removed(k):
-        #     self.inside_scores[k] = torch.tensor([-math.inf])
-        #     return
 
         current_label_id = self.nodeid2labelid[k]
 
-        # inside_score = torch.tensor(-math.inf)
         children_list_k = self.get_children(k)
-        ## If this node has no child edge, assume there is one edge with no child node
-        ## This is done so that every node is visited in the feature extraction step below
 
         size = len(children_list_k)
-        # for_expr = torch.zeros(size)
-        # trans = torch.zeros(size)
-        ## parent_k -> children_k_index -> tuple_id
-        for_list = []
-        trans_list = []
-        emission = self.fm.extract_helper(self, k)
 
-        #score_list = []
+        emission_expr = self.fm.extract_helper(self, k)
+
         if len(children_list_k[0]) > 0:
-            emission = emission.expand(size)
-            children_k_index = 0
-            for children_k in children_list_k:
-                leng = len(children_k)
+            children_list_index_tensor = self.nodeid2childrenids[k]
+            inside_view = self.inside_scores.view(1, self.count_nodes() + 1).expand(size, self.count_nodes() + 1)
 
-                for_list.append(( (self.inside_scores[children_k[0]] if leng == 1 else (
-                            self.inside_scores[children_k[0]] + self.inside_scores[children_k[1]]) ) ))  #if leng == 2 else torch.tensor([0.0])
+            for_expr = torch.sum(torch.gather(inside_view, 1, children_list_index_tensor), 1)
 
-                trans_list.append(self.gnp.transition_mat[current_label_id][self.node2hyperedge[k][children_k_index]])   #if leng > 0 else torch.tensor([0.0])
+            tuple_list_tensor = self.node2hyperedge[k]
+            trans_expr = torch.gather(self.gnp.transition_mat[current_label_id], 0, tuple_list_tensor)
 
-                # score_list.append(( (self.inside_scores[children_k[0]] if leng == 1 else (
-                #             self.inside_scores[children_k[0]] + self.inside_scores[
-                #         children_k[1]]) if leng == 2 else torch.tensor(0.0)) + self.gnp.transition_mat[current_label_id][self.node2hyperedge[k][children_k_index]] + emission).unsqueeze(0))
-                children_k_index = children_k_index + 1
-                # trans[children_k_index] = self.gnp.transition_mat[current_label_id][self.node2hyperedge[k][children_k_index]]
-
-            ## emission
-
-            for_expr = torch.cat(for_list)
-            trans = torch.cat(trans_list)
-
-            score = for_expr + trans + emission
-            #score = torch.cat(score_list)
-            self.inside_scores[k] = log_sum_exp(score).unsqueeze(0)
-
+            score = for_expr + trans_expr + emission_expr
         else:
-            self.inside_scores[k] = emission.unsqueeze(0) #torch.tensor([0.0])
-
-
+            score = emission_expr
+        self.inside_scores[k] = log_sum_exp(score)
 
     def get_label_id(self, node_k):
         if node_k not in self.nodeid2labelid:
@@ -100,11 +75,10 @@ class Network:
 
         return self.nodeid2labelid[node_k]
 
-
     def touch(self):
+        self.empty_index = self.count_nodes()
         for k in range(self.count_nodes()):
             self.touch_node(k)
-
 
     def touch_node(self, k):
         '''
@@ -116,14 +90,30 @@ class Network:
 
         children_list_k = self.get_children(k)
         parent_label_id = self.get_label_id(k)
-        self.node2hyperedge[k] = []
+
+        children_list_tensor = []
+        tuple_id_list_tensor = []
+
         for children_k_index in range(len(children_list_k)):
             children_k = children_list_k[children_k_index]
             rhs = tuple([self.get_label_id(child_k) for child_k in children_k])
             # self.gnp.add_transition((parent_label_id, rhs))
             tuple_id = self.gnp.add_transition((parent_label_id, rhs))
-            self.node2hyperedge[k].append(tuple_id)
+            tuple_id_list_tensor.append(tuple_id)
 
+
+            children_k_list = children_k #[children_k[0], children_k[1]] if len(children_k) > 1 else [children_k[0], self.empty_index]
+            while(len(children_k_list) < 2):
+                children_k_list.append(self.empty_index)
+
+            children_k_list = torch.tensor(children_k_list)
+            children_list_tensor.append(children_k_list)
+
+        children_list_tensor = torch.stack(children_list_tensor, 0)
+        self.nodeid2childrenids.append(children_list_tensor)
+
+        tuple_id_list_tensor = torch.tensor(tuple_id_list_tensor)
+        self.node2hyperedge.append(tuple_id_list_tensor)
 
 
     def get_node_array(self, k):
@@ -151,52 +141,35 @@ class Network:
         pass
 
     def max(self):
-        self._max = [torch.tensor(0.0)] * self.count_nodes() # self.getMaxSharedArray()
-        self._max_paths = [torch.tensor(0)] * self.count_nodes() # self.getMaxPathSharedArray()
+        self._max = torch.Tensor(self.count_nodes() + 1).fill_(-math.inf)  # self.getMaxSharedArray()
+        self._max[-1] = 0.0
+        self._max_paths = [-1] * self.count_nodes()  # self.getMaxPathSharedArray()
         for k in range(self.count_nodes()):
             self.maxk(k)
-
-
 
     def get_max_path(self, k):
 
         return self._max_paths[k]
 
-
     def maxk(self, k):
-        if self.is_removed(k):
-            self._max[k] = float("-inf")
-            return
 
         children_list_k = self.get_children(k)
-        self._max[k] = torch.tensor(-math.inf)
-
+        size = len(children_list_k)
         current_label_id = self.nodeid2labelid[k]
-        emission = self.fm.extract_helper(self, k)
+        emission_expr = self.fm.extract_helper(self, k)
 
         if len(children_list_k[0]) > 0:
-            children_k_index = 0
-            for children_k in children_list_k:
-                #children_k = children_list_k[children_k_index]
+            children_list_index_tensor = self.nodeid2childrenids[k]
+            max_view = self._max.view(1, self.count_nodes() + 1).expand(size, self.count_nodes() + 1)
+            for_expr = torch.sum(torch.gather(max_view, 1, children_list_index_tensor), 1)
 
-                #fa = self.param.extract(self, k, children_k, children_k_index)
-                #score = fa.get_score(self.param)
+            tuple_list_tensor = self.node2hyperedge[k]
+            trans_expr = torch.gather(self.gnp.transition_mat[current_label_id], 0, tuple_list_tensor)
 
-                transition = self.gnp.transition_mat[current_label_id][self.node2hyperedge[k][children_k_index]]
-                score = transition + emission
+            score = for_expr + trans_expr + emission_expr
 
-                score += sum([self._max[child_k] for child_k in children_k])
-
-                # for child_k in children_k:
-                #     score += self._max[child_k]
-
-                # print('maxk:',type(score), '\t', type(self._max[k]))
-                if score >= self._max[k]:
-                    self._max[k] = score
-                    self._max_paths[k] = children_k
-
-                children_k_index += 1
         else:
-            self._max[k] = emission
-            self._max_paths[k] = -1
+            score = emission_expr
 
+
+        self._max[k], self._max_paths[k] = torch.max(score, 0)

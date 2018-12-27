@@ -100,7 +100,7 @@ class TagNetworkCompiler(NetworkCompiler):
         curr_idx = network.count_nodes() - 1 #self._all_nodes.index(root_node)
         prediction = [None for i in range(size)]
         for i in range(size):
-            children = network.get_max_path(curr_idx)[0]
+            children = network.get_max_path(curr_idx).item()
             child = children
             child_arr = network.get_node_array(child)
             prediction[size - i - 1] = self.labels[child_arr[1]]
@@ -209,7 +209,9 @@ if __name__ == "__main__":
     dev_file = "data/conll/dev.txt.bieos"
     test_file = "data/conll/test.txt.bieos"
 
-    data_size = -1
+    test_file = train_file
+
+    data_size = 10
     num_iter = 100
 
     train_insts = TagReader.read_insts(train_file, True, data_size)
@@ -230,7 +232,7 @@ if __name__ == "__main__":
 
     gnp = GlobalNetworkParam(len(TagReader.label2id_map))
     fm = TagFeatureManager(gnp, len(vocab2id))
-    fm.load_pretrain('data/glove.6B.100d.txt', vocab2id)
+    #fm.load_pretrain('data/glove.6B.100d.txt', vocab2id)
     print(list(TagReader.label2id_map.keys()))
     compiler = TagNetworkCompiler(list(TagReader.label2id_map.keys()))
 
