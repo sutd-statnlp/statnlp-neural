@@ -100,8 +100,8 @@ class TagNetworkCompiler(NetworkCompiler):
         curr_idx = network.count_nodes() - 1 #self._all_nodes.index(root_node)
         prediction = [None for i in range(size)]
         for i in range(size):
-            children = network.get_max_path(curr_idx).item()
-            child = children
+            children = network.get_max_path(curr_idx)
+            child = children[0]
             child_arr = network.get_node_array(child)
             prediction[size - i - 1] = self.labels[child_arr[1]]
             curr_idx = child
@@ -205,13 +205,20 @@ class TagReader():
 
 
 if __name__ == "__main__":
+
+    torch.manual_seed(9997)
+
+
     train_file = "data/conll/train.txt.bieos"
     dev_file = "data/conll/dev.txt.bieos"
     test_file = "data/conll/test.txt.bieos"
+    trial_file = "data/conll/trial.txt.bieos"
 
-    test_file = train_file
+    # train_file = train_file
+    # dev_file = train_file
+    # test_file = train_file
 
-    data_size = 10
+    data_size = -1
     num_iter = 100
 
     train_insts = TagReader.read_insts(train_file, True, data_size)
@@ -228,7 +235,7 @@ if __name__ == "__main__":
     for inst in train_insts + dev_insts + test_insts:
         inst.word_seq = torch.tensor([vocab2id[word] for word in inst.input])
 
-    torch.manual_seed(1)
+
 
     gnp = GlobalNetworkParam(len(TagReader.label2id_map))
     fm = TagFeatureManager(gnp, len(vocab2id))
@@ -236,7 +243,9 @@ if __name__ == "__main__":
     print(list(TagReader.label2id_map.keys()))
     compiler = TagNetworkCompiler(list(TagReader.label2id_map.keys()))
 
+
     evaluator = nereval()
+    print('Start Training...', flush=True)
     model = NetworkModel(fm, compiler, evaluator)
     model.learn(train_insts, num_iter, dev_insts)
 

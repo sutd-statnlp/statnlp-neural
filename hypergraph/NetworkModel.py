@@ -66,6 +66,71 @@ class NetworkModel(nn.Module):
         self.lock_it()
 
         # optimizer = torch.optim.SGD(self.parameters(), lr = 0.01)  # lr=0.8
+        # print('self.parameters():', len(list(self.parameters()))
+        # optimizer = torch.optim.LBFGS(self.parameters())  # lr=0.8
+        optimizer = torch.optim.Adam(self.parameters())
+        NetworkModel.Iter = 0
+        self.best_ret = [0, 0, 0]
+        best_model = None
+        # for it in range(max_iterations):
+
+        # self.iteration = 0
+        self.train()
+
+        for iteration in range(max_iterations):
+
+            all_loss = 0
+            start_time = time.time()
+            for i in range(len(self._all_instances)):
+                inst = self._all_instances[i]
+                if inst.get_instance_id() > 0:
+                    optimizer.zero_grad()
+                    self.zero_grad()
+                    network = self.get_network(i)
+                    negative_network = self.get_network(i + 1)
+                    network.nn_output = self._fm.build_nn_graph(inst)
+                    negative_network.nn_output = network.nn_output
+
+                    label_score = self.forward(network)
+                    unlabel_score = self.forward(negative_network)
+                    loss = -unlabel_score - label_score
+                    all_loss += loss.item()
+                    loss.backward()
+                    optimizer.step()
+
+            end_time = time.time()
+
+            print(colored("Iteration ", 'yellow'), iteration, ": Obj=", all_loss, '\tTime=', end_time - start_time,
+                  flush=True)
+            NetworkModel.Iter += 1
+
+            self.decode(dev_insts)
+            ret = self.evaluator.eval(dev_insts)
+            if self.best_ret[2] < ret[2]:
+                self.best_ret = ret
+                # best_model = copy.deepcopy(ner_model)
+
+            if iteration >= max_iterations:
+                return 0
+
+        print("Best F1:", self.best_ret)
+
+    def learn_lbfgs(self, train_insts, max_iterations, dev_insts):
+
+        if NetworkConfig.GPU_ID >= 0:
+            torch.cuda.set_device(NetworkConfig.GPU_ID)
+
+        insts_before_split = train_insts  # self.prepare_instance_for_compilation(train_insts)
+
+        insts = self.split_instances_for_train(insts_before_split)
+        self._all_instances = insts
+
+        self.touch(insts)
+
+        # self._fm.get_param_g().lock_it()
+        self.lock_it()
+
+        # optimizer = torch.optim.SGD(self.parameters(), lr = 0.01)  # lr=0.8
         #print('self.parameters():', len(list(self.parameters()))
         optimizer = torch.optim.LBFGS(self.parameters())  # lr=0.8
         NetworkModel.Iter = 0
@@ -76,6 +141,7 @@ class NetworkModel(nn.Module):
         self.iteration = 0
         def closure():
             self.train()
+            self.zero_grad()
             optimizer.zero_grad()
 
             all_loss = 0  ### scalar
@@ -114,7 +180,7 @@ class NetworkModel(nn.Module):
             self.decode(dev_insts)
             ret = self.evaluator.eval(dev_insts)
             if self.best_ret[2] < ret[2]:
-                best_ret = ret
+                self.best_ret = ret
                 # best_model = copy.deepcopy(ner_model)
 
             self.iteration += 1
