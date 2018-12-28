@@ -259,23 +259,27 @@ if __name__ == "__main__":
     test_file = "data/conll/test.txt.bieos"
     trial_file = "data/conll/trial.txt.bieos"
 
-    # train_file = train_file
-    # dev_file = train_file
-    # test_file = train_file
 
     TRIAL = True
     data_size = -1
     num_iter = 100
-    batch_size = 4
+    batch_size = 10
     device = "cpu"
+    num_thread = 2
+    dev_file = test_file
+
 
     if TRIAL == True:
-        data_size = 10
+        data_size = 50
         dev_file = train_file
         test_file = train_file
 
     if device == "gpu":
         NetworkConfig.DEVICE = torch.device("cuda:1")
+
+    if num_thread > 1:
+        NetworkConfig.NUM_THREADS = num_thread
+        print('Set NUM_THREADS = ', num_thread)
 
     train_insts = TagReader.read_insts(train_file, True, data_size)
     dev_insts = TagReader.read_insts(dev_file, False, data_size)

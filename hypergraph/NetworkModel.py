@@ -4,6 +4,7 @@ from hypergraph.Utils import *
 import time
 from termcolor import colored
 import copy
+from multiprocessing import Process, Value, Array
 
 class NetworkModel(nn.Module):
     Iter = 0
@@ -124,15 +125,47 @@ class NetworkModel(nn.Module):
                 batch_label_networks = label_networks[batch_network_id_range[0]:batch_network_id_range[1]]
                 batch_unlabel_networks = unlabel_networks[batch_network_id_range[0]:batch_network_id_range[1]]
 
+                this_batch_size = nn_output_batch.shape[0]
 
-                for b in range(nn_output_batch.shape[0]):
+                for b in range(this_batch_size):
                     batch_label_networks[b].nn_output = nn_output_batch[b]
                     batch_unlabel_networks[b].nn_output = nn_output_batch[b]
 
-                    label_score = self.forward(batch_label_networks[b])
-                    unlabel_score = self.forward(batch_unlabel_networks[b])
-                    loss = -unlabel_score - label_score
-                    batch_loss += loss
+                if NetworkConfig.NUM_THREADS == 1:
+                    for b in range(this_batch_size):
+                        label_score = self.forward(batch_label_networks[b])
+                        unlabel_score = self.forward(batch_unlabel_networks[b])
+                        loss = -unlabel_score - label_score
+                        batch_loss += loss
+                else:
+                    num_thread = NetworkConfig.NUM_THREADS
+                    tasks = list(range(0, this_batch_size))
+                    num_per_basket = this_batch_size // num_thread if this_batch_size % num_thread == 0 else batch_size // num_thread + 1
+                    task_ids_each_thread = [tasks[i:i + num_per_basket] for i in range(0, this_batch_size, num_per_basket)]
+                    task_ids_each_thread += [[]] * (num_thread - len(task_ids_each_thread))
+
+                    batch_loss_per_thread = [0] * num_thread
+
+                    def calc_score_thread(task_ids, thread_idx):
+                        for id in task_ids:
+                            label_score = self.forward(batch_label_networks[id])
+                            unlabel_score = self.forward(batch_unlabel_networks[id])
+                            loss = -unlabel_score - label_score
+                            batch_loss_per_thread[thread_idx] = batch_loss_per_thread[thread_idx] + loss
+
+
+                    processes = []
+                    for thread_idx in range(NetworkConfig.NUM_THREADS):
+                        p = Process(target=calc_score_thread(task_ids_each_thread[thread_idx], thread_idx))
+                        processes.append(p)
+                        p.start()
+
+                    for thread_idx in range(NetworkConfig.NUM_THREADS):
+                        processes[thread_idx].join()
+
+                    for thread_idx in range(NetworkConfig.NUM_THREADS):
+                        batch_loss += batch_loss_per_thread[thread_idx]
+
 
                 batch_loss.backward()
                 optimizer.step()
