@@ -69,16 +69,16 @@ class NetworkModel(nn.Module):
         # print('self.parameters():', len(list(self.parameters()))
         # optimizer = torch.optim.LBFGS(self.parameters())  # lr=0.8
         optimizer = torch.optim.Adam(self.parameters())
-        NetworkModel.Iter = 0
+        #NetworkModel.Iter = 0
         self.best_ret = [0, 0, 0]
         best_model = None
         # for it in range(max_iterations):
 
         # self.iteration = 0
-        self.train()
 
+        print('Start Training...', flush=True)
         for iteration in range(max_iterations):
-
+            self.train()
             all_loss = 0
             start_time = time.time()
             for i in range(len(self._all_instances)):
@@ -100,18 +100,21 @@ class NetworkModel(nn.Module):
 
             end_time = time.time()
 
-            print(colored("Iteration ", 'yellow'), iteration, ": Obj=", all_loss, '\tTime=', end_time - start_time,
-                  flush=True)
-            NetworkModel.Iter += 1
+            print(colored("Iteration ", 'yellow'), iteration, ": Obj=", all_loss, '\tTime=', end_time - start_time, flush=True)
+            #NetworkModel.Iter += 1
 
+            start_time = time.time()
             self.decode(dev_insts)
             ret = self.evaluator.eval(dev_insts)
+            end_time = time.time()
+            print(ret, '\tTime=', end_time - start_time, flush=True)
+
             if self.best_ret[2] < ret[2]:
                 self.best_ret = ret
                 # best_model = copy.deepcopy(ner_model)
 
-            if iteration >= max_iterations:
-                return 0
+            # if iteration >= max_iterations:
+            #     return 0
 
         print("Best F1:", self.best_ret)
 
@@ -177,8 +180,11 @@ class NetworkModel(nn.Module):
             print(colored("Iteration ", 'yellow'), NetworkModel.Iter, ": Obj=", all_loss.item(), '\tTime=', end_time - start_time, flush=True)
             NetworkModel.Iter += 1
 
+            start_time = time.time()
             self.decode(dev_insts)
             ret = self.evaluator.eval(dev_insts)
+            end_time = time.time()
+            print(ret, '\tTime=',  end_time - start_time, flush=True)
             if self.best_ret[2] < ret[2]:
                 self.best_ret = ret
                 # best_model = copy.deepcopy(ner_model)
@@ -218,17 +224,18 @@ class NetworkModel(nn.Module):
         return network
 
     def touch(self, insts):
+        print('Touching...', flush=True)
         if self._networks == None:
             self._networks = [None for i in range(len(insts))]
 
         for network_id in range(len(insts)):
             if network_id % 100 == 0:
-                print('.', end='')
+                print('.', end='', flush=True)
             network = self.get_network(network_id)
 
             network.touch()
 
-        print()
+        print(flush=True)
 
 
 

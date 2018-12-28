@@ -33,7 +33,7 @@ class Network:
         # self.inside_scores = [torch.tensor([-math.inf])] * (self.count_nodes() + 1)  #[torch.tensor([0.0])] * self.count_nodes()
         self.inside_scores = torch.Tensor(self.count_nodes() + 1).fill_(-math.inf)
         self.inside_scores[-1] = 0
-
+        self.inside_scores = self.inside_scores.to(NetworkConfig.DEVICE)
         for k in range(self.count_nodes()):
             self.get_inside(k)
         if math.isinf(self.get_insides()) and self.get_insides() > 0:
@@ -109,10 +109,10 @@ class Network:
             children_k_list = torch.tensor(children_k_list)
             children_list_tensor.append(children_k_list)
 
-        children_list_tensor = torch.stack(children_list_tensor, 0)
+        children_list_tensor = torch.stack(children_list_tensor, 0).to(NetworkConfig.DEVICE)
         self.nodeid2childrenids.append(children_list_tensor)
 
-        tuple_id_list_tensor = torch.tensor(tuple_id_list_tensor)
+        tuple_id_list_tensor = torch.tensor(tuple_id_list_tensor).to(NetworkConfig.DEVICE)
         self.node2hyperedge.append(tuple_id_list_tensor)
 
 
@@ -143,6 +143,7 @@ class Network:
     def max(self):
         self._max = torch.Tensor(self.count_nodes() + 1).fill_(-math.inf)  # self.getMaxSharedArray()
         self._max[-1] = 0.0
+        self._max = self._max.to(NetworkConfig.DEVICE)
         self._max_paths = [-1] * self.count_nodes()  # self.getMaxPathSharedArray()
         for k in range(self.count_nodes()):
             self.maxk(k)

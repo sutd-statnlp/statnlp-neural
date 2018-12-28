@@ -114,15 +114,17 @@ class TagFeatureManager(FeatureManager):
     def __init__(self, param_g, voc_size):
         super().__init__(param_g)
         self.token_embed = 100
-        self.word_embed = nn.Embedding(voc_size, self.token_embed)
-        self.rnn = nn.LSTM(self.token_embed, self.token_embed, batch_first=True,bidirectional=True)
+        self.word_embed = nn.Embedding(voc_size, self.token_embed).to(NetworkConfig.DEVICE)
+        self.rnn = nn.LSTM(self.token_embed, self.token_embed, batch_first=True,bidirectional=True).to(NetworkConfig.DEVICE)
+        self.linear = nn.Linear(self.token_embed * 2, param_g.label_size).to(NetworkConfig.DEVICE)
 
-        self.linear = nn.Linear(self.token_embed * 2, param_g.label_size)
+
 
 
     def load_pretrain(self, path, word2idx):
         emb = load_emb_glove(path, word2idx, self.token_embed)
         self.word_embed.from_pretrained(torch.FloatTensor(emb), freeze=False)
+        self.word_embed = self.word_embed.to(NetworkConfig.DEVICE)
 
     # @abstractmethod
     # def extract_helper(self, network, parent_k, children_k, children_k_index):
@@ -143,7 +145,7 @@ class TagFeatureManager(FeatureManager):
         node_type = parent_arr[2]
 
         if node_type == 0 or node_type == 2: #Start, End
-            return torch.tensor(0.0)
+            return torch.tensor(0.0).to(NetworkConfig.DEVICE)
         else:
             nn_output = network.nn_output
             return nn_output[pos][label_id]
@@ -207,6 +209,8 @@ class TagReader():
 if __name__ == "__main__":
 
     torch.manual_seed(9997)
+    torch.set_num_threads(40)
+    TRIAL = True
 
 
     train_file = "data/conll/train.txt.bieos"
@@ -218,8 +222,18 @@ if __name__ == "__main__":
     # dev_file = train_file
     # test_file = train_file
 
+    NetworkConfig.DEVICE = torch.device("cuda:1")
+
     data_size = -1
     num_iter = 100
+
+
+    if TRIAL == True:
+        data_size = 10
+        dev_file = train_file
+        test_file = train_file
+
+
 
     train_insts = TagReader.read_insts(train_file, True, data_size)
     dev_insts = TagReader.read_insts(dev_file, False, data_size)
@@ -233,7 +247,7 @@ if __name__ == "__main__":
                 vocab2id[word] = len(vocab2id)
 
     for inst in train_insts + dev_insts + test_insts:
-        inst.word_seq = torch.tensor([vocab2id[word] for word in inst.input])
+        inst.word_seq = torch.tensor([vocab2id[word] for word in inst.input]).to(NetworkConfig.DEVICE)
 
 
 
@@ -245,7 +259,6 @@ if __name__ == "__main__":
 
 
     evaluator = nereval()
-    print('Start Training...', flush=True)
     model = NetworkModel(fm, compiler, evaluator)
     model.learn(train_insts, num_iter, dev_insts)
 

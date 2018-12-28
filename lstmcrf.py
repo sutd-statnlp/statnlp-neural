@@ -121,7 +121,9 @@ import torch.nn as nn
 from hypergraph.Instance import Instance
 from termcolor import colored
 import time
-torch.manual_seed(1)
+torch.manual_seed(9997)
+
+DEVICE = torch.device("cpu") #torch.device("cuda:1")  # torch.device("cpu")  #device = torch.device("cuda:" + args.gpuid)
 
 #####################################################################
 # Helper functions to make the code more readable.
@@ -159,17 +161,17 @@ class BiLSTM_CRF(nn.Module):
         self.tag_to_ix = tag_to_ix
         self.tagset_size = len(tag_to_ix)
 
-        self.word_embeds = nn.Embedding(vocab_size, embedding_dim)
+        self.word_embeds = nn.Embedding(vocab_size, embedding_dim).to(DEVICE)
         self.lstm = nn.LSTM(embedding_dim, hidden_dim // 2,
-                            num_layers=1, bidirectional=True)
+                            num_layers=1, bidirectional=True).to(DEVICE)
 
         # Maps the output of the LSTM into tag space.
-        self.hidden2tag = nn.Linear(hidden_dim, self.tagset_size)
+        self.hidden2tag = nn.Linear(hidden_dim, self.tagset_size).to(DEVICE)
 
         # Matrix of transition parameters.  Entry i,j is the score of
         # transitioning *to* i *from* j.
         self.transitions = nn.Parameter(
-            torch.randn(self.tagset_size, self.tagset_size))
+            torch.randn(self.tagset_size, self.tagset_size)).to(DEVICE)
 
         # These two statements enforce the constraint that we never transfer
         # to the start tag and we never transfer from the stop tag
@@ -179,12 +181,12 @@ class BiLSTM_CRF(nn.Module):
         self.hidden = self.init_hidden()
 
     def init_hidden(self):
-        return (torch.randn(2, 1, self.hidden_dim // 2),
-                torch.randn(2, 1, self.hidden_dim // 2))
+        return (torch.randn(2, 1, self.hidden_dim // 2).to(DEVICE),
+                torch.randn(2, 1, self.hidden_dim // 2).to(DEVICE))
 
     def _forward_alg(self, feats):
         # Do the forward algorithm to compute the partition function
-        init_alphas = torch.full((1, self.tagset_size), -10000.)
+        init_alphas = torch.full((1, self.tagset_size), -10000.).to(DEVICE)
         # START_TAG has all of the score.
         init_alphas[0][self.tag_to_ix[START_TAG]] = 0.
 
@@ -223,8 +225,8 @@ class BiLSTM_CRF(nn.Module):
 
     def _score_sentence(self, feats, tags):
         # Gives the score of a provided tag sequence
-        score = torch.zeros(1)
-        tags = torch.cat([torch.tensor([self.tag_to_ix[START_TAG]], dtype=torch.long), tags])
+        score = torch.zeros(1).to(DEVICE)
+        tags = torch.cat([torch.tensor([self.tag_to_ix[START_TAG]], dtype=torch.long).to(DEVICE), tags])
         for i, feat in enumerate(feats):
             score = score + \
                 self.transitions[tags[i + 1], tags[i]] + feat[tags[i + 1]]
@@ -235,7 +237,7 @@ class BiLSTM_CRF(nn.Module):
         backpointers = []
 
         # Initialize the viterbi variables in log space
-        init_vvars = torch.full((1, self.tagset_size), -10000.)
+        init_vvars = torch.full((1, self.tagset_size), -10000.).to(DEVICE)
         init_vvars[0][self.tag_to_ix[START_TAG]] = 0
 
         # forward_var at step i holds the viterbi variables for step i-1
@@ -391,12 +393,24 @@ if __name__ == "__main__":
     EMBEDDING_DIM = 100
     HIDDEN_DIM = 100
 
-    train_file = "sample_train.txt"
-    test_file = "sample_test.txt"
-    data_size = 500
+
+
+
+    # train_file = "sample_train.txt"
+    # test_file = "sample_test.txt"
+
+    train_file = "data/conll/train.txt.bieos"
+    dev_file = "data/conll/dev.txt.bieos"
+    test_file = "data/conll/test.txt.bieos"
+
+    dev_file = test_file
+
+    data_size = 10
 
     train_insts = TagReader.read_insts(train_file, True, data_size)
+    dev_insts = TagReader.read_insts(dev_file, False, data_size)
     test_insts = TagReader.read_insts(test_file, False, data_size)
+
     TagReader.label2id_map[START_TAG] = len(TagReader.label2id_map)
     TagReader.label2id_map[STOP_TAG] = len(TagReader.label2id_map)
     # print('Insts:')
@@ -409,12 +423,12 @@ if __name__ == "__main__":
                 vocab2id[word] = len(vocab2id)
 
     for inst in train_insts + test_insts:
-        inst.word_seq = torch.tensor([vocab2id[word] for word in inst.input])
+        inst.word_seq = torch.tensor([vocab2id[word] for word in inst.input]).to(DEVICE)
 
 
 
-    print(colored('#instances', 'red'), len(train_insts))
-    print(TagReader.label2id_map)
+    print(colored('#instances', 'red'), len(train_insts), flush=True)
+    print(TagReader.label2id_map, flush=True)
     # Make up some training data
     # training_data = [(
     #     "the wall street journal reported today that apple corporation made money".split(),
@@ -434,7 +448,7 @@ if __name__ == "__main__":
 
     model = BiLSTM_CRF(len(vocab2id), TagReader.label2id_map, EMBEDDING_DIM, HIDDEN_DIM)
     #optimizer = optim.SGD(model.parameters(), lr=0.01, weight_decay=1e-4)
-    optimizer = torch.optim.LBFGS(model.parameters())
+    optimizer = torch.optim.Adam(model.parameters())
     # Check predictions before training
     # with torch.no_grad():
     #     precheck_sent = prepare_sequence(training_data[0][0], word_to_ix)
@@ -445,8 +459,54 @@ if __name__ == "__main__":
     for epoch in range(300):  # again, normally you would NOT do 300 epochs, it is toy data
 
         all_loss = 0
-        fwd_diff_time = 0
-        bwd_diff_time = 0
+        #fwd_diff_time = 0
+        #bwd_diff_time = 0
+        model.train()
+        model.zero_grad()
+        optimizer.zero_grad()
+
+        all_loss = 0  ### scalar
+        #fwd_diff_time = 0
+        #bwd_diff_time = 0
+
+        start_time = time.time()
+
+        for inst in train_insts:
+
+            targets = torch.tensor([TagReader.label2id_map[t] for t in inst.output], dtype=torch.long).to(DEVICE)
+            loss = model.neg_log_likelihood(inst.word_seq, targets)
+            #end_time = time.time()
+            #fwd_diff_time += end_time - start_time
+
+            all_loss -= loss
+            # Step 4. Compute the loss, gradients, and update the parameters by
+            # calling optimizer.step()
+            #start_time = time.time()
+            loss.backward()
+
+            optimizer.step()
+
+            #bwd_diff_time += end_time - start_time
+
+        end_time = time.time()
+
+        # print('Forward:', '\tTime=', fwd_diff_time)
+        # print('Backward:', '\tTime=', bwd_diff_time)
+        print(colored("Iteration ", 'yellow'), epoch, ": Obj=", all_loss.item(), '\tTime=', end_time - start_time, flush=True)
+
+        start_time = time.time()
+        model.eval()
+        for inst in test_insts:
+            score, tag_seq = model(inst.word_seq)
+        #ret = self.evaluator.eval(dev_insts)
+        end_time = time.time()
+        print('Decode ', '\tTime=', end_time - start_time, flush=True)
+        #         #
+        #         # if self.best_ret[2] < ret[2]:
+        #         #     self.best_ret = ret
+
+
+
 
         # for inst in train_insts:
         #     # Step 1. Remember that Pytorch accumulates gradients.
@@ -475,41 +535,41 @@ if __name__ == "__main__":
         #     loss.backward()
         #     end_time = time.time()
         #     bwd_diff_time += end_time - start_time
-        def closure():
-
-            optimizer.zero_grad()
-
-            all_loss = 0  ### scalar
-            fwd_diff_time = 0
-            bwd_diff_time = 0
-
-            for inst in train_insts:
-
-
-                start_time = time.time()
-                targets = torch.tensor([TagReader.label2id_map[t] for t in inst.output], dtype=torch.long)
-                loss = model.neg_log_likelihood(inst.word_seq, targets)
-                end_time = time.time()
-                fwd_diff_time += end_time - start_time
-
-
-                all_loss -= loss
-                # Step 4. Compute the loss, gradients, and update the parameters by
-                # calling optimizer.step()
-                start_time = time.time()
-                loss.backward()
-                end_time = time.time()
-                bwd_diff_time += end_time - start_time
-
-            print('Forward:', '\tTime=', fwd_diff_time)
-            print('Backward:', '\tTime=', bwd_diff_time)
-            print(colored("Iteration ", 'yellow'), epoch, ": Obj=", all_loss.item(), '\tTime=',
-                  fwd_diff_time + bwd_diff_time)
-
-            return all_loss
-
-
-        optimizer.step(closure)
+        # def closure():
+        #
+        #     optimizer.zero_grad()
+        #
+        #     all_loss = 0  ### scalar
+        #     fwd_diff_time = 0
+        #     bwd_diff_time = 0
+        #
+        #     for inst in train_insts:
+        #
+        #
+        #         start_time = time.time()
+        #         targets = torch.tensor([TagReader.label2id_map[t] for t in inst.output], dtype=torch.long)
+        #         loss = model.neg_log_likelihood(inst.word_seq, targets)
+        #         end_time = time.time()
+        #         fwd_diff_time += end_time - start_time
+        #
+        #
+        #         all_loss -= loss
+        #         # Step 4. Compute the loss, gradients, and update the parameters by
+        #         # calling optimizer.step()
+        #         start_time = time.time()
+        #         loss.backward()
+        #         end_time = time.time()
+        #         bwd_diff_time += end_time - start_time
+        #
+        #     print('Forward:', '\tTime=', fwd_diff_time)
+        #     print('Backward:', '\tTime=', bwd_diff_time)
+        #     print(colored("Iteration ", 'yellow'), epoch, ": Obj=", all_loss.item(), '\tTime=',
+        #           fwd_diff_time + bwd_diff_time)
+        #
+        #     return all_loss
+        #
+        #
+        # optimizer.step(closure)
 
 
     # Check predictions after training

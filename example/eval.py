@@ -58,6 +58,6 @@ class nereval(Eval):
         fscore = 2.0 * precision * recall / (precision + recall) if precision != 0 or recall != 0 else 0
 
         ret = [precision, recall, fscore]
-        print(ret)
+
 
         return ret

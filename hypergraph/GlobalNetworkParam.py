@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-
+from hypergraph.NetworkConfig import NetworkConfig
 
 class GlobalNetworkParam(nn.Module):
 
@@ -28,7 +28,7 @@ class GlobalNetworkParam(nn.Module):
 
     def finalize_transition(self):
         self.tuple_size = len(self.tuple2id)
-        self.transition_mat = nn.Parameter(torch.randn(self.label_size, self.tuple_size))
+        self.transition_mat = nn.Parameter(torch.randn(self.label_size, self.tuple_size)).to(NetworkConfig.DEVICE)
         self.locked = True
 
     def add_transition(self, transition):
