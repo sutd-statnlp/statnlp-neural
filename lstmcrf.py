@@ -363,7 +363,7 @@ class TagReader():
                     break
 
             else:
-                fields = line.split(' ')
+                fields = line.split()
                 input = fields[0]
                 output = fields[-1]
 
