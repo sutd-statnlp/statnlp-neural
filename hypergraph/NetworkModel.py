@@ -41,6 +41,27 @@ class NetworkModel(nn.Module):
             k = k + 1
         return insts
 
+
+    def split_instances_for_train_two(self, insts_before_split):
+        eprint("#instances=", len(insts_before_split))
+        label_insts = []
+        unlabel_insts = []
+
+        k = 0
+        for i in range(len(insts_before_split)):
+            label_inst = insts_before_split[k]
+            unlabel_inst = label_inst.duplicate()
+            unlabel_inst.set_instance_id(-label_inst.get_instance_id())
+            unlabel_inst.set_weight(-label_inst.get_weight())
+            unlabel_inst.set_unlabeled()
+
+            label_insts.append(label_inst)
+            unlabel_insts.append(unlabel_inst)
+            k = k + 1
+
+        return label_insts, unlabel_insts
+
+
     def lock_it(self):
         gnp = self._fm.get_param_g()
 
@@ -49,6 +70,97 @@ class NetworkModel(nn.Module):
 
         gnp.finalize_transition()
         gnp.locked = True
+
+
+    def learn_batch(self, train_insts, max_iterations, dev_insts, batch_size = 10):
+
+        insts_before_split = train_insts  # self.prepare_instance_for_compilation(train_insts)
+
+        insts = self.split_instances_for_train(insts_before_split)
+        self._all_instances = insts
+
+        #self._all_instances = label_insts + unlabel_insts
+
+        self.touch(self._all_instances)
+
+        label_networks = []
+        unlabel_networks = []
+        for i in range(0, len(self._all_instances), 2):
+            label_networks.append(self.get_network(i))
+            unlabel_networks.append(self.get_network(i + 1))
+
+
+        batches = self._fm.generate_batches(insts_before_split, batch_size)
+
+        # self._fm.get_param_g().lock_it()
+        self.lock_it()
+
+        # optimizer = torch.optim.SGD(self.parameters(), lr = 0.01)  # lr=0.8
+        # print('self.parameters():', len(list(self.parameters()))
+        # optimizer = torch.optim.LBFGS(self.parameters())  # lr=0.8
+        optimizer = torch.optim.Adam(self.parameters())
+        #NetworkModel.Iter = 0
+        self.best_ret = [0, 0, 0]
+        best_model = None
+        # for it in range(max_iterations):
+
+        # self.iteration = 0
+
+        print('Start Training...', flush=True)
+        for iteration in range(max_iterations):
+            self.train()
+            all_loss = 0
+            start_time = time.time()
+
+            for batch_idx, batch in enumerate(batches):
+                optimizer.zero_grad()
+                self.zero_grad()
+
+                batch_loss = 0
+
+                batch_input_seqs, batch_network_id_range = batch
+                nn_output_batch = self._fm.build_nn_graph_batch(batch_input_seqs)
+
+                batch_label_networks = label_networks[batch_network_id_range[0]:batch_network_id_range[1]]
+                batch_unlabel_networks = unlabel_networks[batch_network_id_range[0]:batch_network_id_range[1]]
+
+
+                for b in range(nn_output_batch.shape[0]):
+                    batch_label_networks[b].nn_output = nn_output_batch[b]
+                    batch_unlabel_networks[b].nn_output = nn_output_batch[b]
+
+                    label_score = self.forward(batch_label_networks[b])
+                    unlabel_score = self.forward(batch_unlabel_networks[b])
+                    loss = -unlabel_score - label_score
+                    batch_loss += loss
+
+                batch_loss.backward()
+                optimizer.step()
+
+                all_loss += batch_loss.item()
+                #print(colored("Batch {0}".format(batch_idx), 'yellow'), iteration, ": batch loss =", batch_loss.item(), flush=True)
+
+
+            end_time = time.time()
+
+            print(colored("Epoch ", 'red'), iteration, ": Obj=", all_loss, '\tTime=', end_time - start_time, flush=True)
+            #NetworkModel.Iter += 1
+
+            start_time = time.time()
+            self.decode(dev_insts)
+            ret = self.evaluator.eval(dev_insts)
+            end_time = time.time()
+            print(ret, '\tTime=', end_time - start_time, flush=True)
+            print()
+
+            if self.best_ret[2] < ret[2]:
+                self.best_ret = ret
+                # best_model = copy.deepcopy(ner_model)
+
+            # if iteration >= max_iterations:
+            #     return 0
+
+        print("Best F1:", self.best_ret)
 
     def learn(self, train_insts, max_iterations, dev_insts):
 

@@ -17,6 +17,14 @@ class FeatureManager(nn.Module):
         pass
 
     @abstractmethod
+    def generate_batches(self, train_insts, batch_size):
+        pass
+
+    @abstractmethod
+    def build_nn_graph_batch(self, batch_input_seqs):
+        pass
+
+    @abstractmethod
     def extract_helper(self, network, parent_k):
         ## given a node parent_k, return score.
         # parent_k -> network.nn_output  score

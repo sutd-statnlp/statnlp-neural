@@ -114,7 +114,7 @@ class TagFeatureManager(FeatureManager):
     def __init__(self, param_g, voc_size):
         super().__init__(param_g)
         self.token_embed = 100
-        self.word_embed = nn.Embedding(voc_size, self.token_embed).to(NetworkConfig.DEVICE)
+        self.word_embed = nn.Embedding(voc_size, self.token_embed, padding_idx=0).to(NetworkConfig.DEVICE)
         self.rnn = nn.LSTM(self.token_embed, self.token_embed, batch_first=True,bidirectional=True).to(NetworkConfig.DEVICE)
         self.linear = nn.Linear(self.token_embed * 2, param_g.label_size).to(NetworkConfig.DEVICE)
 
@@ -135,6 +135,47 @@ class TagFeatureManager(FeatureManager):
 
         lstm_out, _ = self.rnn(word_vec, None)
         linear_output = self.linear(lstm_out).squeeze(0)
+        return linear_output
+
+    def generate_batches(self, train_insts, batch_size):
+        '''
+        :param instances:
+        :param batch_size:
+        :return: A list of tuple (input_seqs, network_id_range)
+        '''
+
+        max_size = 0
+        for inst in train_insts:
+            size = inst.word_seq.shape[0]
+            if max_size < size:
+                max_size = size
+
+        batches = []
+        for i in range(0, len(train_insts), batch_size):
+
+            batch_input_seqs = []
+            for b in range(i, i + batch_size):
+                if b >= len(train_insts):
+                    break
+                padding_seq = [0] * (max_size - len(train_insts[b].input))
+                word_seq = [vocab2id[word] for word in train_insts[b].input] + padding_seq
+                word_seq = torch.tensor(word_seq).to(NetworkConfig.DEVICE)
+                batch_input_seqs.append(word_seq)
+
+            batch_input_seqs = torch.stack(batch_input_seqs, 0)
+
+            network_id_range = (i, min(i + batch_size, len(train_insts)))
+
+            batch = (batch_input_seqs, network_id_range)
+            batches.append(batch)
+
+        return batches
+
+    def build_nn_graph_batch(self, batch_input_seqs):
+
+        word_vec = self.word_embed(batch_input_seqs)
+        lstm_out, _ = self.rnn(word_vec, None)
+        linear_output = self.linear(lstm_out)  #batch_size, seq_len, hidden_size
         return linear_output
 
 
@@ -210,7 +251,7 @@ if __name__ == "__main__":
 
     torch.manual_seed(9997)
     torch.set_num_threads(40)
-    TRIAL = True
+
 
 
     train_file = "data/conll/train.txt.bieos"
@@ -222,25 +263,26 @@ if __name__ == "__main__":
     # dev_file = train_file
     # test_file = train_file
 
-    NetworkConfig.DEVICE = torch.device("cuda:1")
-
+    TRIAL = True
     data_size = -1
     num_iter = 100
-
+    batch_size = 4
+    device = "cpu"
 
     if TRIAL == True:
         data_size = 10
         dev_file = train_file
         test_file = train_file
 
-
+    if device == "gpu":
+        NetworkConfig.DEVICE = torch.device("cuda:1")
 
     train_insts = TagReader.read_insts(train_file, True, data_size)
     dev_insts = TagReader.read_insts(dev_file, False, data_size)
     test_insts = TagReader.read_insts(test_file, False, data_size)
     TagReader.label2id_map["<ROOT>"] = len(TagReader.label2id_map)
 
-    vocab2id = {}
+    vocab2id = {'<PAD>':0}
     for inst in train_insts + dev_insts + test_insts:
         for word in inst.input:
             if word not in vocab2id:
@@ -260,7 +302,11 @@ if __name__ == "__main__":
 
     evaluator = nereval()
     model = NetworkModel(fm, compiler, evaluator)
-    model.learn(train_insts, num_iter, dev_insts)
+
+    if batch_size == 1:
+        model.learn(train_insts, num_iter, dev_insts)
+    else:
+        model.learn_batch(train_insts, num_iter, dev_insts, batch_size)
 
     results = model.test(test_insts)
 
