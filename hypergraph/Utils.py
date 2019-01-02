@@ -5,6 +5,7 @@ from hypergraph.NetworkConfig import  NetworkConfig
 import numpy as np
 import pickle
 import tqdm
+from hypergraph.Network import Network
 
 def to_scalar(var):
     # returns a python float
@@ -36,6 +37,20 @@ def log_sum_exp(vec):
     #max_score_broadcast = max_score.view(1, -1).expand(1, vec.size()[1])
     return max_score + \
            torch.log(torch.sum(torch.exp(vec - max_score)))  #max_score_broadcast
+
+
+def logSumExp(vec):
+    """
+
+    :param vec: [max_number * max_hyperedge]
+    :return: [max_number]
+    """
+    maxScores, _ = torch.max(vec, 1)
+    #maxScores[maxScores == -float("Inf")] = 0
+    maxScoresExpanded = maxScores.view(vec.shape[0], 1).expand(vec.shape[0], vec.shape[1])
+    return maxScores + torch.log(torch.sum(torch.exp(vec - maxScoresExpanded), 1))
+
+    #merged_final_vec = (vec - F.log_softmax(vec, dim=1)).mean(1) # batch_size * label_size
 
 
 def eprint(*args, **kwargs):
@@ -97,6 +112,74 @@ def load_emb_glove(path, word2idx, random_embedding_dim = 100):
         for word in word2idx:
             word_embedding[word2idx[word]] = np.random.uniform(-scale, scale, [1, embedding_dim])
     return word_embedding
+
+
+def topological_sort(network : Network):
+
+    size = network.count_nodes()
+    dists = [None] * size
+
+    #Find all the leaves and assign them 0
+    for k in range(size):
+        children_list_k = network.get_children(k)
+        if len(children_list_k[0]) == 0:  #leaf
+            dists[k] = 0
+
+
+    # while True:
+    #     num_ready = size
+    #     for k in range(size):
+    #         if dists[k] == None:
+    #             num_ready -= 1
+    #             ready = True
+    #             dist_k = 0
+    #
+    #             children_list_k = network.get_children(k)
+    #             for children_k_index in range(len(children_list_k)):
+    #                 children_k = children_list_k[children_k_index]
+    #                 for child in children_k:
+    #                     if dists[child] == None:
+    #                         ready = False
+    #                         break
+    #                     else:
+    #                         if dist_k < dists[child] + 1:
+    #                             dist_k = dists[child] + 1
+    #
+    #             assert ready # ??? can I assert ready is always true when the structure is a Directed Tree? or DAG
+    #             if ready:
+    #                 dists[k] = dist_k
+    #
+    #     if num_ready == size:
+    #         break
+
+
+    #make sure the nodes in the network are sorted according to the node value
+    for k in range(size):
+        if dists[k] == None:
+            dist_k = 0
+
+            children_list_k = network.get_children(k)
+            for children_k_index in range(len(children_list_k)):
+                children_k = children_list_k[children_k_index]
+                for child in children_k:
+                    if dist_k < dists[child] + 1:
+                        dist_k = dists[child] + 1
+
+            dists[k] = dist_k
+
+
+
+    from collections import defaultdict
+    sorted_list = defaultdict(list)
+
+    for k in range(size):
+        dist_k = dists[k]
+        sorted_list[dist_k].append(k)
+
+    max_number = max([len(dist_k[k]) for k in dist_k])
+
+    return sorted_list, max_number
+
 
 
 from abc import ABC, abstractmethod
