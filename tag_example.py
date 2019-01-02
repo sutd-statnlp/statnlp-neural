@@ -9,6 +9,7 @@ import torch.nn as nn
 from hypergraph.Utils import *
 from common.LinearInstance import LinearInstance
 from example.eval import nereval
+import re
 
 class TagNetworkCompiler(NetworkCompiler):
 
@@ -226,6 +227,7 @@ class TagReader():
             else:
                 fields = line.split()
                 input = fields[0]
+                input = re.sub('\d', '0', input)
                 output = fields[-1]
 
                 # if output.endswith("NP"):
