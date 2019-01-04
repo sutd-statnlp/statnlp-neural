@@ -7,6 +7,8 @@ import pickle
 import tqdm
 from hypergraph.Network import Network
 
+import torch.nn.functional as F
+
 def to_scalar(var):
     # returns a python float
     return var.view(-1).data.tolist()[0]
@@ -46,11 +48,12 @@ def logSumExp(vec):
     :return: [max_number]
     """
     maxScores, _ = torch.max(vec, 1)
-    #maxScores[maxScores == -float("Inf")] = 0
+    maxScores[maxScores == -float("Inf")] = 0
     maxScoresExpanded = maxScores.view(vec.shape[0], 1).expand(vec.shape[0], vec.shape[1])
     return maxScores + torch.log(torch.sum(torch.exp(vec - maxScoresExpanded), 1))
 
-    #merged_final_vec = (vec - F.log_softmax(vec, dim=1)).mean(1) # batch_size * label_size
+    # merged_final_vec = (vec - F.log_softmax(vec, dim=1)).mean(1) # batch_size * label_size
+    # return merged_final_vec
 
 
 def eprint(*args, **kwargs):
@@ -176,7 +179,7 @@ def topological_sort(network : Network):
         dist_k = dists[k]
         sorted_list[dist_k].append(k)
 
-    max_number = max([len(dist_k[k]) for k in dist_k])
+    max_number = max([len(sorted_list[k]) for k in sorted_list])
 
     return sorted_list, max_number
 

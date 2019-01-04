@@ -3,12 +3,12 @@ from hypergraph.NetworkIDMapper import NetworkIDMapper
 from hypergraph.Utils import *
 import numpy as np
 from hypergraph.BaseNetwork import BaseNetwork
+from hypergraph.TensorTableLookupNetwork import TensorTableLookupNetwork
 
 
-class TensorBaseNetwork(TableLookupNetwork):
-
-    def __init__(self, network_id, instance, nodes, children, node_count, param, compiler):
-        super().__init__(network_id, instance, nodes, children, param, compiler)
+class TensorBaseNetwork(TensorTableLookupNetwork):
+    def __init__(self, network_id, instance, nodes, children, node_count, param, compiler, num_stage, num_row, num_hyperedge):
+        super().__init__(network_id, instance, nodes, children, node_count, param, compiler, num_stage, num_row, num_hyperedge)
         self.node_count = node_count
 
         self.is_visible = [False for i in range(node_count)]
@@ -30,8 +30,8 @@ class TensorBaseNetwork(TableLookupNetwork):
             return TensorBaseNetwork.NetworkBuilder()
 
         @staticmethod
-        def quick_build(network_id, instance, nodes, children, node_count, param, compiler):
-            return TensorBaseNetwork(network_id, instance, nodes, children, node_count, param, compiler)
+        def quick_build(network_id, instance, nodes, children, node_count, param, compiler, num_stage, num_row, num_hyperedge):
+            return TensorBaseNetwork(network_id, instance, nodes, children, node_count, param, compiler, num_stage, num_row, num_hyperedge)
 
         def add_node(self, node):
             if node in self._children_tmp:
@@ -93,7 +93,7 @@ class TensorBaseNetwork(TableLookupNetwork):
 
             nodes_value2id_map = {}
 
-            max_num_hyperedges = -1
+            num_hyperedge = -1
             values.sort()
             for k in range(len(values)):
                 node_list[k] = values[k]
@@ -111,7 +111,7 @@ class TensorBaseNetwork(TableLookupNetwork):
 
                 else:
                     children_list[parent_index] = [None for i in range(len(childrens))]
-                    max_num_hyperedges = max(max_num_hyperedges, len(children_list[parent_index]))
+                    num_hyperedge = max(num_hyperedge, len(children_list[parent_index]))
 
                     for k in range(len(children_list[parent_index])):
                         children = childrens[k]
@@ -136,16 +136,15 @@ class TensorBaseNetwork(TableLookupNetwork):
             # TODO: handle the case when network_id != None or instance != None or param != None or compiler != None
             # this is for rudimentary network builder
 
-            sorted_nodes, max_number = topological_sort(result)
+            sorted_nodes, num_row = topological_sort(result)
 
-            max_number = max(max_number, 3)
+            num_row = max(num_row, 2)
 
             num_stage = len(sorted_nodes.keys())
             # inside_stages = np.full((max_number, num_stage), -np.inf)
             #
             # assert max_number >= 3
-            neg_inf_idx = -2
-            zero_idx = -1
+
             # inside_stages[-1][zero_idx] = 0
             # inside_stages[-1][neg_inf_idx] = -inf
 
@@ -156,48 +155,49 @@ class TensorBaseNetwork(TableLookupNetwork):
             mapping = {}
             mapping_rev = {}
             idx_stage = 0
-            for col in sorted_nodes:
-                for node_k in col:
+            for stage_idx in sorted_nodes:
+                for node_k in sorted_nodes[stage_idx]:
                     mapping[node_k] = idx_stage  ## old -> new
                     mapping_rev[idx_stage] = node_k
                     idx_stage += 1
 
-            idx_stage += max_number - len(col)
+                idx_stage += num_row - len(sorted_nodes[stage_idx])
 
         ##
 
-            staged_nodes = np.full((max_number * num_stage), -1)  ##size = max_number * num_stage
-            for i in range(len(max_number * num_stage)):
+            staged_nodes = np.full((num_row * num_stage), -1, dtype=np.long)  ##size = max_number * num_stage
+            for i in range(num_row * num_stage):
                 if i in mapping_rev:
                     orig_node_k = mapping_rev[i]
                     staged_nodes[i] = values[orig_node_k]
 
-            all_children_list = np.empty((num_stage, max_number, max_num_hyperedges, 2))
-            size = num_stage * max_number
-            neg_inf_idx = size - 1
-            zero_idx = size - 2
+            all_children_list = np.empty((num_stage, num_row, num_hyperedge, 2), dtype=np.long)
+            size = num_stage * num_row
+            neg_inf_idx = (num_stage + 1) * num_row - 1
+            zero_idx = neg_inf_idx - 1
             all_children_list[:, :, :, 0].fill(neg_inf_idx)
             all_children_list[:, :, :, 1].fill(zero_idx)
 
             old_children_list = children_list
 
-            for stage_idx in num_stage:
+            for stage_idx in range(num_stage):
                 col = sorted_nodes[stage_idx]
-            for node_id in col:
-                now_node_k = mapping[node_id]
+                for node_id in col:
+                    now_node_k = mapping[node_id]
 
-                curr_row_idx = now_node_k % max_number
+                    curr_row_idx = now_node_k % num_row
 
-                all_children_list[stage_idx][now_node_k]
-                for hyperedge_index in range(len(old_children_list[node_id])):
-                    hyperedge = old_children_list[node_id][hyperedge_index]
-                    if len(hyperedge) > 0:
-                        all_children_list[stage_idx][curr_row_idx][hyperedge_index][0] = hyperedge[0]
-                        if len(hyperedge) > 1:
-                            all_children_list[stage_idx][curr_row_idx][hyperedge_index][1] = hyperedge[1]
+                    #all_children_list[stage_idx][now_node_k]
+                    for hyperedge_index in range(len(old_children_list[node_id])):
+                        hyperedge = old_children_list[node_id][hyperedge_index]
+                        hyperedge = [mapping[node_id] for node_id in hyperedge]
+                        if len(hyperedge) > 0:
+                            all_children_list[stage_idx][curr_row_idx][hyperedge_index][0] = hyperedge[0]
+                            if len(hyperedge) > 1:
+                                all_children_list[stage_idx][curr_row_idx][hyperedge_index][1] = hyperedge[1]
 
             result = TensorBaseNetwork.NetworkBuilder.quick_build(network_id, instance, staged_nodes, all_children_list,
-                                                                      len(staged_nodes), param, compiler)
+                                                                      len(staged_nodes), param, compiler, num_stage, num_row, num_hyperedge)
 
 
             result.is_visible = is_visible
