@@ -98,7 +98,8 @@ class TagNetworkCompiler(NetworkCompiler):
 
         size = inst.size()
         root_node = self.to_root(size)
-        curr_idx = network.count_nodes() - 1 #self._all_nodes.index(root_node)
+        all_nodes = network.get_all_nodes()
+        curr_idx = np.argwhere(all_nodes == root_node) #network.count_nodes() - 1 #self._all_nodes.index(root_node)
         prediction = [None for i in range(size)]
         for i in range(size):
             children = network.get_max_path(curr_idx)

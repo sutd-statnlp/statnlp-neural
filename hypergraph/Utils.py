@@ -6,6 +6,7 @@ import numpy as np
 import pickle
 import tqdm
 from hypergraph.Network import Network
+from termcolor import  colored
 
 import torch.nn.functional as F
 
@@ -47,8 +48,11 @@ def logSumExp(vec):
     :param vec: [max_number * max_hyperedge]
     :return: [max_number]
     """
+    ## In this Design, we will need to handle nodes with no hyperedges
+    vec[vec == -float("inf")] = -1e10
     maxScores, _ = torch.max(vec, 1)
-    maxScores[maxScores == -float("Inf")] = 0
+    #maxScores[maxScores == -float("inf")] = 0
+
     maxScoresExpanded = maxScores.view(vec.shape[0], 1).expand(vec.shape[0], vec.shape[1])
     return maxScores + torch.log(torch.sum(torch.exp(vec - maxScoresExpanded), 1))
 

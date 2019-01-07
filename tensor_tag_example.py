@@ -124,18 +124,11 @@ class TagFeatureManager(FeatureManager):
         # self.word_embed = nn.Embedding(voc_size, self.token_embed, padding_idx=0).to(NetworkConfig.DEVICE)
         self.word_embed = nn.Embedding(voc_size, self.token_embed).to(NetworkConfig.DEVICE)
 
-        # self.word_embed.weight.data[0] = 1
-        #self.word_embed.weight.requires_grad = False
-
-        print("word emb initiali: ", list(self.word_embed.parameters()))
-
-        # self.rnn = nn.LSTM(self.token_embed, self.token_embed, batch_first=True,bidirectional=True).to(NetworkConfig.DEVICE)
-        # self.linear = nn.Linear(self.token_embed * 2, param_g.label_size).to(NetworkConfig.DEVICE)
+        self.rnn = nn.LSTM(self.token_embed, self.token_embed, batch_first=True,bidirectional=True).to(NetworkConfig.DEVICE)
+        self.linear = nn.Linear(self.token_embed * 2, param_g.label_size).to(NetworkConfig.DEVICE)
         #self.rnn = nn.LSTM(self.token_embed, self.token_embed, batch_first=True, bidirectional=True).to(NetworkConfig.DEVICE)
-        self.linear = nn.Linear(self.token_embed, param_g.label_size, bias=False).to(NetworkConfig.DEVICE)
-        # self.linear.weight.data[0] = 0
-        # self.linear.weight.data[1] = 0
-        # self.linear.weight.data[2] = 0
+        #self.linear = nn.Linear(self.token_embed, param_g.label_size, bias=False).to(NetworkConfig.DEVICE)
+
 
 
 
@@ -149,12 +142,12 @@ class TagFeatureManager(FeatureManager):
     #     pass
     def build_nn_graph(self, instance):
 
-        # word_vec = self.word_embed(instance.word_seq).unsqueeze(0)
+        word_vec = self.word_embed(instance.word_seq).unsqueeze(0)
         #
-        # lstm_out, _ = self.rnn(word_vec, None)
-        # linear_output = self.linear(lstm_out).squeeze(0)
-        word_vec = self.word_embed(instance.word_seq) #.unsqueeze(0)
-        linear_output = self.linear(word_vec)#.squeeze(0)
+        lstm_out, _ = self.rnn(word_vec, None)
+        linear_output = self.linear(lstm_out).squeeze(0)
+        #word_vec = self.word_embed(instance.word_seq) #.unsqueeze(0)
+        #linear_output = self.linear(word_vec)#.squeeze(0)
         return linear_output
 
     def generate_batches(self, train_insts, batch_size):
@@ -282,7 +275,7 @@ if __name__ == "__main__":
 
 
     TRIAL = True
-    data_size = 5
+    data_size = 20
     num_iter = 3000
     batch_size = 1
     device = "cpu"
@@ -291,7 +284,7 @@ if __name__ == "__main__":
 
 
     if TRIAL == True:
-        data_size = 1
+        data_size = -1
         train_file = trial_file
         dev_file = trial_file
         test_file = trial_file
@@ -330,8 +323,15 @@ if __name__ == "__main__":
     evaluator = nereval()
     model = NetworkModel(fm, compiler, evaluator)
 
+
+    # def hookBFunc(m, gi, go):  # 该函数必须是function(grad)这种形式，grad的参数默认给出
+    #     print(colored('Bhook:', 'green'), '\t',m)
+    #     print(m, gi, go)
+    #
+    # model.register_backward_hook(hookBFunc)
+
     if batch_size == 1:
-        model.learn_lbfgs(train_insts, num_iter, dev_insts)
+        model.learn(train_insts, num_iter, dev_insts)
     else:
         model.learn_batch(train_insts, num_iter, dev_insts, batch_size)
 

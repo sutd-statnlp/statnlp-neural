@@ -4,7 +4,7 @@ from hypergraph.Utils import *
 import time
 from termcolor import colored
 import copy
-from multiprocessing import Process, Value, Array
+from multiprocessing import Process
 
 class NetworkModel(nn.Module):
     Iter = 0
@@ -195,6 +195,8 @@ class NetworkModel(nn.Module):
 
         print("Best F1:", self.best_ret)
 
+
+
     def learn(self, train_insts, max_iterations, dev_insts):
 
         if NetworkConfig.GPU_ID >= 0:
@@ -213,14 +215,21 @@ class NetworkModel(nn.Module):
         # optimizer = torch.optim.SGD(self.parameters(), lr = 0.01)  # lr=0.8
         # print('self.parameters():', len(list(self.parameters()))
         # optimizer = torch.optim.LBFGS(self.parameters())  # lr=0.8
-        optimizer = torch.optim.Adam(self.parameters())
+        #optimizer = torch.optim.Adam(self.parameters())
+        optimizer = torch.optim.SGD(self.parameters(),lr=0.05)
         #NetworkModel.Iter = 0
         self.best_ret = [0, 0, 0]
         best_model = None
         # for it in range(max_iterations):
 
-        # self.iteration = 0
+        global ggg
+        ggg = self._fm._param_g.transition_mat.grad
 
+
+
+        # self.iteration = 0
+        # print('self._fm.gnp.transition_mat:', self._fm._param_g.transition_mat)
+        # print('self._fm.gnp.transition_mat.grad:', self._fm._param_g.transition_mat.grad)
         print('Start Training...', flush=True)
         for iteration in range(max_iterations):
             self.train()
@@ -240,6 +249,17 @@ class NetworkModel(nn.Module):
                     unlabel_score = self.forward(negative_network)
                     loss = -unlabel_score - label_score
                     all_loss += loss.item()
+
+                    # def hookFunc(module, gradInput, gradOutput):
+                    #     print('gradInput hook:', len(gradInput))
+                    #     for v in gradInput:
+                    #         print(v)
+
+
+                    #loss.register_hook(hookFunc)
+
+
+
                     loss.backward()
                     optimizer.step()
 
@@ -254,9 +274,12 @@ class NetworkModel(nn.Module):
             end_time = time.time()
             print(ret, '\tTime=', end_time - start_time, flush=True)
 
+            # print(colored('self._fm.gnp.all_para:', 'green'), list(self.parameters()))
+            # print(colored('self._fm.gnp.transition_mat:', 'blue'), self._fm._param_g.transition_mat)
+            # print(colored('self._fm.gnp.transition_mat.grad:', 'blue'), self._fm._param_g.transition_mat.grad)
+
             if self.best_ret[2] < ret[2]:
                 self.best_ret = ret
-                # best_model = copy.deepcopy(ner_model)
 
             # if iteration >= max_iterations:
             #     return 0
@@ -330,6 +353,9 @@ class NetworkModel(nn.Module):
             ret = self.evaluator.eval(dev_insts)
             end_time = time.time()
             print(ret, '\tTime=',  end_time - start_time, flush=True)
+
+            print('self._fm.gnp.transition_mat:',self._fm._param_g.transition_mat)
+
             if self.best_ret[2] < ret[2]:
                 self.best_ret = ret
                 # best_model = copy.deepcopy(ner_model)
@@ -341,8 +367,8 @@ class NetworkModel(nn.Module):
             return all_loss
 
 
-
-        optimizer.step(closure)
+        while self.iteration < max_iterations:
+            optimizer.step(closure)
 
 
 

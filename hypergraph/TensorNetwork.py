@@ -46,7 +46,18 @@ class TensorNetwork:
         self.inside_scores = self.inside_scores.to(NetworkConfig.DEVICE)
 
 
-        emissions = torch.tensor([self.fm.extract_helper(self, k) if self.get_node(k) > -1 else -float('inf') for k in range(self.size)])
+        #emissions = torch.tensor([self.fm.extract_helper(self, k) if self.get_node(k) > -1 else -float('inf') for k in range(self.size)])
+
+        # emissions = torch.Tensor(self.size).fill_(-math.inf) #[-math.inf] * self.size #
+        #
+        # for k in range(self.size):
+        #     if self.get_node(k) > -1:
+        #         emissions[k] = self.fm.extract_helper(self, k)
+
+        emissions = [self.fm.extract_helper(self, k) if self.get_node(k) > -1 else torch.tensor(-float('inf')) for k in range(self.size)]
+        emissions = torch.stack(emissions, 0)
+
+
         # emissions = torch.tensor([0.0 for k in range(self.size)])
         emissions = emissions.view(self.num_stage, self.num_row)
 
@@ -65,24 +76,22 @@ class TensorNetwork:
                 inside_view = self.inside_scores.view(1, -1).expand(self.num_row, self.num_hyperedge, -1)
                 for_expr = torch.sum(torch.gather(inside_view, 2, childrens_stage), 2)  #max_number, max_num_hyperedges
 
-                # transition_view = self.gnp.transition_mat.expand(self.num_row, -1)
-                # trans_expr = torch.gather(transition_view, 1, self.trans_id[stage_idx])
+                transition_view = self.gnp.transition_mat.expand(self.num_row, -1)
+                trans_expr = torch.gather(transition_view, 1, self.trans_id[stage_idx])
+                # trans_expr = torch.Tensor(self.num_row, self.num_hyperedge).fill_(-math.inf)
+                # for r in range(self.num_row):
+                #     for h in range(self.num_hyperedge):
+                #         if self.trans_id[stage_idx][r][h] > 0:
+                #             trans_expr[r][h] = self.gnp.transition_mat[self.trans_id[stage_idx][r][h]]
+                #         else:
+                #
+                #             trans_expr[r][h] = self.gnp.transition_mat[0] #-float('inf')
 
-                trans_expr = torch.Tensor(self.num_row, self.num_hyperedge).fill_(-math.inf)
-                for r in range(self.num_row):
-                    for h in range(self.num_hyperedge):
-                        if self.trans_id[stage_idx][r][h] > 0:
-                            trans_expr[r][h] = self.gnp.transition_mat[self.trans_id[stage_idx][r][h]]
-                        # else:
-                        #     trans_expr[r][h] = self.gnp.transition_mat[0] #-float('inf')
 
                 #trans_expr[trans_expr==-float("inf")] = -float("inf")
 
-                score =for_expr + trans_expr + emissions[stage_idx].view(-1, 1)
-
+                score =for_expr +  trans_expr + emissions[stage_idx].view(-1, 1) # +
                 self.inside_scores[stage_idx] = logSumExp(score) #torch.max(score, 1) #
-
-
 
 
         final_inside = self.get_insides()
@@ -94,7 +103,7 @@ class TensorNetwork:
         return final_inside * weight
 
     def get_insides(self):
-        print('self.inside_scores[-2]:',self.inside_scores[-2])
+        #print('self.inside_scores[-2]:',self.inside_scores[-2])
         return self.inside_scores[-2][0]
 
 
