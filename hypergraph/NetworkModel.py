@@ -222,9 +222,6 @@ class NetworkModel(nn.Module):
         best_model = None
         # for it in range(max_iterations):
 
-        global ggg
-        ggg = self._fm._param_g.transition_mat.grad
-
 
 
         # self.iteration = 0

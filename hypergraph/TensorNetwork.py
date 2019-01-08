@@ -54,7 +54,7 @@ class TensorNetwork:
         #     if self.get_node(k) > -1:
         #         emissions[k] = self.fm.extract_helper(self, k)
 
-        emissions = [self.fm.extract_helper(self, k) if self.get_node(k) > -1 else torch.tensor(-float('inf')) for k in range(self.size)]
+        emissions = [self.fm.extract_helper(self, k) if self.get_node(k) > -1 else torch.tensor(-float('inf')).to(NetworkConfig.DEVICE) for k in range(self.size)]
         emissions = torch.stack(emissions, 0)
 
 
@@ -120,8 +120,8 @@ class TensorNetwork:
         for stage_idx in range(1, self.num_stage):
             self.touch_stage(stage_idx)
 
-        self.children = torch.from_numpy(self.children)
-        self.trans_id = torch.from_numpy(self.trans_id)
+        self.children = torch.from_numpy(self.children).to(NetworkConfig.DEVICE)
+        self.trans_id = torch.from_numpy(self.trans_id).to(NetworkConfig.DEVICE)
 
 
     def touch_stage(self, stage_idx):
@@ -177,7 +177,9 @@ class TensorNetwork:
         self._max_paths = torch.IntTensor(self.num_stage, self.num_row,2).fill_(-1)  # self.getMaxPathSharedArray()
         self._max_paths = self._max_paths.to(NetworkConfig.DEVICE)
 
-        emissions = torch.tensor([self.fm.extract_helper(self, k) if self.get_node(k) > -1 else 0 for k in range(self.size)])
+        #emissions = torch.tensor([self.fm.extract_helper(self, k) if self.get_node(k) > -1 else 0 for k in range(self.size)])
+        emissions = [self.fm.extract_helper(self, k) if self.get_node(k) > -1 else torch.tensor(-float('inf')).to(NetworkConfig.DEVICE) for k in range(self.size)]
+        emissions = torch.stack(emissions, 0)
         emissions = emissions.view(self.num_stage, self.num_row)
 
         for stage_idx in range(self.num_stage):
