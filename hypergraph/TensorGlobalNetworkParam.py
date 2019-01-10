@@ -15,6 +15,8 @@ class TensorGlobalNetworkParam(nn.Module):
         self.tuple2id[()] = 0
         self.transition_mat = None
 
+        self.ignore_transition = False
+
     def is_locked(self):
         return self.locked
 
@@ -25,8 +27,16 @@ class TensorGlobalNetworkParam(nn.Module):
 
     def finalize_transition(self):
         self.tuple_size = len(self.tuple2id)
-        self.transition_mat = nn.Parameter(torch.randn(self.tuple_size)).to(NetworkConfig.DEVICE)
+
+        if self.ignore_transition:
+            self.transition_mat = torch.zeros(self.tuple_size).to(NetworkConfig.DEVICE)
+        else:
+            self.transition_mat = nn.Parameter(torch.randn(self.tuple_size)).to(NetworkConfig.DEVICE)
+
         self.transition_mat.data[0] = -float('inf') # padding
+
+
+
         self.locked = True
 
     def add_transition(self, transition):

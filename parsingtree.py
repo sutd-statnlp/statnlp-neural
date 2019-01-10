@@ -99,17 +99,18 @@ class TreeNetworkCompiler(NetworkCompiler):
 
                 if length > 1:
                     builder.add_edge(node_span, [node_label, node_span_prime])
+                    oracle_splits = gold.oracle_splits(left, right)
+                    oracle_split = min(oracle_splits)
+                    k = oracle_split
+
+                    left_child = self.to_span(left, k)
+                    right_child = self.to_span(k, right)
+                    if builder.contains_node(left_child) and builder.contains_node(right_child):
+                        builder.add_edge(node_span_prime, [left_child, right_child])
+
                 else:
                     builder.add_edge(node_span, [node_label])
 
-                oracle_splits = gold.oracle_splits(left, right)
-                oracle_split = min(oracle_splits)
-                k = oracle_split
-
-                left_child = self.to_span(left, k)
-                right_child = self.to_span(k, right)
-                if builder.contains_node(left_child) and builder.contains_node(right_child):
-                    builder.add_edge(node_span_prime, [left_child, right_child])
 
                 if length == size:
                     builder.add_node(node_root)
@@ -221,12 +222,17 @@ START_IDX = 0 #"<START>"
 STOP_IDX = 1 #"<STOP>"
 UNK_IDX = 2 #"<UNK>"
 
+START = "<START>"
+STOP = "<STOP>"
+UNK = "<UNK>"
+
 
 class TreeNeuralBuilder(NeuralBuilder):
     def __init__(self, gnp, voc_size, word_embed_dim, tag_size, tag_embed_dim, lstm_dim = 250, label_hidden_size = 250, dropout = 0.4):
         super().__init__(gnp)
         # self.word_embed = nn.Embedding(voc_size, self.token_embed, padding_idx=0).to(NetworkConfig.DEVICE)
         self.word_embed_dim = word_embed_dim
+        self.lstm_dim = lstm_dim
         self.word_embeddings = nn.Embedding(voc_size, word_embed_dim).to(NetworkConfig.DEVICE)
         self.tag_embeddings = nn.Embedding(tag_size, tag_embed_dim).to(NetworkConfig.DEVICE)
 
@@ -281,7 +287,7 @@ class TreeNeuralBuilder(NeuralBuilder):
         def get_label_scores(left, right):
             span_emb = get_span_encoding(left, right)
             non_empty_label_scores = self.f_label(span_emb)
-            label_vec = torch.cat([torch.tensor(0.0).to(NetworkConfig.DEVICE), non_empty_label_scores], 0)
+            label_vec = torch.cat([torch.tensor([0.0]).to(NetworkConfig.DEVICE), non_empty_label_scores], 0)
             return label_vec
 
 
@@ -392,8 +398,8 @@ if __name__ == "__main__":
     test_insts = TreeReader.read_insts(test_file, False, num_test)
 
 
-    vocab2id = {'<START>':0, '<STOP>':1, '<UNK>':2}
-    tag2id = {'<START>':0, '<STOP>':1, '<UNK>':2}
+    vocab2id = {START:0, STOP:1, UNK:2}
+    tag2id = {START:0, STOP:1, UNK:2}
     label2id = {():0}
 
     for inst in train_insts:  #+ dev_insts + test_insts:
@@ -404,8 +410,8 @@ if __name__ == "__main__":
                 tag2id[tag] = len(tag2id)
 
     for inst in train_insts: # + dev_insts + test_insts:
-        inst.word_seq = torch.tensor([vocab2id[word] for word, tag in inst.input]).to(NetworkConfig.DEVICE)
-        inst.tag_seq = torch.tensor([tag2id[tag] for word, tag in inst.input]).to(NetworkConfig.DEVICE)
+        inst.word_seq = torch.tensor([vocab2id[word] for word, tag in [(START, START)] + inst.input + [(STOP, STOP)]]).to(NetworkConfig.DEVICE)
+        inst.tag_seq = torch.tensor([tag2id[tag] for word, tag in [(START, START)] + inst.input + [(STOP, STOP)]]).to(NetworkConfig.DEVICE)
         inst.output = inst.output.convert()
 
         nodes = [inst.output]
@@ -420,18 +426,22 @@ if __name__ == "__main__":
 
     print('label2id:',list(label2id.keys()))
 
-    UNK = '<UNK>'
+
     for inst in dev_insts + test_insts:
         inst.word_seq = torch.tensor([vocab2id[word] if word in vocab2id else vocab2id[UNK] for word, tag in inst.input]).to(NetworkConfig.DEVICE)
         inst.tag_seq = torch.tensor([tag2id[tag] if word in vocab2id else tag2id[UNK] for word, tag in inst.input]).to(NetworkConfig.DEVICE)
 
 
     gnp = TensorGlobalNetworkParam(len(label2id))
+    gnp.ignore_transition = True
+
     fm = TreeNeuralBuilder(gnp, len(vocab2id), 100, len(tag2id), 50)
     fm.load_pretrain(vocab2id)
+
     compiler = TreeNetworkCompiler(label2id)
 
     evaluator = constituent_eval()
+
     model = NetworkModel(fm, compiler, evaluator)
 
 
