@@ -114,7 +114,7 @@ def load_emb_glove(path, word2idx, random_embedding_dim = 100):
         del embedding
     else:
         embedding_dim = random_embedding_dim
-        scale = scale = np.sqrt(3.0 / embedding_dim)
+        scale = np.sqrt(3.0 / embedding_dim)
         word_embedding = np.empty([len(word2idx), embedding_dim])
         for word in word2idx:
             word_embedding[word2idx[word]] = np.random.uniform(-scale, scale, [1, embedding_dim])

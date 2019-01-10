@@ -134,7 +134,7 @@ class TagFeatureManager(FeatureManager):
 
     def load_pretrain(self, path, word2idx):
         emb = load_emb_glove(path, word2idx, self.token_embed)
-        self.word_embed.from_pretrained(torch.FloatTensor(emb), freeze=False)
+        self.word_embed.weight.data.copy_(torch.from_numpy(emb))
         self.word_embed = self.word_embed.to(NetworkConfig.DEVICE)
 
     # @abstractmethod
@@ -265,6 +265,7 @@ if __name__ == "__main__":
 
     torch.manual_seed(1234)
     torch.set_num_threads(40)
+    np.random.seed(1234)
 
 
 
@@ -274,9 +275,11 @@ if __name__ == "__main__":
     trial_file = "data/conll/trial.txt.bieos"
 
 
-    TRIAL = True
-    data_size = 20
-    num_iter = 3000
+    TRIAL = False
+    num_train = 30
+    num_dev = 30
+    num_test = 30
+    num_iter = 300
     batch_size = 1
     device = "cpu"
     num_thread = 1
@@ -296,9 +299,9 @@ if __name__ == "__main__":
         NetworkConfig.NUM_THREADS = num_thread
         print('Set NUM_THREADS = ', num_thread)
 
-    train_insts = TagReader.read_insts(train_file, True, data_size)
-    dev_insts = TagReader.read_insts(dev_file, False, data_size)
-    test_insts = TagReader.read_insts(test_file, False, data_size)
+    train_insts = TagReader.read_insts(train_file, True, num_train)
+    dev_insts = TagReader.read_insts(dev_file, False, num_dev)
+    test_insts = TagReader.read_insts(test_file, False, num_test)
     TagReader.label2id_map["<ROOT>"] = len(TagReader.label2id_map)
     print("map:", TagReader.label2id_map)
     #vocab2id = {'<PAD>':0}
@@ -335,19 +338,31 @@ if __name__ == "__main__":
     else:
         model.learn_batch(train_insts, num_iter, dev_insts, batch_size)
 
+    model.load_state_dict(torch.load('best_model.pt'))
+
+
+
     results = model.test(test_insts)
+    for inst in results:
+        print(inst.get_input())
+        print(inst.get_output())
+        print(inst.get_prediction())
+        print()
 
-    print()
-    print('Result:')
-    corr = 0
-    total = 0
-    for i in range(len(test_insts)):
-        inst = results[i]
-        total += inst.size()
-        for pos in range(inst.size()):
-            if inst.get_output()[pos] == inst.get_prediction()[pos]:
-                corr += 1
-        print("resulit is :", results[i].get_prediction())
+    ret = model.evaluator.eval(test_insts)
+    print(ret)
 
-    print("accuracy: ", str(corr*1.0 / total))
+    # print()
+    # print('Result:')
+    # corr = 0
+    # total = 0
+    # for i in range(len(test_insts)):
+    #     inst = results[i]
+    #     total += inst.size()
+    #     for pos in range(inst.size()):
+    #         if inst.get_output()[pos] == inst.get_prediction()[pos]:
+    #             corr += 1
+    #     print("resulit is :", results[i].get_prediction())
+    #
+    # print("accuracy: ", str(corr*1.0 / total))
 

@@ -215,8 +215,8 @@ class NetworkModel(nn.Module):
         # optimizer = torch.optim.SGD(self.parameters(), lr = 0.01)  # lr=0.8
         # print('self.parameters():', len(list(self.parameters()))
         # optimizer = torch.optim.LBFGS(self.parameters())  # lr=0.8
-        #optimizer = torch.optim.Adam(self.parameters())
-        optimizer = torch.optim.SGD(self.parameters(),lr=0.05)
+        optimizer = torch.optim.Adam(self.parameters())
+        # optimizer = torch.optim.SGD(self.parameters(),lr=0.05)
         #NetworkModel.Iter = 0
         self.best_ret = [0, 0, 0]
         best_model = None
@@ -277,6 +277,8 @@ class NetworkModel(nn.Module):
 
             if self.best_ret[2] < ret[2]:
                 self.best_ret = ret
+                torch.save(self.state_dict(), 'best_model.pt')
+                print(colored('Save the best model to ,', 'red'), 'best_model.pt')
 
             # if iteration >= max_iterations:
             #     return 0
