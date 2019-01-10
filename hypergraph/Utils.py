@@ -3,12 +3,8 @@ import torch.autograd as autograd
 import sys
 from hypergraph.NetworkConfig import  NetworkConfig
 import numpy as np
-import pickle
-import tqdm
 from hypergraph.Network import Network
-from termcolor import  colored
 
-import torch.nn.functional as F
 
 def to_scalar(var):
     # returns a python float
@@ -189,7 +185,7 @@ def topological_sort(network : Network):
 
 
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 class Eval():
     @abstractmethod
     def eval(self, insts):

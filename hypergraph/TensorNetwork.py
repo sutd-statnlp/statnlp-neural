@@ -13,7 +13,7 @@ class TensorNetwork:
         self.network_id = network_id
         self.inst = instance
         self.fm = fm
-        self.gnp = fm._param_g
+        self.gnp = fm.gnp
         self.nodeid2labelid = {}
         self.node2hyperedge = []
 
@@ -54,7 +54,7 @@ class TensorNetwork:
         #     if self.get_node(k) > -1:
         #         emissions[k] = self.fm.extract_helper(self, k)
 
-        emissions = [self.fm.extract_helper(self, k) if self.get_node(k) > -1 else torch.tensor(-float('inf')).to(NetworkConfig.DEVICE) for k in range(self.size)]
+        emissions = [self.fm.get_nn_score(self, k) if self.get_node(k) > -1 else torch.tensor(-float('inf')).to(NetworkConfig.DEVICE) for k in range(self.size)]
         emissions = torch.stack(emissions, 0)
 
 
@@ -178,7 +178,7 @@ class TensorNetwork:
         self._max_paths = self._max_paths.to(NetworkConfig.DEVICE)
 
         #emissions = torch.tensor([self.fm.extract_helper(self, k) if self.get_node(k) > -1 else 0 for k in range(self.size)])
-        emissions = [self.fm.extract_helper(self, k) if self.get_node(k) > -1 else torch.tensor(-float('inf')).to(NetworkConfig.DEVICE) for k in range(self.size)]
+        emissions = [self.fm.get_nn_score(self, k) if self.get_node(k) > -1 else torch.tensor(-float('inf')).to(NetworkConfig.DEVICE) for k in range(self.size)]
         emissions = torch.stack(emissions, 0)
         emissions = emissions.view(self.num_stage, self.num_row)
 

@@ -1,14 +1,13 @@
 from hypergraph.NetworkCompiler import NetworkCompiler
-import numpy as np
 from hypergraph.NetworkIDMapper import NetworkIDMapper
 from hypergraph.BaseNetwork import BaseNetwork
-from hypergraph.GlobalNetworkParam import GlobalNetworkParam
-from hypergraph.FeatureManager import FeatureManager
+from hypergraphold.GlobalNetworkParam import GlobalNetworkParam
+from hypergraph.NeuralBuilder import NeuralBuilder
 from hypergraph.NetworkModel import NetworkModel
 import torch.nn as nn
 from hypergraph.Utils import *
 from common.LinearInstance import LinearInstance
-from example.eval import nereval
+from common.eval import nereval
 import re
 
 class TagNetworkCompiler(NetworkCompiler):
@@ -112,7 +111,7 @@ class TagNetworkCompiler(NetworkCompiler):
         return inst
 
 
-class TagFeatureManager(FeatureManager):
+class TagNeuralBuilder(NeuralBuilder):
     def __init__(self, param_g, voc_size):
         super().__init__(param_g)
         self.token_embed = 100
@@ -181,7 +180,7 @@ class TagFeatureManager(FeatureManager):
         return linear_output
 
 
-    def extract_helper(self, network, parent_k):
+    def get_nn_score(self, network, parent_k):
         parent_arr = network.get_node_array(parent_k)  # pos, label_id, node_type
         pos = parent_arr[0]
         label_id = parent_arr[1]
@@ -301,7 +300,7 @@ if __name__ == "__main__":
 
 
     gnp = GlobalNetworkParam(len(TagReader.label2id_map))
-    fm = TagFeatureManager(gnp, len(vocab2id))
+    fm = TagNeuralBuilder(gnp, len(vocab2id))
     #fm.load_pretrain('data/glove.6B.100d.txt', vocab2id)
     print(list(TagReader.label2id_map.keys()))
     compiler = TagNetworkCompiler(list(TagReader.label2id_map.keys()))

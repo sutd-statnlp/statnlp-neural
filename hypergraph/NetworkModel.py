@@ -11,25 +11,29 @@ class NetworkModel(nn.Module):
 
     def __init__(self, fm, compiler, evaluator):
         super().__init__()
-        self._fm = fm
-        self._compiler = compiler
-        self._all_instances = None
-        self._all_instances_test = None
-        self._networks = None
-        self._networks_test = None
+        self.fm = fm
+        self.compiler = compiler
+        self.all_instances = None
+        self.all_instances_test = None
+        self.networks = None
+        self.networks_test = None
         self.evaluator = evaluator
+        self.model_path = 'best_model.pt'
+
+    def set_model_path(self, path):
+        self.model_path = path
 
     def get_instances(self):
-        return self._all_instances
+        return self.all_instances
 
     def get_feature_manager(self):
-        return self._fm
+        return self.fm
 
     def get_network_compiler(self):
-        return self._compiler
+        return self.compiler
 
     def split_instances_for_train(self, insts_before_split):
-        eprint("#instances=", len(insts_before_split))
+        print("#instances=", len(insts_before_split))
         insts = [None for i in range(len(insts_before_split) * 2)]
 
         k = 0
@@ -43,28 +47,8 @@ class NetworkModel(nn.Module):
         return insts
 
 
-    def split_instances_for_train_two(self, insts_before_split):
-        eprint("#instances=", len(insts_before_split))
-        label_insts = []
-        unlabel_insts = []
-
-        k = 0
-        for i in range(len(insts_before_split)):
-            label_inst = insts_before_split[k]
-            unlabel_inst = label_inst.duplicate()
-            unlabel_inst.set_instance_id(-label_inst.get_instance_id())
-            unlabel_inst.set_weight(-label_inst.get_weight())
-            unlabel_inst.set_unlabeled()
-
-            label_insts.append(label_inst)
-            unlabel_insts.append(unlabel_inst)
-            k = k + 1
-
-        return label_insts, unlabel_insts
-
-
     def lock_it(self):
-        gnp = self._fm.get_param_g()
+        gnp = self.fm.get_param_g()
 
         if gnp.is_locked():
             return
@@ -75,37 +59,33 @@ class NetworkModel(nn.Module):
 
     def learn_batch(self, train_insts, max_iterations, dev_insts, batch_size = 10):
 
-        insts_before_split = train_insts  # self.prepare_instance_for_compilation(train_insts)
+        insts_before_split = train_insts
 
         insts = self.split_instances_for_train(insts_before_split)
-        self._all_instances = insts
+        self.all_instances = insts
 
-        #self._all_instances = label_insts + unlabel_insts
 
-        self.touch(self._all_instances)
+
+        self.touch(self.all_instances)
 
         label_networks = []
         unlabel_networks = []
-        for i in range(0, len(self._all_instances), 2):
+        for i in range(0, len(self.all_instances), 2):
             label_networks.append(self.get_network(i))
             unlabel_networks.append(self.get_network(i + 1))
 
 
-        batches = self._fm.generate_batches(insts_before_split, batch_size)
+        batches = self.fm.generate_batches(insts_before_split, batch_size)
 
-        # self._fm.get_param_g().lock_it()
+
         self.lock_it()
 
-        # optimizer = torch.optim.SGD(self.parameters(), lr = 0.01)  # lr=0.8
-        # print('self.parameters():', len(list(self.parameters()))
-        # optimizer = torch.optim.LBFGS(self.parameters())  # lr=0.8
-        optimizer = torch.optim.Adam(self.parameters())
-        #NetworkModel.Iter = 0
-        self.best_ret = [0, 0, 0]
-        best_model = None
-        # for it in range(max_iterations):
 
-        # self.iteration = 0
+        optimizer = torch.optim.Adam(self.parameters())
+
+        self.best_ret = [0, 0, 0]
+
+
 
         print('Start Training...', flush=True)
         for iteration in range(max_iterations):
@@ -120,7 +100,7 @@ class NetworkModel(nn.Module):
                 batch_loss = 0
 
                 batch_input_seqs, batch_network_id_range = batch
-                nn_output_batch = self._fm.build_nn_graph_batch(batch_input_seqs)
+                nn_output_batch = self.fm.build_nn_graph_batch(batch_input_seqs)
 
                 batch_label_networks = label_networks[batch_network_id_range[0]:batch_network_id_range[1]]
                 batch_unlabel_networks = unlabel_networks[batch_network_id_range[0]:batch_network_id_range[1]]
@@ -177,7 +157,7 @@ class NetworkModel(nn.Module):
             end_time = time.time()
 
             print(colored("Epoch ", 'red'), iteration, ": Obj=", all_loss, '\tTime=', end_time - start_time, flush=True)
-            #NetworkModel.Iter += 1
+
 
             start_time = time.time()
             self.decode(dev_insts)
@@ -188,58 +168,50 @@ class NetworkModel(nn.Module):
 
             if self.best_ret[2] < ret[2]:
                 self.best_ret = ret
-                # best_model = copy.deepcopy(ner_model)
-
-            # if iteration >= max_iterations:
-            #     return 0
+                torch.save(self.state_dict(), self.model_path)
+                print(colored('Save the best model to ', 'red'), self.model_path)
 
         print("Best F1:", self.best_ret)
 
 
+    def learn(self, train_insts, max_iterations, dev_insts, optimizer = 'adam'):
 
-    def learn(self, train_insts, max_iterations, dev_insts):
+        if optimizer == "lbfgs":
+            self.learn_lbfgs(train_insts, max_iterations, dev_insts)
+            return
 
-        if NetworkConfig.GPU_ID >= 0:
-            torch.cuda.set_device(NetworkConfig.GPU_ID)
-
-        insts_before_split = train_insts  # self.prepare_instance_for_compilation(train_insts)
+        insts_before_split = train_insts
 
         insts = self.split_instances_for_train(insts_before_split)
-        self._all_instances = insts
+        self.all_instances = insts
 
         self.touch(insts)
 
-        # self._fm.get_param_g().lock_it()
         self.lock_it()
 
-        # optimizer = torch.optim.SGD(self.parameters(), lr = 0.01)  # lr=0.8
-        # print('self.parameters():', len(list(self.parameters()))
-        # optimizer = torch.optim.LBFGS(self.parameters())  # lr=0.8
-        optimizer = torch.optim.Adam(self.parameters())
-        # optimizer = torch.optim.SGD(self.parameters(),lr=0.05)
-        #NetworkModel.Iter = 0
+        if optimizer == 'adam':
+            optimizer = torch.optim.Adam(self.parameters())
+        elif optimizer == 'sgd':
+            optimizer = torch.optim.SGD(self.parameters(),lr=NetworkConfig.NEURAL_LEARNING_RATE)
+        else:
+            print(colored('Unsupported optimizer:', 'red'), optimizer)
+            return
+
         self.best_ret = [0, 0, 0]
-        best_model = None
-        # for it in range(max_iterations):
 
-
-
-        # self.iteration = 0
-        # print('self._fm.gnp.transition_mat:', self._fm._param_g.transition_mat)
-        # print('self._fm.gnp.transition_mat.grad:', self._fm._param_g.transition_mat.grad)
         print('Start Training...', flush=True)
         for iteration in range(max_iterations):
             self.train()
             all_loss = 0
             start_time = time.time()
-            for i in range(len(self._all_instances)):
-                inst = self._all_instances[i]
+            for i in range(len(self.all_instances)):
+                inst = self.all_instances[i]
                 if inst.get_instance_id() > 0:
                     optimizer.zero_grad()
                     self.zero_grad()
                     network = self.get_network(i)
                     negative_network = self.get_network(i + 1)
-                    network.nn_output = self._fm.build_nn_graph(inst)
+                    network.nn_output = self.fm.build_nn_graph(inst)
                     negative_network.nn_output = network.nn_output
 
                     label_score = self.forward(network)
@@ -247,66 +219,43 @@ class NetworkModel(nn.Module):
                     loss = -unlabel_score - label_score
                     all_loss += loss.item()
 
-                    # def hookFunc(module, gradInput, gradOutput):
-                    #     print('gradInput hook:', len(gradInput))
-                    #     for v in gradInput:
-                    #         print(v)
-
-
-                    #loss.register_hook(hookFunc)
-
-
-
                     loss.backward()
                     optimizer.step()
 
             end_time = time.time()
 
             print(colored("Iteration ", 'yellow'), iteration, ": Obj=", all_loss, '\tTime=', end_time - start_time, flush=True)
-            #NetworkModel.Iter += 1
 
             start_time = time.time()
             self.decode(dev_insts)
             ret = self.evaluator.eval(dev_insts)
             end_time = time.time()
-            print(ret, '\tTime=', end_time - start_time, flush=True)
+            print("P:{0} R:{1} F1:{2}".format(ret[0], ret[1], ret[2]), '\tTime=', end_time - start_time, flush=True)
 
-            # print(colored('self._fm.gnp.all_para:', 'green'), list(self.parameters()))
-            # print(colored('self._fm.gnp.transition_mat:', 'blue'), self._fm._param_g.transition_mat)
-            # print(colored('self._fm.gnp.transition_mat.grad:', 'blue'), self._fm._param_g.transition_mat.grad)
 
             if self.best_ret[2] < ret[2]:
                 self.best_ret = ret
-                torch.save(self.state_dict(), 'best_model.pt')
-                print(colored('Save the best model to ,', 'red'), 'best_model.pt')
+                torch.save(self.state_dict(), self.model_path)
+                print(colored('Save the best model to ', 'red'), self.model_path)
 
-            # if iteration >= max_iterations:
-            #     return 0
+        print("Best Result:", self.best_ret)
 
-        print("Best F1:", self.best_ret)
 
     def learn_lbfgs(self, train_insts, max_iterations, dev_insts):
 
-        if NetworkConfig.GPU_ID >= 0:
-            torch.cuda.set_device(NetworkConfig.GPU_ID)
 
-        insts_before_split = train_insts  # self.prepare_instance_for_compilation(train_insts)
+        insts_before_split = train_insts
 
         insts = self.split_instances_for_train(insts_before_split)
-        self._all_instances = insts
+        self.all_instances = insts
 
         self.touch(insts)
-
-        # self._fm.get_param_g().lock_it()
         self.lock_it()
 
-        # optimizer = torch.optim.SGD(self.parameters(), lr = 0.01)  # lr=0.8
-        #print('self.parameters():', len(list(self.parameters()))
-        optimizer = torch.optim.LBFGS(self.parameters())  # lr=0.8
-        NetworkModel.Iter = 0
+        optimizer = torch.optim.LBFGS(self.parameters())
+        self.iteration = 0
         self.best_ret = [0, 0, 0]
-        best_model = None
-        # for it in range(max_iterations):
+
 
         self.iteration = 0
         def closure():
@@ -314,50 +263,40 @@ class NetworkModel(nn.Module):
             self.zero_grad()
             optimizer.zero_grad()
 
-            all_loss = 0  ### scalar
+            all_loss = 0
 
             start_time = time.time()
-            for i in range(len(self._all_instances)):
-                inst = self._all_instances[i]
+            for i in range(len(self.all_instances)):
+                inst = self.all_instances[i]
                 if inst.get_instance_id() > 0:
                     network = self.get_network(i)
                     negative_network = self.get_network(i + 1)
-                    network.nn_output = self._fm.build_nn_graph(inst)
+                    network.nn_output = self.fm.build_nn_graph(inst)
                     negative_network.nn_output = network.nn_output
-            #end_time = time.time()
-            #fwd_diff_time = end_time - start_time
-            #print('Nueral Forward:', '\tTime=', fwd_diff_time)
 
-            #start_time = time.time()
-            for i in range(len(self._all_instances)):
+
+            for i in range(len(self.all_instances)):
                 loss = self.forward(self.get_network(i))
                 all_loss -= loss
-                # loss.backward()
 
-            #end_time = time.time()
-            #fwd_diff_time = end_time - start_time
-            #print('Forward:', '\tTime=', fwd_diff_time)
 
-            #start_time = time.time()
+
             all_loss.backward()
             end_time = time.time()
-            #bwd_diff_time = end_time - start_time
-            #print('Backward:', '\tTime=', bwd_diff_time)
 
-            print(colored("Iteration ", 'yellow'), NetworkModel.Iter, ": Obj=", all_loss.item(), '\tTime=', end_time - start_time, flush=True)
-            NetworkModel.Iter += 1
+            print(colored("Iteration ", 'yellow'), self.iteration, ": Obj=", all_loss.item(), '\tTime=', end_time - start_time, flush=True)
 
             start_time = time.time()
             self.decode(dev_insts)
             ret = self.evaluator.eval(dev_insts)
             end_time = time.time()
-            print(ret, '\tTime=',  end_time - start_time, flush=True)
+            print("P:{0} R:{1} F1:{2}".format(ret[0], ret[1], ret[2]), '\tTime=', end_time - start_time, flush=True)
 
-            print('self._fm.gnp.transition_mat:',self._fm._param_g.transition_mat)
 
             if self.best_ret[2] < ret[2]:
                 self.best_ret = ret
-                # best_model = copy.deepcopy(ner_model)
+                torch.save(self.state_dict(), self.model_path)
+                print(colored('Save the best model to ', 'red'), self.model_path)
 
             self.iteration += 1
             if self.iteration >= max_iterations:
@@ -370,33 +309,28 @@ class NetworkModel(nn.Module):
             optimizer.step(closure)
 
 
-
-        print("Best F1:", self.best_ret)
+        print("Best Result:", self.best_ret)
 
     def forward(self, network):
         return network.inside()
 
     def get_network(self, network_id):
 
+        if self.networks[network_id] != None:
+            return self.networks[network_id]
 
-        if self._networks[network_id] != None:
-            return self._networks[network_id]
+        inst = self.all_instances[network_id]
 
-
-        inst = self._all_instances[network_id]
-
-        network = self._compiler.compile(network_id, inst, self._fm)
-        # print("after compile: ", network)
-
-        #if self._cache_networks:
-        self._networks[network_id] = network
+        network = self.compiler.compile(network_id, inst, self.fm)
+        self.networks[network_id] = network
 
         return network
 
+
     def touch(self, insts):
-        print('Touching...', flush=True)
-        if self._networks == None:
-            self._networks = [None for i in range(len(insts))]
+        print('Touching ...', flush=True)
+        if self.networks == None:
+            self.networks = [None for i in range(len(insts))]
 
         for network_id in range(len(insts)):
             if network_id % 100 == 0:
@@ -409,50 +343,45 @@ class NetworkModel(nn.Module):
 
 
 
-
     def test(self, instances):
         return self.decode(instances=instances)
 
     def decode(self, instances, cache_features=False):
 
-        # self._num_threads = NetworkConfig.NUM_THREADS
-        # print('#Threads: ', self._num_threads)
-        self._all_instances_test = instances
+        self.all_instances_test = instances
         self.eval()
         instances_output = []
 
         for k in range(len(instances)):
             instance = instances[k]
-            # print("decode ", instance.is_labeled)
 
-            network = self._compiler.compile(k, instance, self._fm)
+            network = self.compiler.compile(k, instance, self.fm)
             network.touch()
-            network.nn_output = self._fm.build_nn_graph(instance)
+            network.nn_output = self.fm.build_nn_graph(instance)
             network.max()
-            instance_output = self._compiler.decompile(network)
+            instance_output = self.compiler.decompile(network)
             instances_output.append(instance_output)
 
         return instances_output
 
 
     def get_network_test(self, network_id):
-        if self._networks_test[network_id] != None:
-            return self._networks_test[network_id]
+        if self.networks_test[network_id] != None:
+            return self.networks_test[network_id]
 
-        inst = self._all_instances_test[network_id]
+        inst = self.all_instances_test[network_id]
 
-        network = self._compiler.compile(network_id, inst, self._fm)
-        # print("after compile: ", network)
+        network = self.compiler.compile(network_id, inst, self.fm)
 
-        # if self._cache_networks:
-        self._networks_test[network_id] = network
+
+        self.networks_test[network_id] = network
 
         return network
 
 
     def touch_test(self, insts):
-        if self._networks_test == None:
-            self._networks_test = [None for i in range(len(insts))]
+        if self.networks_test == None:
+            self.networks_test = [None for i in range(len(insts))]
 
         for network_id in range(len(insts)):
             if network_id % 100 == 0:

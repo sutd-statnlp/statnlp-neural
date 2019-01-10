@@ -1,14 +1,13 @@
 from hypergraph.NetworkCompiler import NetworkCompiler
-import numpy as np
 from hypergraph.NetworkIDMapper import NetworkIDMapper
 from hypergraph.TensorBaseNetwork import TensorBaseNetwork
 from hypergraph.TensorGlobalNetworkParam import TensorGlobalNetworkParam
-from hypergraph.FeatureManager import FeatureManager
+from hypergraph.NeuralBuilder import NeuralBuilder
 from hypergraph.NetworkModel import NetworkModel
 import torch.nn as nn
 from hypergraph.Utils import *
 from common.LinearInstance import LinearInstance
-from example.eval import nereval
+from common.eval import nereval
 import re
 from termcolor import colored
 
@@ -116,16 +115,16 @@ class TagNetworkCompiler(NetworkCompiler):
         return inst
 
 
-class TagFeatureManager(FeatureManager):
-    def __init__(self, param_g, voc_size):
-        super().__init__(param_g)
+class TagNeuralBuilder(NeuralBuilder):
+    def __init__(self, gnp, voc_size):
+        super().__init__(gnp)
         self.token_embed = 100
         print("vocab size: ", voc_size)
         # self.word_embed = nn.Embedding(voc_size, self.token_embed, padding_idx=0).to(NetworkConfig.DEVICE)
         self.word_embed = nn.Embedding(voc_size, self.token_embed).to(NetworkConfig.DEVICE)
 
         self.rnn = nn.LSTM(self.token_embed, self.token_embed, batch_first=True,bidirectional=True).to(NetworkConfig.DEVICE)
-        self.linear = nn.Linear(self.token_embed * 2, param_g.label_size).to(NetworkConfig.DEVICE)
+        self.linear = nn.Linear(self.token_embed * 2, gnp.label_size).to(NetworkConfig.DEVICE)
         #self.rnn = nn.LSTM(self.token_embed, self.token_embed, batch_first=True, bidirectional=True).to(NetworkConfig.DEVICE)
         #self.linear = nn.Linear(self.token_embed, param_g.label_size, bias=False).to(NetworkConfig.DEVICE)
 
@@ -192,7 +191,7 @@ class TagFeatureManager(FeatureManager):
         return linear_output
 
 
-    def extract_helper(self, network, parent_k):
+    def get_nn_score(self, network, parent_k):
         parent_arr = network.get_node_array(parent_k)  # pos, label_id, node_type
         pos = parent_arr[0]
         label_id = parent_arr[1]
@@ -317,8 +316,9 @@ if __name__ == "__main__":
     print(colored('vocab_2id:', 'red'), len(vocab2id))
 
     gnp = TensorGlobalNetworkParam(len(TagReader.label2id_map))
-    fm = TagFeatureManager(gnp, len(vocab2id))
+    fm = TagNeuralBuilder(gnp, len(vocab2id))
     #fm.load_pretrain('data/glove.6B.100d.txt', vocab2id)
+    fm.load_pretrain(None, vocab2id)
     print(list(TagReader.label2id_map.keys()))
     compiler = TagNetworkCompiler(TagReader.label2id_map)
 
@@ -327,11 +327,7 @@ if __name__ == "__main__":
     model = NetworkModel(fm, compiler, evaluator)
 
 
-    # def hookBFunc(m, gi, go):  # 该函数必须是function(grad)这种形式，grad的参数默认给出
-    #     print(colored('Bhook:', 'green'), '\t',m)
-    #     print(m, gi, go)
-    #
-    # model.register_backward_hook(hookBFunc)
+
 
     if batch_size == 1:
         model.learn(train_insts, num_iter, dev_insts)
@@ -352,17 +348,4 @@ if __name__ == "__main__":
     ret = model.evaluator.eval(test_insts)
     print(ret)
 
-    # print()
-    # print('Result:')
-    # corr = 0
-    # total = 0
-    # for i in range(len(test_insts)):
-    #     inst = results[i]
-    #     total += inst.size()
-    #     for pos in range(inst.size()):
-    #         if inst.get_output()[pos] == inst.get_prediction()[pos]:
-    #             corr += 1
-    #     print("resulit is :", results[i].get_prediction())
-    #
-    # print("accuracy: ", str(corr*1.0 / total))
 

@@ -1,4 +1,3 @@
-from hypergraph.TableLookupNetwork import TableLookupNetwork
 from hypergraph.NetworkIDMapper import NetworkIDMapper
 from hypergraph.Utils import *
 import numpy as np

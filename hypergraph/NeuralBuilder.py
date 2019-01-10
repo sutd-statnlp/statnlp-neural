@@ -1,16 +1,16 @@
 from abc import ABC, abstractmethod
 import torch.nn as nn
 
-class FeatureManager(nn.Module):
+class NeuralBuilder(nn.Module):
 
-    def __init__(self, param_g):
-        super(FeatureManager, self).__init__()
-        self._param_g = param_g
+    def __init__(self, gnp):
+        super(NeuralBuilder, self).__init__()
+        self.gnp = gnp
 
     ##initilaize neural network
 
     def get_param_g(self):
-        return self._param_g
+        return self.gnp
 
     @abstractmethod
     def build_nn_graph(self, instance):
@@ -25,12 +25,12 @@ class FeatureManager(nn.Module):
         pass
 
     @abstractmethod
-    def extract_helper(self, network, parent_k):
+    def get_nn_score(self, network, parent_k):
         ## given a node parent_k, return score.
         # parent_k -> network.nn_output  score
         pass
 
     def extract(self, network, parent_k):
-        score = self.extract_helper(network, parent_k)
+        score = self.get_nn_score(network, parent_k)
 
         return score

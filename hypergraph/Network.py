@@ -12,7 +12,7 @@ class Network:
         self.network_id = network_id
         self.inst = instance
         self.fm = fm
-        self.gnp = fm._param_g
+        self.gnp = fm.gnp
         self.nodeid2labelid = {}
         self.node2hyperedge = []
 
@@ -53,7 +53,7 @@ class Network:
 
         size = len(children_list_k)
 
-        emission_expr = self.fm.extract_helper(self, k)
+        emission_expr = self.fm.get_nn_score(self, k)
 
         if len(children_list_k[0]) > 0:
             children_list_index_tensor = self.nodeid2childrenids[k]
@@ -157,7 +157,7 @@ class Network:
         children_list_k = self.get_children(k)
         size = len(children_list_k)
         current_label_id = self.nodeid2labelid[k]
-        emission_expr = self.fm.extract_helper(self, k)
+        emission_expr = self.fm.get_nn_score(self, k)
 
         if len(children_list_k[0]) > 0:
             children_list_index_tensor = self.nodeid2childrenids[k]
