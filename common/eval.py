@@ -1,5 +1,7 @@
 from hypergraph.Utils import Eval
-
+from PYEVALB import scorer
+import re
+import math
 class Span:
 
     def __init__(self, left, right, type):
@@ -13,6 +15,16 @@ class Span:
     def __hash__(self):
         return hash((self.left, self.right, self.type))
 
+
+class FScore(object):
+    def __init__(self, recall, precision, fscore):
+        self.recall = recall
+        self.precision = precision
+        self.fscore = fscore
+
+    def __str__(self):
+        return "(Recall={:.2f}%, Precision={:.2f}%, FScore={:.2f}%)".format(
+            self.recall * 100, self.precision * 100, self.fscore * 100)
 
 ## the input to the evaluation should already have
 ## have the predictions which is the label.
@@ -61,3 +73,56 @@ class nereval(Eval):
 
 
         return ret
+
+
+class constituent_eval(Eval):
+    def eval(self, insts):
+
+
+        gold_path = 'tmp/gold.txt'
+        pred_path = 'tmp/pred.txt'
+        result_path = 'tmp/result.txt'
+
+        fgold = open(gold_path, 'w', encoding='utf-8')
+        fpred = open(pred_path, 'w', encoding='utf-8')
+        for inst in insts:
+            gold = inst.get_output()
+            pred = inst.get_prediction()
+
+            fgold.write(gold.linearize() + '\n')
+            fpred.write(pred.linearize() + '\n')
+
+        fgold.close()
+        fpred.close()
+
+        scorer.evalb(gold_path, pred_path, result_path)
+
+        fscore = FScore(math.nan, math.nan, math.nan)
+        with open(result_path) as infile:
+            for line in infile:
+                match = re.match(r"Bracketing Recall\s+=\s+(\d+\.\d+)", line)
+                if match:
+                    fscore.recall = float(match.group(1))
+                match = re.match(r"Bracketing Precision\s+=\s+(\d+\.\d+)", line)
+                if match:
+                    fscore.precision = float(match.group(1))
+                match = re.match(r"Bracketing FMeasure\s+=\s+(\d+\.\d+)", line)
+                if match:
+                    fscore.fscore = float(match.group(1))
+                    break
+
+        success = (
+                not math.isnan(fscore.fscore) or
+                fscore.recall == 0.0 or
+                fscore.precision == 0.0)
+
+        if success:
+            pass
+            # temp_dir.cleanup()
+        else:
+            print("Error reading EVALB results.")
+            print("Gold path: {}".format(gold_path))
+            print("Predicted path: {}".format(pred_path))
+            print("Output path: {}".format(result_path))
+
+        return fscore

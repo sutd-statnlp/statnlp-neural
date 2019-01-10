@@ -168,8 +168,7 @@ class NetworkModel(nn.Module):
 
             if self.best_ret[2] < ret[2]:
                 self.best_ret = ret
-                torch.save(self.state_dict(), self.model_path)
-                print(colored('Save the best model to ', 'red'), self.model_path)
+                self.save()
 
         print("Best F1:", self.best_ret)
 
@@ -235,8 +234,7 @@ class NetworkModel(nn.Module):
 
             if self.best_ret[2] < ret[2]:
                 self.best_ret = ret
-                torch.save(self.state_dict(), self.model_path)
-                print(colored('Save the best model to ', 'red'), self.model_path)
+                self.save()
 
         print("Best Result:", self.best_ret)
 
@@ -295,8 +293,7 @@ class NetworkModel(nn.Module):
 
             if self.best_ret[2] < ret[2]:
                 self.best_ret = ret
-                torch.save(self.state_dict(), self.model_path)
-                print(colored('Save the best model to ', 'red'), self.model_path)
+                self.save()
 
             self.iteration += 1
             if self.iteration >= max_iterations:
@@ -391,3 +388,11 @@ class NetworkModel(nn.Module):
             network.touch()
 
         print()
+
+
+    def save(self):
+        torch.save(self.state_dict(), self.model_path)
+        print(colored('Save the best model to ', 'red'), self.model_path)
+
+    def load(self):
+        self.load_state_dict(torch.load(self.model_path))
