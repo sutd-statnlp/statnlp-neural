@@ -29,7 +29,8 @@ class TensorGlobalNetworkParam(nn.Module):
         self.tuple_size = len(self.tuple2id)
 
         if self.ignore_transition:
-            self.transition_mat = torch.zeros(self.tuple_size).to(NetworkConfig.DEVICE)
+            self.transition_mat = nn.Parameter(torch.zeros(self.tuple_size)).to(NetworkConfig.DEVICE)
+            self.transition_mat.requires_grad = False
         else:
             self.transition_mat = nn.Parameter(torch.randn(self.tuple_size)).to(NetworkConfig.DEVICE)
 

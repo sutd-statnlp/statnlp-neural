@@ -15,6 +15,17 @@ import examples.parsingtree.trees as trees
 import functools
 
 
+
+START_IDX = 0 #"<START>"
+STOP_IDX = 1 #"<STOP>"
+UNK_IDX = 2 #"<UNK>"
+
+START = "<START>"
+STOP = "<STOP>"
+UNK = "<UNK>"
+
+
+
 class NodeType(Enum):
     sink = 0
     label = 1
@@ -218,13 +229,6 @@ class TreeNetworkCompiler(NetworkCompiler):
 
         return parse_node
 
-START_IDX = 0 #"<START>"
-STOP_IDX = 1 #"<STOP>"
-UNK_IDX = 2 #"<UNK>"
-
-START = "<START>"
-STOP = "<STOP>"
-UNK = "<UNK>"
 
 
 class TreeNeuralBuilder(NeuralBuilder):
@@ -261,9 +265,11 @@ class TreeNeuralBuilder(NeuralBuilder):
 
     def build_nn_graph(self, instance):
 
-        size = instance.size()
+
         word_seq = instance.word_seq
         tag_seq = instance.tag_seq
+
+        size = word_seq.shape[0]
 
         tag_embs = self.tag_embeddings(tag_seq)
         word_embs = self.word_embeddings(word_seq)
@@ -294,7 +300,7 @@ class TreeNeuralBuilder(NeuralBuilder):
         spans = {}
 
         for i in range(size):
-            for j in range(i + 1, size):
+            for j in range(i + 1, size + 1):
                 label_scores = get_label_scores(i, j)
                 spans[i,j] = label_scores
 
@@ -322,11 +328,10 @@ class TreeNeuralBuilder(NeuralBuilder):
         label_id = parent_arr[3]
 
 
-        if node_type != NodeType.label:  # Start, End
+        if node_type != NodeType.label.value:  # Start, End
             return torch.tensor(0.0).to(NetworkConfig.DEVICE)
         else:
             spans = network.nn_output
-
             return spans[left, right][label_id]
 
     def get_label_id(self, network, parent_k):
@@ -433,7 +438,7 @@ if __name__ == "__main__":
 
 
     gnp = TensorGlobalNetworkParam(len(label2id))
-    gnp.ignore_transition = True
+    #gnp.ignore_transition = True
 
     fm = TreeNeuralBuilder(gnp, len(vocab2id), 100, len(tag2id), 50)
     fm.load_pretrain(vocab2id)
@@ -443,7 +448,7 @@ if __name__ == "__main__":
     evaluator = constituent_eval()
 
     model = NetworkModel(fm, compiler, evaluator)
-
+    model.model_path = "best_parsingtree.pt"
 
     if batch_size == 1:
         model.learn(train_insts, num_iter, dev_insts)
@@ -454,11 +459,11 @@ if __name__ == "__main__":
     model.load()
 
     results = model.test(test_insts)
-    # for inst in results:
-    #     print(inst.get_input())
-    #     print(inst.get_output())
-    #     print(inst.get_prediction())
-    #     print()
+    for inst in results:
+        print(inst.get_input())
+        print(inst.get_output())
+        print(inst.get_prediction())
+        print()
 
     ret = model.evaluator.eval(test_insts)
     print(ret)
