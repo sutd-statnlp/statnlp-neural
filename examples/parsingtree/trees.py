@@ -111,7 +111,7 @@ class InternalParseNode(ParseNode):
 
 class LeafParseNode(ParseNode):
     def __init__(self, index, tag, word):
-        assert isinstance(index, int)
+        #assert isinstance(index, int)
         assert index >= 0
         self.left = index
         self.right = index + 1

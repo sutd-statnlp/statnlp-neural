@@ -25,13 +25,13 @@ STOP = "<STOP>"
 UNK = "<UNK>"
 
 
-
 class NodeType(Enum):
     sink = 0
-    label = 1
-    span_prime = 2
-    span = 3
-    root = 4
+    leaf = 1
+    label = 2
+    span_prime = 3
+    span = 4
+    root = 5
 
 
 class TreeNetworkCompiler(NetworkCompiler):
@@ -40,7 +40,7 @@ class TreeNetworkCompiler(NetworkCompiler):
         super().__init__()
         self.labels = [()] * (len(label_map))  ##  include (), but not dummy label
         self.label2id = label_map
-        print(self.labels)
+
         for key in self.label2id:
             self.labels[self.label2id[key]] = key
 
@@ -59,6 +59,9 @@ class TreeNetworkCompiler(NetworkCompiler):
 
     def to_sink(self):
         return self.to_node(0, 0, NodeType.sink.value, 0)
+
+    def to_leaf(self, left_idx):
+        return self.to_node(1, left_idx + 1, NodeType.leaf.value, 0)
 
     def to_label(self, left_idx, right_idx, label_id):
         return self.to_node(right_idx - left_idx, right_idx, NodeType.label.value, label_id)
@@ -93,6 +96,12 @@ class TreeNetworkCompiler(NetworkCompiler):
             for left in range(0, size + 1 - length):
                 right = left + length
 
+                if length == 1:
+                    node_leaf = self.to_leaf(left)
+                    builder.add_node(node_leaf)
+                    builder.add_edge(node_leaf, [node_sink])
+
+
                 node_span = self.to_span(left, right)
                 builder.add_node(node_span)
 
@@ -106,9 +115,10 @@ class TreeNetworkCompiler(NetworkCompiler):
                 label = oracle_label
                 node_label = self.to_label(left, right, self.label2id[label])
                 builder.add_node(node_label)
-                builder.add_edge(node_label, [node_sink])
+
 
                 if length > 1:
+                    builder.add_edge(node_label, [node_sink])
                     builder.add_edge(node_span, [node_label, node_span_prime])
                     oracle_splits = gold.oracle_splits(left, right)
                     oracle_split = min(oracle_splits)
@@ -120,11 +130,18 @@ class TreeNetworkCompiler(NetworkCompiler):
                         builder.add_edge(node_span_prime, [left_child, right_child])
 
                 else:
-                    builder.add_edge(node_span, [node_label])
+
+                    node_leaf = self.to_leaf(left)
+
+                    if label:
+                        builder.add_edge(node_span, [node_label])
+                        builder.add_edge(node_label, [node_leaf])
+                    else:
+
+                        builder.add_edge(node_span, [node_leaf])
 
 
                 if length == size:
-                    builder.add_node(node_root)
                     builder.add_edge(node_root, [node_span])
 
         network = builder.build(network_id, inst, param, self)
@@ -142,9 +159,16 @@ class TreeNetworkCompiler(NetworkCompiler):
 
         size = inst.size()
 
+
+
         for length in range(1, size + 1):
             for left in range(0, size + 1 - length):
                 right = left + length
+
+                if length == 1:
+                    node_leaf = self.to_leaf(left)
+                    builder.add_node(node_leaf)
+                    builder.add_edge(node_leaf, [node_sink])
 
                 node_span = self.to_span(left, right)
                 builder.add_node(node_span)
@@ -156,14 +180,21 @@ class TreeNetworkCompiler(NetworkCompiler):
                 for label in self.labels:
                     if length == size and label == ():
                         continue
+
                     node_label = self.to_label(left, right, self.label2id[label])
                     builder.add_node(node_label)
-                    builder.add_edge(node_label, [node_sink])
 
                     if length > 1:
+                        builder.add_edge(node_label, [node_sink])
                         builder.add_edge(node_span, [node_label, node_span_prime])
-                    else:
+                    else: #length == 1
                         builder.add_edge(node_span, [node_label])
+
+                        node_leaf = self.to_leaf(left)
+
+                        builder.add_edge(node_label, [node_leaf])
+                        builder.add_edge(node_span, [node_leaf])
+
 
                 for k in range(left + 1, right):
 
@@ -173,7 +204,6 @@ class TreeNetworkCompiler(NetworkCompiler):
                         builder.add_edge(node_span_prime, [left_child, right_child])
 
                 if length == size:
-                    builder.add_node(node_root)
                     builder.add_edge(node_root, [node_span])
 
         network = builder.build(network_id, inst, param, self)
@@ -194,9 +224,9 @@ class TreeNetworkCompiler(NetworkCompiler):
         root_idx = np.argwhere(all_nodes == root_node)[0][0]  # network.count_nodes() - 1 #self._all_nodes.index(root_node)
 
         children = network.get_max_path(root_idx)  # children[0]: root node
-        prediction = self.to_tree_helper(children[0])
-        prediction = prediction.convert()
-        inst.set_prediction(prediction)
+        prediction = self.to_tree_helper(network, children[0])
+        pred_tree = prediction[0].convert()
+        inst.set_prediction(pred_tree)
         return inst
 
     def to_tree_helper(self, network, curr_idx):
@@ -210,24 +240,34 @@ class TreeNetworkCompiler(NetworkCompiler):
         label_idx = label_node_arr[3]
         label = self.labels[label_idx]
 
-        if len(children) == 2:
+        if children[1] != network.non_exist_node_id:
             span_prime_node = children[1]
+
             split_span_nodeses = network.get_max_path(span_prime_node)
 
             left_span_node, right_span_node = split_span_nodeses[0], split_span_nodeses[1]
 
-            left_tree_children = self.to_tree_helper(left_span_node)
-            right_tree_children = self.to_tree_helper(right_span_node)
+            left_tree_children = self.to_tree_helper(network, left_span_node)
+            right_tree_children = self.to_tree_helper(network, right_span_node)
 
             tree_children = left_tree_children + right_tree_children
-            parse_node = trees.InternalParseNode(label, tree_children)
+
+            if label:
+                parse_node = trees.InternalParseNode(label, tree_children)
+                return [parse_node]
+            else:
+                return  tree_children
+
 
         else:
             inst = network.get_instance()
             word, tag = inst.get_input()[left_idx]
             parse_node = trees.LeafParseNode(left_idx, tag, word)
 
-        return parse_node
+            if label:
+                parse_node = trees.InternalParseNode(label, [parse_node])
+
+            return [parse_node]
 
 
 
@@ -269,7 +309,7 @@ class TreeNeuralBuilder(NeuralBuilder):
         word_seq = instance.word_seq
         tag_seq = instance.tag_seq
 
-        size = word_seq.shape[0]
+        size = instance.size()
 
         tag_embs = self.tag_embeddings(tag_seq)
         word_embs = self.word_embeddings(word_seq)
@@ -433,12 +473,12 @@ if __name__ == "__main__":
 
 
     for inst in dev_insts + test_insts:
-        inst.word_seq = torch.tensor([vocab2id[word] if word in vocab2id else vocab2id[UNK] for word, tag in inst.input]).to(NetworkConfig.DEVICE)
-        inst.tag_seq = torch.tensor([tag2id[tag] if word in vocab2id else tag2id[UNK] for word, tag in inst.input]).to(NetworkConfig.DEVICE)
+        inst.word_seq = torch.tensor([vocab2id[word] if word in vocab2id else vocab2id[UNK] for word, tag in [(START, START)] + inst.input + [(STOP, STOP)]]).to(NetworkConfig.DEVICE)
+        inst.tag_seq = torch.tensor([tag2id[tag] if word in vocab2id else tag2id[UNK] for word, tag in [(START, START)] + inst.input + [(STOP, STOP)]]).to(NetworkConfig.DEVICE)
 
 
     gnp = TensorGlobalNetworkParam(len(label2id))
-    #gnp.ignore_transition = True
+    gnp.ignore_transition = True
 
     fm = TreeNeuralBuilder(gnp, len(vocab2id), 100, len(tag2id), 50)
     fm.load_pretrain(vocab2id)

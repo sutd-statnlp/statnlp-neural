@@ -26,6 +26,10 @@ class FScore(object):
         return "(Recall={:.2f}%, Precision={:.2f}%, FScore={:.2f}%)".format(
             self.recall * 100, self.precision * 100, self.fscore * 100)
 
+
+    def to_tuple(self):
+        return [self.precision, self.recall, self.fscore]
+
 ## the input to the evaluation should already have
 ## have the predictions which is the label.
 ## iobest tagging scheme
@@ -79,9 +83,9 @@ class constituent_eval(Eval):
     def eval(self, insts):
 
 
-        gold_path = 'tmp/gold.txt'
-        pred_path = 'tmp/pred.txt'
-        result_path = 'tmp/result.txt'
+        gold_path = '../tmp/gold.txt'
+        pred_path = '../tmp/pred.txt'
+        result_path = '../tmp/result.txt'
 
         fgold = open(gold_path, 'w', encoding='utf-8')
         fpred = open(pred_path, 'w', encoding='utf-8')
@@ -95,34 +99,37 @@ class constituent_eval(Eval):
         fgold.close()
         fpred.close()
 
-        scorer.evalb(gold_path, pred_path, result_path)
+        evalb = scorer.Scorer()
 
-        fscore = FScore(math.nan, math.nan, math.nan)
+        evalb.evalb(gold_path, pred_path, result_path)
+
+
+        fscore = FScore(0.0, 0.0, 0.0)
         with open(result_path) as infile:
             for line in infile:
-                match = re.match(r"Bracketing Recall\s+=\s+(\d+\.\d+)", line)
+                match = re.match(r"Bracketing Recall:\s+(\d+\.\d+)", line)
                 if match:
                     fscore.recall = float(match.group(1))
-                match = re.match(r"Bracketing Precision\s+=\s+(\d+\.\d+)", line)
+                match = re.match(r"Bracketing Precision:\s+(\d+\.\d+)", line)
                 if match:
                     fscore.precision = float(match.group(1))
-                match = re.match(r"Bracketing FMeasure\s+=\s+(\d+\.\d+)", line)
+                match = re.match(r"Bracketing FMeasure:\s+(\d+\.\d+)", line)
                 if match:
                     fscore.fscore = float(match.group(1))
                     break
 
-        success = (
-                not math.isnan(fscore.fscore) or
-                fscore.recall == 0.0 or
-                fscore.precision == 0.0)
+        # success = (
+        #         not math.isnan(fscore.fscore) or
+        #         fscore.recall == 0.0 or
+        #         fscore.precision == 0.0)
+        #
+        # if success:
+        #     pass
+        #     # temp_dir.cleanup()
+        # else:
+        #     print("Error reading EVALB results.")
+        #     print("Gold path: {}".format(gold_path))
+        #     print("Predicted path: {}".format(pred_path))
+        #     print("Output path: {}".format(result_path))
 
-        if success:
-            pass
-            # temp_dir.cleanup()
-        else:
-            print("Error reading EVALB results.")
-            print("Gold path: {}".format(gold_path))
-            print("Predicted path: {}".format(pred_path))
-            print("Output path: {}".format(result_path))
-
-        return fscore
+        return fscore.to_tuple()

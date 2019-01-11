@@ -207,8 +207,10 @@ class TensorNetwork:
         ### 1d [num_stage x max_number] [2]
         self._max_paths = self._max_paths.view(-1, 2).cpu().numpy()
 
+        self.non_exist_node_id = (self.num_stage + 1) * self.num_row - 1 -1
+
 
     def get_max_path(self, k):
-
+        ## TODO: children might contains non exist node ids careful
         return self._max_paths[k]
 
