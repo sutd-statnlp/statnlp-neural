@@ -225,13 +225,13 @@ class NetworkModel(nn.Module):
 
             end_time = time.time()
 
-            print(colored("Iteration ", 'yellow'), iteration, ": Obj=", all_loss, '\tTime=', end_time - start_time, flush=True)
+            print(colored("Iteration ", 'yellow'), iteration, ": Obj=", all_loss, '\tTime={:.2f}s'.format(end_time - start_time), flush=True)
 
             start_time = time.time()
             self.decode(dev_insts)
             ret = self.evaluator.eval(dev_insts)
             end_time = time.time()
-            print("P:{0} R:{1} F1:{2}".format(ret[0], ret[1], ret[2]), '\tTime=', end_time - start_time, flush=True)
+            print("Prec.: {0:.2f} Rec.: {1:.2f} F1.: {2:.2f}".format(ret[0], ret[1], ret[2]), '\tTime={:.2f}s'.format(end_time - start_time), flush=True)
 
 
             if self.best_ret[2] < ret[2]:
@@ -290,7 +290,7 @@ class NetworkModel(nn.Module):
             self.decode(dev_insts)
             ret = self.evaluator.eval(dev_insts)
             end_time = time.time()
-            print("P:{0} R:{1} F1:{2}".format(ret[0], ret[1], ret[2]), '\tTime=', end_time - start_time, flush=True)
+            print("Prec.: {0:.2f} Rec.: {1:.2f} F1.: {2:.2f}".format(ret[0], ret[1], ret[2]), '\tTime={:.2f}s'.format(end_time - start_time), flush=True)
 
 
             if self.best_ret[2] < ret[2]:

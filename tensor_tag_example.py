@@ -292,7 +292,7 @@ if __name__ == "__main__":
         test_file = trial_file
 
     if device == "gpu":
-        NetworkConfig.DEVICE = torch.device("cuda:1")
+        NetworkConfig.DEVICE = torch.device("cuda:0")
 
     if num_thread > 1:
         NetworkConfig.NUM_THREADS = num_thread

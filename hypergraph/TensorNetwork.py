@@ -73,19 +73,13 @@ class TensorNetwork:
                 childrens_stage = self.get_children(stage_idx)
                 #max_number, max_num_hyperedges, _ = childrens_stage.shape #max_number, max_num_hyperedges, 2
 
-                inside_view = self.inside_scores.view(1, 1, -1).expand(self.num_row, self.num_hyperedge, -1)
-                for_expr = torch.sum(torch.gather(inside_view, 2, childrens_stage), 2)  #max_number, max_num_hyperedges
+                # inside_view = self.inside_scores.view(1, 1, -1).expand(self.num_row, self.num_hyperedge, -1)
+                # for_expr = torch.sum(torch.gather(inside_view, 2, childrens_stage), 2)  # max_number, max_num_hyperedges
+                for_expr = torch.sum(torch.take(self.inside_scores, childrens_stage), 2)  # this line is same as the above two lines
 
-                transition_view = self.gnp.transition_mat.view(1,-1).expand(self.num_row, -1)
-                trans_expr = torch.gather(transition_view, 1, self.trans_id[stage_idx])
-                # trans_expr = torch.Tensor(self.num_row, self.num_hyperedge).fill_(-math.inf)
-                # for r in range(self.num_row):
-                #     for h in range(self.num_hyperedge):
-                #         if self.trans_id[stage_idx][r][h] > 0:
-                #             trans_expr[r][h] = self.gnp.transition_mat[self.trans_id[stage_idx][r][h]]
-                #         else:
-                #
-                #             trans_expr[r][h] = self.gnp.transition_mat[0] #-float('inf')
+                # transition_view = self.gnp.transition_mat.view(1,-1).expand(self.num_row, -1)
+                # trans_expr = torch.gather(transition_view, 1, self.trans_id[stage_idx])
+                trans_expr = torch.take(self.gnp.transition_mat, self.trans_id[stage_idx])  #this line is same as the above two lines
 
 
                 #trans_expr[trans_expr==-float("inf")] = -float("inf")
@@ -120,9 +114,12 @@ class TensorNetwork:
         for stage_idx in range(1, self.num_stage):
             self.touch_stage(stage_idx)
 
+        ## long() will be used in torch version  >= 0.4.1
         self.children = torch.from_numpy(self.children).to(NetworkConfig.DEVICE)
         self.trans_id = torch.from_numpy(self.trans_id).to(NetworkConfig.DEVICE)
-
+        if torch.__version__ == "0.4.1":
+            self.children = self.children.long()
+            self.trans_id = self.trans_id.long()
 
     def touch_stage(self, stage_idx):
 
