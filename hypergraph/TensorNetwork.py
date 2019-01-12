@@ -59,33 +59,37 @@ class TensorNetwork:
 
 
         # emissions = torch.tensor([0.0 for k in range(self.size)])
-        emissions = emissions.view(self.num_stage, self.num_row)
+        # emissions = emissions.view(self.num_stage, self.num_row)
+
+        self.inside_scores[0] = emissions[:self.num_row]  ## REIMINDER: stageIdx = 0.
+
+        emissions = emissions.view(self.num_stage, self.num_row, 1).expand(self.num_stage, self.num_row, self.num_hyperedge)
+        all_trans_expr = torch.take(self.gnp.transition_mat, self.trans_id)
+        edge_scores = emissions + all_trans_expr
+        for stage_idx in range(1, self.num_stage):  ## starting from stage Idx = 1
+            # if stage_idx == 0:
+            #     score = emissions[stage_idx]#, : , 0] #.expand(self.num_row, self.num_hyperedge)
+            #
+            #     # self.inside_scores[stage_idx] = score
+            #
+            # else:
+            childrens_stage = self.get_children(stage_idx)
+            #max_number, max_num_hyperedges, _ = childrens_stage.shape #max_number, max_num_hyperedges, 2
+
+            # inside_view = self.inside_scores.view(1, 1, -1).expand(self.num_row, self.num_hyperedge, -1)
+            # for_expr = torch.sum(torch.gather(inside_view, 2, childrens_stage), 2)  # max_number, max_num_hyperedges
+            for_expr = torch.sum(torch.take(self.inside_scores, childrens_stage), 2)  # this line is same as the above two lines
+
+            # transition_view = self.gnp.transition_mat.view(1,-1).expand(self.num_row, -1)
+            # trans_expr = torch.gather(transition_view, 1, self.trans_id[stage_idx])
+            # trans_expr = torch.take(self.gnp.transition_mat, self.trans_id[stage_idx])  #this line is same as the above two lines
 
 
-
-        for stage_idx in range(self.num_stage):
-            if stage_idx == 0:
-                score = emissions[stage_idx] #.expand(self.num_row, self.num_hyperedge)
-
-                self.inside_scores[stage_idx] = score
-
-            else:
-                childrens_stage = self.get_children(stage_idx)
-                #max_number, max_num_hyperedges, _ = childrens_stage.shape #max_number, max_num_hyperedges, 2
-
-                # inside_view = self.inside_scores.view(1, 1, -1).expand(self.num_row, self.num_hyperedge, -1)
-                # for_expr = torch.sum(torch.gather(inside_view, 2, childrens_stage), 2)  # max_number, max_num_hyperedges
-                for_expr = torch.sum(torch.take(self.inside_scores, childrens_stage), 2)  # this line is same as the above two lines
-
-                # transition_view = self.gnp.transition_mat.view(1,-1).expand(self.num_row, -1)
-                # trans_expr = torch.gather(transition_view, 1, self.trans_id[stage_idx])
-                trans_expr = torch.take(self.gnp.transition_mat, self.trans_id[stage_idx])  #this line is same as the above two lines
-
-
-                #trans_expr[trans_expr==-float("inf")] = -float("inf")
-
-                score =for_expr +  trans_expr + emissions[stage_idx].view(self.num_row, 1).expand(self.num_row, self.num_hyperedge) # +
-                self.inside_scores[stage_idx] = logSumExp(score) #torch.max(score, 1) #
+            #trans_expr[trans_expr==-float("inf")] = -float("inf")
+            #trans_expr
+            score = for_expr + edge_scores[stage_idx]
+            # score = for_expr + all_trans_expr[stage_idx] + emissions[stage_idx].view(self.num_row, 1).expand(self.num_row, self.num_hyperedge) #
+            self.inside_scores[stage_idx] = logSumExp(score) #torch.max(score, 1) #
 
 
         final_inside = self.get_insides()
