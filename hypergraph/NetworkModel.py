@@ -173,7 +173,7 @@ class NetworkModel(nn.Module):
         print("Best F1:", self.best_ret)
 
 
-    def learn(self, train_insts, max_iterations, dev_insts, optimizer = 'adam'):
+    def learn(self, train_insts, max_iterations, dev_insts, test_insts, optimizer = 'adam'):
 
         if optimizer == "lbfgs":
             self.learn_lbfgs(train_insts, max_iterations, dev_insts)
@@ -237,6 +237,14 @@ class NetworkModel(nn.Module):
             if self.best_ret[2] < ret[2]:
                 self.best_ret = ret
                 self.save()
+
+                start_time = time.time()
+                self.decode(test_insts)
+                ret = self.evaluator.eval(test_insts)
+                end_time = time.time()
+                print("On Test -- Prec.: {0:.2f} Rec.: {1:.2f} F1.: {2:.2f}".format(ret[0], ret[1], ret[2]), '\tTime={:.2f}s'.format(end_time - start_time), flush=True)
+
+
 
         print("Best Result:", self.best_ret)
 

@@ -1,5 +1,4 @@
-
-
+import threading
 import torch
 import torch.nn as nn
 from hypergraph.NetworkConfig import NetworkConfig
@@ -18,6 +17,7 @@ class TensorGlobalNetworkParam(nn.Module):
         self.transition_mat = None
 
         self.ignore_transition = False
+        self.lock = threading.Lock()
 
     def is_locked(self):
         return self.locked
@@ -43,14 +43,14 @@ class TensorGlobalNetworkParam(nn.Module):
 
 
     def add_transition(self, transition):
+        with self.lock:
+            parent_label_id, children_label_ids = transition
+            t = tuple([parent_label_id] + children_label_ids)
+            if not self.locked and t not in self.tuple2id:
+                tuple2id_size = len(self.tuple2id)
+                self.tuple2id[t] = tuple2id_size
 
-        parent_label_id, children_label_ids = transition
-        t = tuple([parent_label_id] + children_label_ids)
-        if not self.locked and t not in self.tuple2id:
-            tuple2id_size = len(self.tuple2id)
-            self.tuple2id[t] = tuple2id_size
-
-        return self.tuple2id[t]
+            return self.tuple2id[t]
 
 
 

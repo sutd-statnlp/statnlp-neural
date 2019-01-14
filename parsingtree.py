@@ -415,14 +415,14 @@ if __name__ == "__main__":
     test_file = "data/ptb/23.auto.clean"
     trial_file = "data/ptb/trial.txt"
 
-    TRIAL = False
+    TRIAL = True
     num_train = 30
     num_dev = 30
     num_test = 30
     num_iter = 300
     batch_size = 1
     device = "cpu"
-    num_thread = 1
+    num_thread = 2
     dev_file = test_file
 
     if TRIAL == True:
