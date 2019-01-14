@@ -1,3 +1,5 @@
+
+
 import torch
 import torch.nn as nn
 from hypergraph.NetworkConfig import NetworkConfig
@@ -38,6 +40,7 @@ class TensorGlobalNetworkParam(nn.Module):
 
 
         self.locked = True
+
 
     def add_transition(self, transition):
 

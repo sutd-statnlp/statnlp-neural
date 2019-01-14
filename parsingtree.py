@@ -415,7 +415,7 @@ if __name__ == "__main__":
     test_file = "data/ptb/23.auto.clean"
     trial_file = "data/ptb/trial.txt"
 
-    TRIAL = True
+    TRIAL = False
     num_train = 30
     num_dev = 30
     num_test = 30

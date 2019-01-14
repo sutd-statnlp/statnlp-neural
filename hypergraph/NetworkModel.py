@@ -331,14 +331,50 @@ class NetworkModel(nn.Module):
         if self.networks == None:
             self.networks = [None for i in range(len(insts))]
 
-        for network_id in range(len(insts)):
-            if network_id % 100 == 0:
-                print('.', end='', flush=True)
-            network = self.get_network(network_id)
 
-            network.touch()
+        start_time = time.time()
+
+        num_thread = NetworkConfig.NUM_THREADS
+
+        if num_thread > 1:
+            print('Multi-thread Touching...')
+            num_networks = len(insts)
+            num_per_bucket = num_networks // num_thread if num_networks % num_thread == 0 else num_networks // num_thread + 1
+
+
+            def touch_networks(bucket_id):
+                end = num_per_bucket * (bucket_id + 1)
+                end = min(num_networks, end)
+                counter = 0
+                for network_id in range(num_per_bucket * bucket_id, end):
+                    if counter % 100 == 0:
+                        print('.', end='', flush=True)
+                    network = self.get_network(network_id)
+                    network.touch()
+                    counter += 1
+
+
+            processes = []
+            for thread_idx in range(num_thread):
+                p = Process(target=touch_networks(thread_idx))
+                processes.append(p)
+                p.start()
+
+            for thread_idx in range(num_thread):
+                processes[thread_idx].join()
+
+        else:
+            for network_id in range(len(insts)):
+                if network_id % 100 == 0:
+                    print('.', end='', flush=True)
+                network = self.get_network(network_id)
+
+                network.touch()
+
+        end_time = time.time()
 
         print(flush=True)
+        print('Toucing Completes taking ', end_time - start_time, ' seconds.', flush=True)
 
 
 
