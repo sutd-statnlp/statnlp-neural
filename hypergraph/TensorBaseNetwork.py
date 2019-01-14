@@ -6,18 +6,16 @@ from hypergraph.TensorTableLookupNetwork import TensorTableLookupNetwork
 
 
 class TensorBaseNetwork(TensorTableLookupNetwork):
-    def __init__(self, network_id, instance, nodes, children, node_count, param, compiler, num_stage, num_row, num_hyperedge):
-        super().__init__(network_id, instance, nodes, children, node_count, param, compiler, num_stage, num_row, num_hyperedge)
+    def __init__(self, network_id, instance, nodes, children, node_count, param, compiler, num_stage, num_row,
+                 num_hyperedge, staged_nodes):
+        super().__init__(network_id, instance, nodes, children, node_count, param, compiler, num_stage, num_row,
+                         num_hyperedge, staged_nodes)
         self.node_count = node_count
 
         self.is_visible = [False for i in range(node_count)]
 
-
     def count_nodes(self):
         return self.node_count
-
-
-
 
     class NetworkBuilder:
 
@@ -29,8 +27,10 @@ class TensorBaseNetwork(TensorTableLookupNetwork):
             return TensorBaseNetwork.NetworkBuilder()
 
         @staticmethod
-        def quick_build(network_id, instance, nodes, children, node_count, param, compiler, num_stage, num_row, num_hyperedge):
-            return TensorBaseNetwork(network_id, instance, nodes, children, node_count, param, compiler, num_stage, num_row, num_hyperedge)
+        def quick_build(network_id, instance, nodes, children, node_count, param, compiler, num_stage, num_row,
+                        num_hyperedge, staged_nodes):
+            return TensorBaseNetwork(network_id, instance, nodes, children, node_count, param, compiler, num_stage,
+                                     num_row, num_hyperedge, staged_nodes)
 
         def add_node(self, node):
             if node in self._children_tmp:
@@ -102,7 +102,7 @@ class TensorBaseNetwork(TensorTableLookupNetwork):
             children_list = [None for i in range(len(node_list))]
 
             for parent in self._children_tmp:
-                #print("builder parent: ", parent, " chidren_tmp: " , self._children_tmp[parent])
+                # print("builder parent: ", parent, " chidren_tmp: " , self._children_tmp[parent])
                 parent_index = nodes_value2id_map[parent]
                 childrens = self._children_tmp[parent]
                 if childrens == None:
@@ -123,7 +123,7 @@ class TensorBaseNetwork(TensorTableLookupNetwork):
                                 children_index.append(nodes_value2id_map[children[m]])
 
                         children_list[parent_index][k] = children_index
-                    #print("parent is :", parent, " children_list, ", children_list[parent_index])
+                    # print("parent is :", parent, " children_list, ", children_list[parent_index])
             for k in range(len(children_list)):
                 if children_list[k] == None:
                     children_list[k] = [[]]
@@ -131,77 +131,57 @@ class TensorBaseNetwork(TensorTableLookupNetwork):
             result = None
 
             # if network_id != None or instance != None or param != None or compiler != None:
-            result = BaseNetwork.NetworkBuilder.quick_build(network_id, instance, node_list, children_list, len(node_list), param, compiler)
+            result = BaseNetwork.NetworkBuilder.quick_build(network_id, instance, node_list, children_list,
+                                                            len(node_list), param, compiler)
             # TODO: handle the case when network_id != None or instance != None or param != None or compiler != None
             # this is for rudimentary network builder
 
-            sorted_nodes, num_row = topological_sort(result)
-
-            num_row = max(num_row, 2)
+            sorted_nodes, _ = topological_sort(result)
+            # convert to sorted nodes -> list of long tensor
 
             num_stage = len(sorted_nodes.keys())
-            # inside_stages = np.full((max_number, num_stage), -np.inf)
-            #
-            # assert max_number >= 3
+            num_nodes = len(node_list)
 
-            # inside_stages[-1][zero_idx] = 0
-            # inside_stages[-1][neg_inf_idx] = -inf
+            staged_nodes = [None] * num_stage
+            num_row = [None] * num_stage
+            for stage_idx in sorted_nodes.keys():
+                staged_nodes[stage_idx] = np.asarray(sorted_nodes[stage_idx])#torch.LongTensor(sorted_nodes[stage_idx])
+                num_row[stage_idx] = len(staged_nodes[stage_idx])
 
-            ## node id - > new node id
-            ### node array , children_array
-
-            ##
-            mapping = {}
-            mapping_rev = {}
-            idx_stage = 0
-            for stage_idx in sorted_nodes:
-                for node_k in sorted_nodes[stage_idx]:
-                    mapping[node_k] = idx_stage  ## old -> new
-                    mapping_rev[idx_stage] = node_k
-                    idx_stage += 1
-
-                idx_stage += num_row - len(sorted_nodes[stage_idx])
-
-        ##
-
-            staged_nodes = np.full((num_row * num_stage), -1, dtype=np.long)  ##size = max_number * num_stage
-            for i in range(num_row * num_stage):
-                if i in mapping_rev:
-                    orig_node_k = mapping_rev[i]
-                    staged_nodes[i] = values[orig_node_k]
-
-            all_children_list = np.empty((num_stage, num_row, num_hyperedge, 2), dtype=np.long)
-            size = num_stage * num_row
-            neg_inf_idx = (num_stage + 1) * num_row - 1
-            zero_idx = neg_inf_idx - 1
-            all_children_list[:, :, :, 0].fill(neg_inf_idx)
-            all_children_list[:, :, :, 1].fill(zero_idx)
-
-            old_children_list = children_list
+            all_children_list = [None] * num_stage
+            # np.empty((num_stage, num_row, num_hyperedge, 2), dtype=np.long)
+            # size = num_stage * num_row
+            neg_inf_idx = num_nodes + 1
+            zero_idx = num_nodes
+            # all_children_list[:, :, :, 0].fill(neg_inf_idx)
+            # all_children_list[:, :, :, 1].fill(zero_idx)
 
             for stage_idx in range(num_stage):
+
+                stage_children_np = np.empty((num_row[stage_idx], num_hyperedge, 2), dtype=np.long)
+                stage_children_np[:, :, 0].fill(neg_inf_idx)
+                stage_children_np[:, :, 1].fill(zero_idx)
+
                 col = sorted_nodes[stage_idx]
-                for node_id in col:
-                    now_node_k = mapping[node_id]
+                for row_idx, node_id in enumerate(col):
 
-                    curr_row_idx = now_node_k % num_row
+                    # all_children_list[stage_idx][now_node_k]
+                    for hyperedge_index in range(len(children_list[node_id])):
+                        hyperedge = children_list[node_id][hyperedge_index]
 
-                    #all_children_list[stage_idx][now_node_k]
-                    for hyperedge_index in range(len(old_children_list[node_id])):
-                        hyperedge = old_children_list[node_id][hyperedge_index]
-                        hyperedge = [mapping[node_id] for node_id in hyperedge]
                         if len(hyperedge) > 0:
-                            all_children_list[stage_idx][curr_row_idx][hyperedge_index][0] = hyperedge[0]
+                            stage_children_np[row_idx][hyperedge_index][0] = hyperedge[0]
                             if len(hyperedge) > 1:
-                                all_children_list[stage_idx][curr_row_idx][hyperedge_index][1] = hyperedge[1]
+                                stage_children_np[row_idx][hyperedge_index][1] = hyperedge[1]
 
-            result = TensorBaseNetwork.NetworkBuilder.quick_build(network_id, instance, staged_nodes, all_children_list,
-                                                                      len(staged_nodes), param, compiler, num_stage, num_row, num_hyperedge)
+                all_children_list[stage_idx] = stage_children_np
 
+            result = TensorBaseNetwork.NetworkBuilder.quick_build(network_id, instance, node_list, all_children_list,
+                                                                  len(node_list), param, compiler, num_stage,
+                                                                  num_row, num_hyperedge, staged_nodes)
 
             result.is_visible = is_visible
             return result
-
 
         def check_link_validity(self, parent, children):
             for child in children:
@@ -223,7 +203,6 @@ class TensorBaseNetwork(TensorTableLookupNetwork):
                     continue
 
                 self.check_node_validity(child)
-
 
         def check_node_validity(self, node):
             if node not in self._children_tmp:

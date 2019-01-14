@@ -3,8 +3,8 @@ from hypergraph.TensorNetwork import TensorNetwork
 
 class TensorTableLookupNetwork(TensorNetwork):
 
-    def __init__(self, network_id, inst, nodes, children, node_count, param, compiler, num_stage = -1, num_row = -1, num_hyperedge = -1):
-        super().__init__(network_id, inst, param, num_stage, num_row, num_hyperedge)
+    def __init__(self, network_id, inst, nodes, children, node_count, param, compiler, num_stage = -1, num_row = -1, num_hyperedge = -1, staged_nodes = None):
+        super().__init__(network_id, inst, param, node_count, num_stage, num_row, num_hyperedge, staged_nodes)
         self.nodes = nodes
         self.children = children
         # self.num_stage = num_stage

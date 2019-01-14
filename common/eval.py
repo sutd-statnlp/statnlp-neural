@@ -101,22 +101,27 @@ class constituent_eval(Eval):
 
         evalb = scorer.Scorer()
 
-        evalb.evalb(gold_path, pred_path, result_path)
-
-
         fscore = FScore(0.0, 0.0, 0.0)
-        with open(result_path) as infile:
-            for line in infile:
-                match = re.match(r"Bracketing Recall:\s+(\d+\.\d+)", line)
-                if match:
-                    fscore.recall = float(match.group(1))
-                match = re.match(r"Bracketing Precision:\s+(\d+\.\d+)", line)
-                if match:
-                    fscore.precision = float(match.group(1))
-                match = re.match(r"Bracketing FMeasure:\s+(\d+\.\d+)", line)
-                if match:
-                    fscore.fscore = float(match.group(1))
-                    break
+
+        try:
+            evalb.evalb(gold_path, pred_path, result_path)
+            with open(result_path) as infile:
+                for line in infile:
+                    match = re.match(r"Bracketing Recall:\s+(\d+\.\d+)", line)
+                    if match:
+                        fscore.recall = float(match.group(1))
+                    match = re.match(r"Bracketing Precision:\s+(\d+\.\d+)", line)
+                    if match:
+                        fscore.precision = float(match.group(1))
+                    match = re.match(r"Bracketing FMeasure:\s+(\d+\.\d+)", line)
+                    if match:
+                        fscore.fscore = float(match.group(1))
+                        break
+
+        except:
+            pass
+
+
 
         # success = (
         #         not math.isnan(fscore.fscore) or
