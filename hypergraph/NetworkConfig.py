@@ -7,3 +7,5 @@ class NetworkConfig:
     GPU_ID = -1
     DEVICE = torch.device("cpu")  #device = torch.device("cuda:" + args.gpuid)
     NEURAL_LEARNING_RATE = 0.05
+    BUILD_GRAPH_WITH_FULL_BATCH = True
+    IGNORE_TRANSITION = False

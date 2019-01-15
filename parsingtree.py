@@ -421,9 +421,12 @@ if __name__ == "__main__":
     num_test = 30
     num_iter = 300
     batch_size = 1
-    device = "cpu"
-    num_thread = 2
+    #device = "cpu"
+    num_thread = 1
     dev_file = test_file
+    NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH = False
+    NetworkConfig.IGNORE_TRANSITION = False
+    NetworkConfig.GPU_ID = -1
 
     if TRIAL == True:
         data_size = -1
@@ -431,8 +434,8 @@ if __name__ == "__main__":
         dev_file = trial_file
         test_file = trial_file
 
-    if device == "gpu":
-        NetworkConfig.DEVICE = torch.device("cuda:1")
+    if NetworkConfig.GPU_ID > -1:
+        NetworkConfig.DEVICE = torch.device("cuda:" + str(NetworkConfig.GPU_ID))
 
     if num_thread > 1:
         NetworkConfig.NUM_THREADS = num_thread
@@ -478,7 +481,7 @@ if __name__ == "__main__":
 
 
     gnp = TensorGlobalNetworkParam(len(label2id))
-    gnp.ignore_transition = True
+
 
     fm = TreeNeuralBuilder(gnp, len(vocab2id), 100, len(tag2id), 50)
     fm.load_pretrain(vocab2id)
@@ -491,7 +494,7 @@ if __name__ == "__main__":
     model.model_path = "best_parsingtree.pt"
 
     if batch_size == 1:
-        model.learn(train_insts, num_iter, dev_insts)
+        model.learn(train_insts, num_iter, dev_insts, test_insts)
     else:
         model.learn_batch(train_insts, num_iter, dev_insts, batch_size)
 

@@ -15,7 +15,7 @@ class TensorNetwork:
         self.fm = fm
         self.gnp = fm.gnp
         self.nodeid2labelid = {}
-        self.node2hyperedge = []
+        #self.node2hyperedge = []
 
         self.num_stage = num_stage
         self.num_row = num_row
@@ -56,11 +56,13 @@ class TensorNetwork:
 
             for_expr = torch.sum(torch.take(self.inside_scores, childrens_stage), 2)  # this line is same as the above two lines
 
-            trans_expr = torch.take(self.gnp.transition_mat, self.trans_id[stage_idx])  #this line is same as the above two lines
-
             emission_expr = emissions[self.staged_nodes[stage_idx]].view(self.num_row[stage_idx], 1).expand(self.num_row[stage_idx], self.num_hyperedge)
 
-            score = for_expr + trans_expr + emission_expr
+            if not NetworkConfig.IGNORE_TRANSITION:
+                trans_expr = torch.take(self.gnp.transition_mat, self.trans_id[stage_idx])  # this line is same as the above two lines
+                score = for_expr + trans_expr + emission_expr
+            else:
+                score = for_expr + emission_expr
 
             self.inside_scores[self.staged_nodes[stage_idx]] = logSumExp(score) #torch.max(score, 1) #
 
@@ -98,20 +100,22 @@ class TensorNetwork:
 
     def touch_stage(self, stage_idx):
 
-        children_list_k = self.get_children(stage_idx)  ## numpy type,  num_row[stage_idx] x num_hyper_edge x 2
-        trans_stage_np = np.full((self.num_row[stage_idx], self.num_hyperedge), 0)
+        if not NetworkConfig.IGNORE_TRANSITION:
+            children_list_k = self.get_children(stage_idx)  ## numpy type,  num_row[stage_idx] x num_hyper_edge x 2
+            trans_stage_np = np.full((self.num_row[stage_idx], self.num_hyperedge), 0)
 
-        for idx in range(len(children_list_k)):
-            node_id = self.staged_nodes[stage_idx][idx]
-            parent_label_id = self.get_label_id(node_id)
+            for idx in range(len(children_list_k)):
+                node_id = self.staged_nodes[stage_idx][idx]
+                parent_label_id = self.get_label_id(node_id)
 
-            for children_k_index in range(len(children_list_k[idx])):
-                children_k = children_list_k[idx][children_k_index]
-                rhs = [self.get_label_id(child_k) for child_k in children_k if child_k < self.size]
-                if len(rhs) > 0:
-                    transition_id = self.gnp.add_transition((parent_label_id, rhs))
-                    trans_stage_np[idx][children_k_index] = transition_id
-        self.trans_id[stage_idx] = torch.from_numpy(trans_stage_np).to(NetworkConfig.DEVICE)
+                for children_k_index in range(len(children_list_k[idx])):
+                    children_k = children_list_k[idx][children_k_index]
+                    rhs = [self.get_label_id(child_k) for child_k in children_k if child_k < self.size]
+                    if len(rhs) > 0:
+                        transition_id = self.gnp.add_transition((parent_label_id, rhs))
+                        trans_stage_np[idx][children_k_index] = transition_id
+            self.trans_id[stage_idx] = torch.from_numpy(trans_stage_np).to(NetworkConfig.DEVICE)
+
         self.staged_nodes[stage_idx] = torch.from_numpy(self.staged_nodes[stage_idx]).to(NetworkConfig.DEVICE)
 
     def get_node_array(self, k):
@@ -157,11 +161,13 @@ class TensorNetwork:
 
             for_expr = torch.sum(torch.take(self.max, childrens_stage), 2)  # this line is same as the above two lines
 
-            trans_expr = torch.take(self.gnp.transition_mat, self.trans_id[stage_idx])  # this line is same as the above two lines
-
             emission_expr = emissions[self.staged_nodes[stage_idx]].view(self.num_row[stage_idx], 1).expand(self.num_row[stage_idx], self.num_hyperedge)
 
-            score = for_expr + trans_expr + emission_expr
+            if not NetworkConfig.IGNORE_TRANSITION:
+                trans_expr = torch.take(self.gnp.transition_mat, self.trans_id[stage_idx])  # this line is same as the above two lines
+                score = for_expr + trans_expr + emission_expr
+            else:
+                score = for_expr + emission_expr
 
             self.max[self.staged_nodes[stage_idx]], max_id_list = torch.max(score, 1)  # max_id_list: max_number
 

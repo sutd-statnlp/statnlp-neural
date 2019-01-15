@@ -200,6 +200,7 @@ class NetworkModel(nn.Module):
 
         self.best_ret = [0, 0, 0]
 
+
         print('Start Training...', flush=True)
         for iteration in range(max_iterations):
             self.train()
@@ -212,6 +213,11 @@ class NetworkModel(nn.Module):
                     self.zero_grad()
                     network = self.get_network(i)
                     negative_network = self.get_network(i + 1)
+
+                    if not NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH:
+                        network.touch()
+                        negative_network.touch()
+
                     network.nn_output = self.fm.build_nn_graph(inst)
                     negative_network.nn_output = network.nn_output
 
@@ -223,6 +229,14 @@ class NetworkModel(nn.Module):
                     loss.backward()
                     optimizer.step()
 
+                    if not NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH:
+                        del network
+                        self.networks[i] = None
+                        del negative_network
+                        self.networks[i + 1] = None
+                    if (i + 1) % 100 == 0:
+                        print('.', end='')
+            print()
             end_time = time.time()
 
             print(colored("Iteration ", 'yellow'), iteration, ": Obj=", all_loss, '\tTime={:.2f}s'.format(end_time - start_time), flush=True)
@@ -235,7 +249,7 @@ class NetworkModel(nn.Module):
 
 
             if self.best_ret[2] < ret[2]:
-                self.best_ret = ret
+                self.best_ret = list(ret)
                 self.save()
 
                 start_time = time.time()
@@ -243,7 +257,6 @@ class NetworkModel(nn.Module):
                 ret = self.evaluator.eval(test_insts)
                 end_time = time.time()
                 print("On Test -- Prec.: {0:.2f} Rec.: {1:.2f} F1.: {2:.2f}".format(ret[0], ret[1], ret[2]), '\tTime={:.2f}s'.format(end_time - start_time), flush=True)
-
 
 
         print("Best Result:", self.best_ret)
@@ -339,6 +352,10 @@ class NetworkModel(nn.Module):
         if self.networks == None:
             self.networks = [None for i in range(len(insts))]
 
+        if NetworkConfig.IGNORE_TRANSITION:
+            print('Ignore Transition...')
+            return
+
 
         start_time = time.time()
 
@@ -353,13 +370,16 @@ class NetworkModel(nn.Module):
             def touch_networks(bucket_id):
                 end = num_per_bucket * (bucket_id + 1)
                 end = min(num_networks, end)
-                counter = 0
+                counter = 1
                 for network_id in range(num_per_bucket * bucket_id, end):
                     if counter % 100 == 0:
                         print('.', end='', flush=True)
                     network = self.get_network(network_id)
                     network.touch()
                     counter += 1
+
+                    if not NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH:
+                        del network
 
 
             processes = []
@@ -379,11 +399,17 @@ class NetworkModel(nn.Module):
 
                 network.touch()
 
+                if not NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH:
+                    del network
+
         end_time = time.time()
 
         print(flush=True)
         print('Toucing Completes taking ', end_time - start_time, ' seconds.', flush=True)
 
+        if not NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH:
+            del self.networks
+            self.networks = [None] * len(insts)
 
 
     def test(self, instances):
