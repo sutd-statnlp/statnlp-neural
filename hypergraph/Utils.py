@@ -4,7 +4,7 @@ import sys
 from hypergraph.NetworkConfig import  NetworkConfig
 import numpy as np
 from hypergraph.Network import Network
-
+import subprocess
 
 def to_scalar(var):
     # returns a python float
@@ -190,4 +190,13 @@ class Eval():
     @abstractmethod
     def eval(self, insts):
         pass
+
+
+
+from abc import abstractmethod
+class Score():
+    @abstractmethod
+    def larger_than_or_equal_to(self, obj):
+        pass
+
 

@@ -468,3 +468,12 @@ class NetworkModel(nn.Module):
 
     def load(self):
         self.load_state_dict(torch.load(self.model_path))
+
+
+    def set_visualizer(self, visualizer):
+        self.visualizer = visualizer
+
+
+    def visualize(self, network_id):
+        network = self.get_network(network_id)
+        self.visualizer.visualize(network)

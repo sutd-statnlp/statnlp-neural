@@ -6,11 +6,10 @@ from termcolor import colored
 
 class TensorGlobalNetworkParam(nn.Module):
 
-    def __init__(self, label_size):
+    def __init__(self):
         super(TensorGlobalNetworkParam, self).__init__()
         self.locked = False
         self._size = 0
-        self.label_size =label_size
 
         self.tuple2id = {}
         self.tuple2id[()] = 0
