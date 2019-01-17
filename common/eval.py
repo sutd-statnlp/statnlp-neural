@@ -30,6 +30,15 @@ class FScore(object):
     def to_tuple(self):
         return [self.precision, self.recall, self.fscore]
 
+
+    def larger_than(self, obj):
+        return self.fscore > obj.fscore
+
+    def update_score(self, obj):
+        self.recall = obj.recall
+        self.precision = obj.precision
+        self.fscore = obj.fscore
+
 ## the input to the evaluation should already have
 ## have the predictions which is the label.
 ## iobest tagging scheme
@@ -69,14 +78,14 @@ class nereval(Eval):
             total_predict += len(predict_spans)
             p += len(predict_spans.intersection(output_spans))
 
-        precision = p * 1.0 / total_predict * 100 if total_predict != 0 else 0
-        recall = p * 1.0 / total_entity * 100 if total_entity != 0 else 0
+        precision = p * 1.0 / total_predict  if total_predict != 0 else 0
+        recall = p * 1.0 / total_entity  if total_entity != 0 else 0
         fscore = 2.0 * precision * recall / (precision + recall) if precision != 0 or recall != 0 else 0
 
-        ret = [precision, recall, fscore]
+        #ret = [precision, recall, fscore]
+        fscore = FScore(recall, precision, fscore)
 
-
-        return ret
+        return fscore
 
 
 class constituent_eval(Eval):
@@ -109,13 +118,13 @@ class constituent_eval(Eval):
                 for line in infile:
                     match = re.match(r"Bracketing Recall:\s+(\d+\.\d+)", line)
                     if match:
-                        fscore.recall = float(match.group(1))
+                        fscore.recall = float(match.group(1)) / 100
                     match = re.match(r"Bracketing Precision:\s+(\d+\.\d+)", line)
                     if match:
-                        fscore.precision = float(match.group(1))
+                        fscore.precision = float(match.group(1)) / 100
                     match = re.match(r"Bracketing FMeasure:\s+(\d+\.\d+)", line)
                     if match:
-                        fscore.fscore = float(match.group(1))
+                        fscore.fscore = float(match.group(1)) / 100
                         break
 
         except:
@@ -137,4 +146,4 @@ class constituent_eval(Eval):
         #     print("Predicted path: {}".format(pred_path))
         #     print("Output path: {}".format(result_path))
 
-        return fscore.to_tuple()
+        return fscore

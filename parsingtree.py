@@ -272,9 +272,10 @@ class TreeNetworkCompiler(NetworkCompiler):
 
 
 class TreeNeuralBuilder(NeuralBuilder):
-    def __init__(self, gnp, voc_size, word_embed_dim, tag_size, tag_embed_dim, lstm_dim = 250, label_hidden_size = 250, dropout = 0.4):
+    def __init__(self, gnp, label_size, voc_size, word_embed_dim, tag_size, tag_embed_dim, lstm_dim = 250, label_hidden_size = 250, dropout = 0.4):
         super().__init__(gnp)
         # self.word_embed = nn.Embedding(voc_size, self.token_embed, padding_idx=0).to(NetworkConfig.DEVICE)
+        self.label_size = label_size
         self.word_embed_dim = word_embed_dim
         self.lstm_dim = lstm_dim
         self.word_embeddings = nn.Embedding(voc_size, word_embed_dim).to(NetworkConfig.DEVICE)
@@ -292,7 +293,7 @@ class TreeNeuralBuilder(NeuralBuilder):
         self.f_label = nn.Sequential(
             nn.Linear(lstm_dim * 2, label_hidden_size).to(NetworkConfig.DEVICE),
             nn.ReLU().to(NetworkConfig.DEVICE),
-            nn.Linear(label_hidden_size, gnp.label_size - 1).to(NetworkConfig.DEVICE)
+            nn.Linear(label_hidden_size, label_size - 1).to(NetworkConfig.DEVICE)
         ).to(NetworkConfig.DEVICE)
 
 
@@ -473,17 +474,17 @@ if __name__ == "__main__":
                 pass
 
     print('label2id:',list(label2id.keys()))
-
+    label_size = len(label2id)
 
     for inst in dev_insts + test_insts:
         inst.word_seq = torch.tensor([vocab2id[word] if word in vocab2id else vocab2id[UNK] for word, tag in [(START, START)] + inst.input + [(STOP, STOP)]]).to(NetworkConfig.DEVICE)
         inst.tag_seq = torch.tensor([tag2id[tag] if word in vocab2id else tag2id[UNK] for word, tag in [(START, START)] + inst.input + [(STOP, STOP)]]).to(NetworkConfig.DEVICE)
 
 
-    gnp = TensorGlobalNetworkParam(len(label2id))
+    gnp = TensorGlobalNetworkParam()
 
 
-    fm = TreeNeuralBuilder(gnp, len(vocab2id), 100, len(tag2id), 50)
+    fm = TreeNeuralBuilder(gnp, label_size, len(vocab2id), 100, len(tag2id), 50)
     fm.load_pretrain(vocab2id)
 
     compiler = TreeNetworkCompiler(label2id)

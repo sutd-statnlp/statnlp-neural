@@ -184,19 +184,23 @@ def topological_sort(network : Network):
     return sorted_list, max_number
 
 
+from abc import abstractmethod
+class Score():
+    @abstractmethod
+    def larger_than(self, obj):
+        pass
+
+    @abstractmethod
+    def update_score(self, obj):
+        pass
+
 
 from abc import abstractmethod
 class Eval():
     @abstractmethod
-    def eval(self, insts):
+    def eval(self, insts) -> Score:
         pass
 
 
-
-from abc import abstractmethod
-class Score():
-    @abstractmethod
-    def larger_than_or_equal_to(self, obj):
-        pass
 
 

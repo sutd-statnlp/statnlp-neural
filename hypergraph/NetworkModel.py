@@ -198,7 +198,7 @@ class NetworkModel(nn.Module):
             print(colored('Unsupported optimizer:', 'red'), optimizer)
             return
 
-        self.best_ret = [0, 0, 0]
+        self.best_score = None
 
 
         print('Start Training...', flush=True)
@@ -234,8 +234,8 @@ class NetworkModel(nn.Module):
                         self.networks[i] = None
                         del negative_network
                         self.networks[i + 1] = None
-                    if (i + 1) % 100 == 0:
-                        print('.', end='')
+                # if (i + 1) % 100 == 0:
+                #     print('.', end='')
             print()
             end_time = time.time()
 
@@ -243,23 +243,27 @@ class NetworkModel(nn.Module):
 
             start_time = time.time()
             self.decode(dev_insts)
-            ret = self.evaluator.eval(dev_insts)
+            score = self.evaluator.eval(dev_insts)
             end_time = time.time()
-            print("Prec.: {0:.2f} Rec.: {1:.2f} F1.: {2:.2f}".format(ret[0], ret[1], ret[2]), '\tTime={:.2f}s'.format(end_time - start_time), flush=True)
+            print(str(score), '\tTime={:.2f}s'.format(end_time - start_time), flush=True)
 
 
-            if self.best_ret[2] < ret[2]:
-                self.best_ret = list(ret)
+            if self.best_score == None or score.larger_than(self.best_score):
+
+                if self.best_score == None:
+                    self.best_score = score
+                else:
+                    self.best_score.update_score(score)
                 self.save()
 
                 start_time = time.time()
                 self.decode(test_insts)
-                ret = self.evaluator.eval(test_insts)
+                test_score = self.evaluator.eval(test_insts)
                 end_time = time.time()
-                print("On Test -- Prec.: {0:.2f} Rec.: {1:.2f} F1.: {2:.2f}".format(ret[0], ret[1], ret[2]), '\tTime={:.2f}s'.format(end_time - start_time), flush=True)
+                print("On Test -- ", str(test_score), '\tTime={:.2f}s'.format(end_time - start_time), flush=True)
 
 
-        print("Best Result:", self.best_ret)
+        print("Best Result:", self.best_score)
 
 
     def learn_lbfgs(self, train_insts, max_iterations, dev_insts):

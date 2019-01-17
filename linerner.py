@@ -116,15 +116,16 @@ class TagNetworkCompiler(NetworkCompiler):
 
 
 class TagNeuralBuilder(NeuralBuilder):
-    def __init__(self, gnp, voc_size):
+    def __init__(self, gnp, voc_size, label_size):
         super().__init__(gnp)
         self.token_embed = 100
+        self.label_size = label_size
         print("vocab size: ", voc_size)
         # self.word_embed = nn.Embedding(voc_size, self.token_embed, padding_idx=0).to(NetworkConfig.DEVICE)
         self.word_embed = nn.Embedding(voc_size, self.token_embed).to(NetworkConfig.DEVICE)
 
         self.rnn = nn.LSTM(self.token_embed, self.token_embed, batch_first=True,bidirectional=True).to(NetworkConfig.DEVICE)
-        self.linear = nn.Linear(self.token_embed * 2, gnp.label_size).to(NetworkConfig.DEVICE)
+        self.linear = nn.Linear(self.token_embed * 2, label_size).to(NetworkConfig.DEVICE)
         #self.rnn = nn.LSTM(self.token_embed, self.token_embed, batch_first=True, bidirectional=True).to(NetworkConfig.DEVICE)
         #self.linear = nn.Linear(self.token_embed, param_g.label_size, bias=False).to(NetworkConfig.DEVICE)
 
@@ -315,8 +316,8 @@ if __name__ == "__main__":
 
     print(colored('vocab_2id:', 'red'), len(vocab2id))
 
-    gnp = TensorGlobalNetworkParam(len(TagReader.label2id_map))
-    fm = TagNeuralBuilder(gnp, len(vocab2id))
+    gnp = TensorGlobalNetworkParam()
+    fm = TagNeuralBuilder(gnp, len(vocab2id), len(TagReader.label2id_map))
     #fm.load_pretrain('data/glove.6B.100d.txt', vocab2id)
     fm.load_pretrain(None, vocab2id)
     print(list(TagReader.label2id_map.keys()))
@@ -330,7 +331,7 @@ if __name__ == "__main__":
 
 
     if batch_size == 1:
-        model.learn(train_insts, num_iter, dev_insts)
+        model.learn(train_insts, num_iter, dev_insts, test_insts)
     else:
         model.learn_batch(train_insts, num_iter, dev_insts, batch_size)
 

@@ -357,8 +357,16 @@ class TSNetworkCompiler(NetworkCompiler):
                     from_node = self.to_scope(pos + 1, label2id['AA' + polar])
                     builder.add_edge(from_node, [to_node])
 
+
+
+
                     if pos < size - 2:
                         for next_polar in self.polar_tags:
+                            to_node = self.to_scope(pos, label2id['AA' + polar])
+                            from_node = self.to_scope(pos + 1, label2id['AB' + polar + next_polar])
+                            builder.add_edge(from_node, [to_node])
+
+
                             to_node = self.to_scope(pos, label2id['AB' + polar + next_polar])
                             from_node = self.to_scope(pos + 1, label2id['BB' + next_polar])
                             builder.add_edge(from_node, [to_node])
@@ -456,8 +464,11 @@ class TSNetworkCompiler(NetworkCompiler):
 
 
 class TSNeuralBuilder(NeuralBuilder):
-    def __init__(self, gnp, voc_size, word_embed_dim, lstm_dim = 100, dropout = 0.5):
+    def __init__(self, gnp, labels, voc_size, word_embed_dim, lstm_dim = 100, dropout = 0.5):
         super().__init__(gnp)
+
+        self.labels = labels
+        self.label_size = len(labels)
         # self.word_embed = nn.Embedding(voc_size, self.token_embed, padding_idx=0).to(NetworkConfig.DEVICE)
         self.word_embed_dim = word_embed_dim
         self.lstm_dim = lstm_dim
@@ -466,7 +477,11 @@ class TSNeuralBuilder(NeuralBuilder):
 
         embed_dim = word_embed_dim
         self.rnn = nn.LSTM(embed_dim, lstm_dim, batch_first=True, bidirectional=True, dropout=dropout).to(NetworkConfig.DEVICE)
-        #self.sent = nn.Linear(lstm_dim * 2, 3)
+
+        self.sent = nn.Linear(lstm_dim * 2, 3)  # +, 0, -
+        self.target = nn.Linear(lstm_dim * 2, 5) # O, B, M, E, S
+
+        self.linear = nn.Linear(lstm_dim * 2, self.label_size)
 
 
     def load_pretrain(self, word2idx, path = None):
@@ -484,7 +499,8 @@ class TSNeuralBuilder(NeuralBuilder):
         word_rep = word_embs.unsqueeze(0) #torch.cat([word_embs], 1).unsqueeze(0)
 
         lstm_outputs, _ = self.rnn(word_rep, None)
-        lstm_outputs = lstm_outputs.squeeze(0)
+        #lstm_outputs = lstm_outputs.squeeze(0)
+        lstm_outputs = self.linear(lstm_outputs).squeeze(0)
 
         return lstm_outputs
 
@@ -496,13 +512,20 @@ class TSNeuralBuilder(NeuralBuilder):
         if node_type != NodeType.scope.value:  # Start, End
             return torch.tensor(0.0).to(NetworkConfig.DEVICE)
         else:
+
             return network.nn_output[pos][label_id]
+
+
+
 
 
     def get_label_id(self, network, parent_k):
         parent_arr = network.get_node_array(parent_k)
         pos, node_type, label_id = parent_arr
-        return label_id
+        if node_type == NodeType.scope.value:
+            return label_id
+        else:
+            return -1
 
 
 class TSReader():
@@ -586,11 +609,18 @@ class TScore(Score):
     def __str__(self):
         target_score =  str(self.target_fscore)
         sentiment_score = str(self.sentiment_fscore)
-
         return 'Target: ' + target_score + '\tSent:' + sentiment_score
 
     def to_tuple(self):
         return self.sentiment_fscore.to_tuple()
+
+    def larger_than(self, obj):
+        target_score_diff = self.target_fscore.fscore - obj.target_fscore.fscore
+        return self.sentiment_fscore.fscore > obj.sentiment_fscore.fscore if math.fabs(target_score_diff) < 1e-8 else target_score_diff > 0
+
+    def update_score(self, obj):
+        self.target_fscore.update_score(obj.target_fscore)
+        self.sentiment_fscore.update_score(obj.sentiment_fscore)
 
 
 
@@ -637,8 +667,8 @@ class sentimentscope_eval(Eval):
             gold = inst.get_output()
             pred = inst.get_prediction()
 
-            target_gold = [item[0] if item[0][0] != 'O' else 'O' for item in gold]
-            target_pred = [item[0] if item[0][0] != 'O' else 'O' for item in pred]
+            target_gold = [item[0] for item in gold]
+            target_pred = [item[0] for item in pred]
 
             sent_gold = [item[0] + '-' + symbol2polar[item[1]] if item[0][0] != 'O' else 'O' for item in gold]
             sent_pred = [item[0] + '-' + symbol2polar[item[1]] if item[0][0] != 'O' else 'O' for item in pred]
@@ -657,9 +687,12 @@ class sentimentscope_eval(Eval):
 
 
         target_ret = self.eval_by_script(result_target_file)
-        sent_ret = self.eval_by_script(result_target_file)
+        sent_ret = self.eval_by_script(result_sent_file)
 
-        return sent_ret.to_tuple()
+        ts_score = TScore()
+        ts_score.set_scores(target_ret, sent_ret)
+
+        return ts_score
 
 
 class TSVisualizer(Visualizer):
@@ -775,21 +808,25 @@ if __name__ == "__main__":
     trial_file = "data/ts/trial.txt"
 
     import os
+    from random import shuffle
     if not os.path.exists('tmp'):
         os.mkdir('tmp')
 
-    TRIAL = True
-    num_train = 30
-    num_dev = 30
-    num_test = 30
-    num_iter = 600
+    TRIAL = False
+    num_train = -1
+    num_dev = -1
+    num_test = -1
+    num_iter = 40
     batch_size = 1
     num_thread = 1
     dev_file = test_file
     NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH = True
     NetworkConfig.GPU_ID = -1
+    embed_path = 'embedding/glove.6B.100d.txt'
+    word_embed_dim = 100
     APPEND_START_END = False
     visual = True
+    DEBUG = False
 
     if TRIAL == True:
         data_size = -1
@@ -810,8 +847,6 @@ if __name__ == "__main__":
 
 
     vocab2id = {PAD:0, UNK:1}
-    tag2id = {START:0, STOP:1}
-
     label2id = {}
     scope_tags = ['BB', 'Be', 'eB', 'eM', 'eE', 'eS', 'AA', 'AB+', 'AB0', 'AB-']
     polar_tags = ['+', '0', '-']
@@ -824,6 +859,9 @@ if __name__ == "__main__":
     labels = [()] * (len(label2id))  ##  include (), but not dummy label
     for key in label2id:
         labels[label2id[key]] = key
+
+    if DEBUG:
+        print('label2id:',list(label2id.keys()))
 
 
     for inst in train_insts:  #+ dev_insts + test_insts:
@@ -840,8 +878,8 @@ if __name__ == "__main__":
 
         inst.word_seq = torch.tensor([vocab2id[word] for word in input_seq]).to(NetworkConfig.DEVICE)
 
-
-    print('label2id:',list(label2id.keys()))
+    # old_train_insts = train_insts
+    # shuffle(old_train_insts)
 
 
     for inst in dev_insts + test_insts:
@@ -854,32 +892,24 @@ if __name__ == "__main__":
 
 
     gnp = TensorGlobalNetworkParam()
-
-
-    neural_builder = TSNeuralBuilder(gnp, len(vocab2id), 100)
-    neural_builder.load_pretrain(vocab2id)
-
+    neural_builder = TSNeuralBuilder(gnp, labels, len(vocab2id), word_embed_dim)
+    neural_builder.load_pretrain(vocab2id, embed_path)
     compiler = TSNetworkCompiler(label2id, labels, scope_tags, polar_tags)
-
     evaluator = sentimentscope_eval()
-
-    DEBUG = False
-    if DEBUG:
-        ts_visualizer = TSVisualizer(compiler, neural_builder, labels)
-
     model = NetworkModel(neural_builder, compiler, evaluator)
     model.model_path = "best_sentimentscope.pt"
-
     #model.set_visualizer(ts_visualizer)
+
 
     if DEBUG:
         if visual:
+            ts_visualizer = TSVisualizer(compiler, neural_builder, labels)
             inst = train_insts[0]
-            inst.is_labeled = True
-            ts_visualizer.visualize_inst(inst)
             inst.is_labeled = False
+            ts_visualizer.visualize_inst(inst)
+            #inst.is_labeled = False
             #ts_visualizer.visualize_inst(inst)
-            #exit()
+            exit()
 
     if batch_size == 1:
         model.learn(train_insts, num_iter, dev_insts, test_insts)
