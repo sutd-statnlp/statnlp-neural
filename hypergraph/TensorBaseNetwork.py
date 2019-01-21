@@ -80,8 +80,7 @@ class TensorBaseNetwork(TensorTableLookupNetwork):
                     return True
             return False
 
-        def build(self, network_id, instance, param, compiler):
-
+        def pre_build(self):
             values = []
 
             for node in self._children_tmp:
@@ -128,8 +127,9 @@ class TensorBaseNetwork(TensorTableLookupNetwork):
                 if children_list[k] == None:
                     children_list[k] = [[]]
 
-            result = None
+            return node_list, children_list, num_hyperedge
 
+        def post_build(self, network_id, instance, node_list, children_list, node_count, num_hyperedge, param, compiler):
             # if network_id != None or instance != None or param != None or compiler != None:
             result = BaseNetwork.NetworkBuilder.quick_build(network_id, instance, node_list, children_list,
                                                             len(node_list), param, compiler)
@@ -145,7 +145,8 @@ class TensorBaseNetwork(TensorTableLookupNetwork):
             staged_nodes = [None] * num_stage
             num_row = [None] * num_stage
             for stage_idx in sorted_nodes.keys():
-                staged_nodes[stage_idx] = np.asarray(sorted_nodes[stage_idx])#torch.LongTensor(sorted_nodes[stage_idx])
+                staged_nodes[stage_idx] = np.asarray(
+                    sorted_nodes[stage_idx])  # torch.LongTensor(sorted_nodes[stage_idx])
                 num_row[stage_idx] = len(staged_nodes[stage_idx])
 
             all_children_list = [None] * num_stage
@@ -180,8 +181,19 @@ class TensorBaseNetwork(TensorTableLookupNetwork):
                                                                   len(node_list), param, compiler, num_stage,
                                                                   num_row, num_hyperedge, staged_nodes)
 
-            result.is_visible = is_visible
+            #result.is_visible = is_visible
             return result
+
+        def build(self, network_id, instance, param, compiler):
+
+            node_list, children_list, num_hyperedge = self.pre_build()
+            ret = self.post_build(network_id, instance, node_list, children_list, len(node_list), num_hyperedge, param, compiler)
+            return ret
+
+        def build_from_generic(self, network_id, instance, node_list, children_list, node_count, num_hyperedge, param, compiler):
+            ret = self.post_build(network_id, instance, node_list[:node_count], children_list[:node_count], node_count, num_hyperedge, param, compiler)
+            return ret
+
 
         def check_link_validity(self, parent, children):
             for child in children:

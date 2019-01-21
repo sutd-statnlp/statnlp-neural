@@ -36,26 +36,89 @@ class NodeType(Enum):
 
 class TreeNetworkCompiler(NetworkCompiler):
 
-    def __init__(self, label_map, max_size=200):
+    def __init__(self, label_map, labels, max_size=20):
         super().__init__()
-        self.labels = [()] * (len(label_map))  ##  include (), but not dummy label
+        self.labels = labels ##  include (), but not dummy label
         self.label2id = label_map
 
-        for key in self.label2id:
-            self.labels[self.label2id[key]] = key
+        # for key in self.label2id:
+        #     self.labels[self.label2id[key]] = key
 
 
         self.max_size = max_size
         ### Length, rightIdx, nodeType, LabelId
         NetworkIDMapper.set_capacity(
-            np.asarray([self.max_size, self.max_size, NodeType.root.value + 1, len(self.labels) + 1], dtype=np.int64))
+            np.asarray([self.max_size + 1, self.max_size + 1, NodeType.root.value + 1, len(self.labels) + 1], dtype=np.int64))
 
         print(self.label2id)
         print(self.labels)
         self._all_nodes = None
         self._all_children = None
 
-        # self.build_generic_network()
+        self.build_generic()
+
+    def build_generic(self):
+        print(colored('Building generic networks with size = ', 'red'), self.max_size)
+        size = self.max_size
+        builder = TensorBaseNetwork.NetworkBuilder.builder()
+
+        node_sink = self.to_sink()
+        builder.add_node(node_sink)
+
+        # node_root = self.to_root(inst.size())
+        # builder.add_node(node_root)
+
+        for length in range(1, size + 1):
+            for left in range(0, size + 1 - length):
+                right = left + length
+
+                if length == 1:
+                    node_leaf = self.to_leaf(left)
+                    builder.add_node(node_leaf)
+                    builder.add_edge(node_leaf, [node_sink])
+
+
+                node_span = self.to_span(left, right)
+
+                builder.add_node(node_span)
+
+                if length > 1:
+                    node_span_prime = self.to_span_prime(left, right)
+                    builder.add_node(node_span_prime)
+
+                for label in self.labels:
+                    if length == size and label == ():
+                        continue
+
+                    node_label = self.to_label(left, right, self.label2id[label])
+                    builder.add_node(node_label)
+
+                    if length > 1:
+                        builder.add_edge(node_label, [node_sink])
+                        builder.add_edge(node_span, [node_label, node_span_prime])
+                    else:  # length == 1
+                        builder.add_edge(node_span, [node_label])
+
+                        node_leaf = self.to_leaf(left)
+
+                        builder.add_edge(node_label, [node_leaf])
+                        builder.add_edge(node_span, [node_leaf])
+
+                for k in range(left + 1, right):
+
+                    left_child = self.to_span(left, k)
+                    right_child = self.to_span(k, right)
+                    if builder.contains_node(left_child) and builder.contains_node(right_child):
+                        builder.add_edge(node_span_prime, [left_child, right_child])
+
+                # if length == size:
+                if left == 0:
+                    node_root = self.to_root(length)
+                    builder.add_node(node_root)
+                    builder.add_edge(node_root, [node_span])
+
+        self.all_nodes, self.all_children, self.num_hyperedge = builder.pre_build()
+
 
     def to_sink(self):
         return self.to_node(0, 0, NodeType.sink.value, 0)
@@ -76,7 +139,7 @@ class TreeNetworkCompiler(NetworkCompiler):
         return self.to_node(size, size, NodeType.root.value, 0)
 
     def to_node(self, length, right_idx, node_type, label_id):
-        return NetworkIDMapper.to_hybrid_node_ID(np.asarray([length, right_idx, node_type, label_id]))
+        return NetworkIDMapper.to_hybrid_node_ID(np.asarray([right_idx, length, node_type, label_id]))
 
     def compile_labeled(self, network_id, inst, param):
 
@@ -148,6 +211,16 @@ class TreeNetworkCompiler(NetworkCompiler):
         return network
 
     def compile_unlabeled(self, network_id, inst, param):
+        builder = TensorBaseNetwork.NetworkBuilder.builder()
+        root_node = self.to_root(inst.size())
+        all_nodes = self.all_nodes
+        root_idx = np.argwhere(all_nodes == root_node)[0][0]
+        node_count = root_idx + 1
+        network = builder.build_from_generic(network_id, inst, self.all_nodes, self.all_children, node_count, self.num_hyperedge, param, self)
+        return network
+
+
+    def compile_unlabeled_old(self, network_id, inst, param):
         # return self.compile_labeled(network_id, inst, param)
         builder = TensorBaseNetwork.NetworkBuilder.builder()
 
@@ -224,8 +297,12 @@ class TreeNetworkCompiler(NetworkCompiler):
         root_idx = np.argwhere(all_nodes == root_node)[0][0]  # network.count_nodes() - 1 #self._all_nodes.index(root_node)
 
         children = network.get_max_path(root_idx)  # children[0]: root node
-        prediction = self.to_tree_helper(network, children[0])
-        pred_tree = prediction[0].convert()
+        prediction_tmp = self.to_tree_helper(network, children[0])
+        if len(prediction_tmp) > 1:
+            prediction = trees.InternalParseNode(('S',), prediction_tmp)
+        else:
+            prediction = prediction_tmp[0]
+        pred_tree = prediction.convert()
         inst.set_prediction(pred_tree)
         return inst
 
@@ -236,7 +313,7 @@ class TreeNetworkCompiler(NetworkCompiler):
         children = network.get_max_path(curr_idx)
 
         label_node_arr = network.get_node_array(children[0])
-        left_idx = label_node_arr[1] - label_node_arr[0]
+        left_idx = label_node_arr[0] - label_node_arr[1]
         label_idx = label_node_arr[3]
         label = self.labels[label_idx]
 
@@ -364,16 +441,19 @@ class TreeNeuralBuilder(NeuralBuilder):
 
     def get_nn_score(self, network, parent_k):
         parent_arr = network.get_node_array(parent_k)  # pos, label_id, node_type
-        length = parent_arr[0]
-        right = parent_arr[1]
+        right= parent_arr[0]
+        length = parent_arr[1]
         left = right - length
         node_type = parent_arr[2]
         label_id = parent_arr[3]
 
 
-        if node_type != NodeType.label.value:  # Start, End
+        if node_type != NodeType.label.value or node_type == NodeType.sink.value:  # Start, End
             return torch.tensor(0.0).to(NetworkConfig.DEVICE)
         else:
+            # children_list = network.get_children(parent_k)
+            # if len(children_list) == 1 and len(children_list[0]) == 0:
+            #     print()
             spans = network.nn_output
             return spans[left, right][label_id]
 
@@ -383,6 +463,9 @@ class TreeNeuralBuilder(NeuralBuilder):
 
 
 class TreeReader():
+
+    Stats = {'MAX_LENGTH': 0}
+
     @staticmethod
     def read_insts(file, is_labeled, number):
         print('Reading data from ', file, '...')
@@ -393,6 +476,10 @@ class TreeReader():
         for tree in gold_trees:
             leaves = list(tree.leaves())
             inputs = [(leaf.word, leaf.tag) for leaf in leaves]
+            length = len(inputs)
+            if TreeReader.Stats['MAX_LENGTH'] < length:
+                TreeReader.Stats['MAX_LENGTH'] = length
+
             inst = TreeInstance(len(insts) + 1, 1, inputs, tree)
             if is_labeled:
                 inst.set_labeled()
@@ -407,6 +494,88 @@ class TreeReader():
         return insts
 
 
+from hypergraph.Visualizer import Visualizer
+class TreeVisualizer(Visualizer):
+    def __init__(self, compiler, fm, labels):
+        super().__init__(compiler, fm)
+        self.labels = labels
+        self.span = 50
+
+
+    def nodearr2label(self, node_arr):
+        right_idx, length, node_type, label_id = node_arr
+        # sink = 0
+        # leaf = 1
+        # label = 2
+        # span_prime = 3
+        # span = 4
+        # root = 5
+        label = self.labels[label_id]
+        label_str = '-'.join(label) if label else '()'
+        return str(right_idx - length) + ',' + str(right_idx) + ' ' + label_str
+        # if node_arr[2] == 1:
+        #     label_id = node_arr[2]
+        #     label = self.labels[label_id]
+        #
+        #     if label == 'eM0':
+        #         return self.input[node_arr[0]]
+        #     else:
+        #         return self.labels[node_arr[2]] #+ ' ' + str(node_arr)
+        # else:
+        #     if node_arr[1] == 0:
+        #         return "<X>"
+        #     else:
+        #         return "<Root>"
+
+
+    def nodearr2color(self, node_arr):
+        if node_arr[2] == 0 or node_arr[2] == 5:
+            return 'blue'
+
+        elif node_arr[2] == 1:
+            return 'green'
+        elif node_arr[2] == 2:
+            return 'red'
+        elif node_arr[2] == 3:
+            return 'yellow'
+        elif node_arr[2] == 4:
+            return 'orange'
+        else:
+            return 'blue'
+
+
+    def nodearr2coord(self, node_arr):
+        span = self.span
+
+        right_idx, length , node_type, label_id = node_arr
+
+        if node_type == 0: ##Sink
+            x = 0
+            y = -1 * span
+        elif node_type == 5: ##Root
+            x = 2.5
+            y = (length + 1) * span
+
+        elif node_type == 4 : #Span or
+            x = right_idx
+            y = length * span
+        elif node_type == 1: #leaf
+            x = right_idx
+            y = length * span - 30
+
+        elif node_type == 3:  # SpanPrime
+            x = right_idx + 5
+            y = length * span - 20
+        elif node_type == 2:  # label
+            x = right_idx - 5
+            y = length * span - 20
+
+
+        return (x, y)
+
+
+
+
 if __name__ == "__main__":
 
     torch.manual_seed(1234)
@@ -418,7 +587,9 @@ if __name__ == "__main__":
     test_file = "data/ptb/23.auto.clean"
     trial_file = "data/ptb/trial.txt"
 
-    TRIAL = False
+    DEBUG = False
+    visual = True
+    TRIAL = True
     num_train = -1
     num_dev = -1
     num_test = -1
@@ -429,7 +600,7 @@ if __name__ == "__main__":
     dev_file = test_file
     NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH = False
     NetworkConfig.IGNORE_TRANSITION = False
-    NetworkConfig.GPU_ID = 1
+    NetworkConfig.GPU_ID = -1
     NetworkConfig.ECHO_TRAINING_PROGRESS = True
 
     if TRIAL == True:
@@ -479,6 +650,13 @@ if __name__ == "__main__":
     print('label2id:',list(label2id.keys()))
     label_size = len(label2id)
 
+    labels = [()] * (len(label2id))  ##  include (), but not dummy label
+
+
+    for key in label2id:
+        labels[label2id[key]] = key
+
+
     for inst in dev_insts + test_insts:
         inst.word_seq = torch.tensor([vocab2id[word] if word in vocab2id else vocab2id[UNK] for word, tag in [(START, START)] + inst.input + [(STOP, STOP)]]).to(NetworkConfig.DEVICE)
         inst.tag_seq = torch.tensor([tag2id[tag] if word in vocab2id else tag2id[UNK] for word, tag in [(START, START)] + inst.input + [(STOP, STOP)]]).to(NetworkConfig.DEVICE)
@@ -490,12 +668,23 @@ if __name__ == "__main__":
     fm = TreeNeuralBuilder(gnp, label_size, len(vocab2id), 100, len(tag2id), 50)
     fm.load_pretrain(vocab2id)
 
-    compiler = TreeNetworkCompiler(label2id)
+    compiler = TreeNetworkCompiler(label2id, labels, max_size = TreeReader.Stats['MAX_LENGTH'] + 1)
 
     evaluator = constituent_eval()
 
     model = NetworkModel(fm, compiler, evaluator)
     model.model_path = "best_parsingtree.pt"
+
+    if DEBUG:
+        if visual:
+            visualizer = TreeVisualizer(compiler, fm, labels)
+            inst = train_insts[0]
+            inst.is_labeled = False
+            visualizer.visualize_inst(inst)
+            #inst.is_labeled = False
+            #ts_visualizer.visualize_inst(inst)
+            exit()
+
 
     if batch_size == 1:
         model.learn(train_insts, num_iter, dev_insts, test_insts)
