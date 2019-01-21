@@ -287,6 +287,8 @@ class TreeNeuralBuilder(NeuralBuilder):
         for i in range(tag_size):
             tag_embed_parameter[i] = np.random.uniform(-scale, scale, [1, tag_embed_dim])
 
+        self.tag_embeddings.weight.data.copy_(torch.from_numpy(tag_embed_parameter))
+
         embed_dim = word_embed_dim + tag_embed_dim
         self.rnn = nn.LSTM(embed_dim, lstm_dim, batch_first=True, bidirectional=True, dropout=dropout).to(NetworkConfig.DEVICE)
 
@@ -416,10 +418,10 @@ if __name__ == "__main__":
     test_file = "data/ptb/23.auto.clean"
     trial_file = "data/ptb/trial.txt"
 
-    TRIAL = True
-    num_train = 30
-    num_dev = 30
-    num_test = 30
+    TRIAL = False
+    num_train = -1
+    num_dev = -1
+    num_test = -1
     num_iter = 300
     batch_size = 1
     #device = "cpu"
@@ -427,7 +429,8 @@ if __name__ == "__main__":
     dev_file = test_file
     NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH = False
     NetworkConfig.IGNORE_TRANSITION = False
-    NetworkConfig.GPU_ID = -1
+    NetworkConfig.GPU_ID = 1
+    NetworkConfig.ECHO_TRAINING_PROGRESS = True
 
     if TRIAL == True:
         data_size = -1

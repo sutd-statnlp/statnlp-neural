@@ -19,6 +19,7 @@ class NetworkModel(nn.Module):
         self.networks_test = None
         self.evaluator = evaluator
         self.model_path = 'best_model.pt'
+        self.check_every = None
 
     def set_model_path(self, path):
         self.model_path = path
@@ -200,13 +201,17 @@ class NetworkModel(nn.Module):
 
         self.best_score = None
 
+        if self.check_every == None:
+            self.check_every = len(self.all_instances)
+
+
 
         print('Start Training...', flush=True)
         for iteration in range(max_iterations):
-            self.train()
             all_loss = 0
             start_time = time.time()
             for i in range(len(self.all_instances)):
+                self.train()
                 inst = self.all_instances[i]
                 if inst.get_instance_id() > 0:
                     optimizer.zero_grad()
@@ -234,33 +239,47 @@ class NetworkModel(nn.Module):
                         self.networks[i] = None
                         del negative_network
                         self.networks[i + 1] = None
-                # if (i + 1) % 100 == 0:
-                #     print('.', end='')
-            print()
-            end_time = time.time()
+                if NetworkConfig.ECHO_TRAINING_PROGRESS and (i + 1) % 100 == 0:
+                    print('x', end='')
 
+                def eval():
+                    start_time = time.time()
+                    self.decode(dev_insts)
+                    score = self.evaluator.eval(dev_insts)
+                    end_time = time.time()
+                    print("Dev  -- ", str(score), '\tTime={:.2f}s'.format(end_time - start_time), flush=True)
+
+                    if self.best_score == None or score.larger_than(self.best_score):
+
+                        if self.best_score == None:
+                            self.best_score = score
+                        else:
+                            self.best_score.update_score(score)
+                        self.save()
+
+                        start_time = time.time()
+                        self.decode(test_insts)
+                        test_score = self.evaluator.eval(test_insts)
+                        end_time = time.time()
+                        print(colored("Test -- ", 'red'), str(test_score),
+                              '\tTime={:.2f}s'.format(end_time - start_time), flush=True)
+
+                    else:
+                        if NetworkConfig.ECHO_TEST_RESULT_DURING_EVAL_ON_DEV:
+                            start_time = time.time()
+                            self.decode(test_insts)
+                            test_score = self.evaluator.eval(test_insts)
+                            end_time = time.time()
+                            print("Test -- ", str(test_score), '\tTime={:.2f}s'.format(end_time - start_time),
+                                  flush=True)
+
+                if (i + 1) % self.check_every == 0:
+                    eval()
+
+            end_time = time.time()
             print(colored("Iteration ", 'yellow'), iteration, ": Obj=", all_loss, '\tTime={:.2f}s'.format(end_time - start_time), flush=True)
+            print()
 
-            start_time = time.time()
-            self.decode(dev_insts)
-            score = self.evaluator.eval(dev_insts)
-            end_time = time.time()
-            print(str(score), '\tTime={:.2f}s'.format(end_time - start_time), flush=True)
-
-
-            if self.best_score == None or score.larger_than(self.best_score):
-
-                if self.best_score == None:
-                    self.best_score = score
-                else:
-                    self.best_score.update_score(score)
-                self.save()
-
-                start_time = time.time()
-                self.decode(test_insts)
-                test_score = self.evaluator.eval(test_insts)
-                end_time = time.time()
-                print("On Test -- ", str(test_score), '\tTime={:.2f}s'.format(end_time - start_time), flush=True)
 
 
         print("Best Result:", self.best_score)
@@ -471,6 +490,7 @@ class NetworkModel(nn.Module):
         print(colored('Save the best model to ', 'red'), self.model_path)
 
     def load(self):
+        print(colored('Load the best model from ', 'red'), self.model_path)
         self.load_state_dict(torch.load(self.model_path))
 
 

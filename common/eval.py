@@ -39,6 +39,18 @@ class FScore(object):
         self.precision = obj.precision
         self.fscore = obj.fscore
 
+    def __add__(self, other):
+        self.recall += other.recall
+        self.precision += other.precision
+        self.fscore += other.fscore
+        return self
+
+    def divide(self, n):
+        self.recall /= n
+        self.precision /= n
+        self.fscore /= n
+        return self
+
 ## the input to the evaluation should already have
 ## have the predictions which is the label.
 ## iobest tagging scheme
