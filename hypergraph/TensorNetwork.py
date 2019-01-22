@@ -4,8 +4,8 @@ from hypergraph.NetworkIDMapper import *
 import math
 import numpy as np
 from hypergraph.Utils import *
-
-
+import sys
+import gc
 
 class TensorNetwork:
 
@@ -25,6 +25,11 @@ class TensorNetwork:
         self.size = node_count
         self.neg_inf_idx = -1
         self.zero_idx = self.neg_inf_idx - 1
+
+        self.nodeid2arr = [None] * len(self.size)
+        for k in range(len(self.nodeid2arr)):
+            node_long = self.get_node(k)
+            self.nodeid2arr[k] = NetworkIDMapper.to_hybrid_node_array(node_long)
 
 
     def get_network_id(self):
@@ -95,6 +100,8 @@ class TensorNetwork:
 
         self.children = [torch.from_numpy(self.children[stage_idx]).to(NetworkConfig.DEVICE) for stage_idx in range(self.num_stage)]
 
+
+
         #self.num_row = torch.LongTensor(self.num_row)
 
 
@@ -119,8 +126,9 @@ class TensorNetwork:
         self.staged_nodes[stage_idx] = torch.from_numpy(self.staged_nodes[stage_idx]).to(NetworkConfig.DEVICE)
 
     def get_node_array(self, k):
-        node = self.get_node(k)
-        return NetworkIDMapper.to_hybrid_node_array(node)
+        return self.nodeid2arr[k]
+        # node = self.get_node(k)
+        # return NetworkIDMapper.to_hybrid_node_array(node)
 
 
     @abstractmethod
@@ -143,9 +151,9 @@ class TensorNetwork:
         pass
 
     def max(self):
-        self.max = torch.Tensor(self.size + 2).fill_(-math.inf)  # self.getMaxSharedArray()
-        self.max[self.zero_idx] = 0
-        self.max = self.max.to(NetworkConfig.DEVICE)
+        self._max = torch.Tensor(self.size + 2).fill_(-math.inf)  # self.getMaxSharedArray()
+        self._max[self.zero_idx] = 0
+        self._max = self._max.to(NetworkConfig.DEVICE)
 
         self.max_paths = torch.LongTensor(self.size, 2).fill_(-1)  # self.getMaxPathSharedArray()
         self.max_paths = self.max_paths.to(NetworkConfig.DEVICE)
@@ -153,13 +161,13 @@ class TensorNetwork:
         emissions = [self.fm.get_nn_score(self, k) for k in range(self.size)]
         emissions = torch.stack(emissions, 0)
 
-        self.max[self.staged_nodes[0]] = emissions[self.staged_nodes[0]]
+        self._max[self.staged_nodes[0]] = emissions[self.staged_nodes[0]]
 
         for stage_idx in range(1, self.num_stage):  ## starting from stage Idx = 1
 
             childrens_stage = self.get_children(stage_idx)
 
-            for_expr = torch.sum(torch.take(self.max, childrens_stage), 2)  # this line is same as the above two lines
+            for_expr = torch.sum(torch.take(self._max, childrens_stage), 2)  # this line is same as the above two lines
 
             emission_expr = emissions[self.staged_nodes[stage_idx]].view(self.num_row[stage_idx], 1).expand(self.num_row[stage_idx], self.num_hyperedge)
 
@@ -169,7 +177,7 @@ class TensorNetwork:
             else:
                 score = for_expr + emission_expr
 
-            self.max[self.staged_nodes[stage_idx]], max_id_list = torch.max(score, 1)  # max_id_list: max_number
+            self._max[self.staged_nodes[stage_idx]], max_id_list = torch.max(score, 1)  # max_id_list: max_number
 
             max_id_list = max_id_list.view(self.num_row[stage_idx], 1, 1).expand(self.num_row[stage_idx], 1, 2)
             self.max_paths[self.staged_nodes[stage_idx]] = torch.gather(childrens_stage, 1, max_id_list).squeeze(1) ## max_number, 2
