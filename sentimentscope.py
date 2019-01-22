@@ -1005,6 +1005,8 @@ if __name__ == "__main__":
         torch.manual_seed(9997)
         np.random.seed(9997)
         random.seed(9997)
+        torch.cuda.manual_seed(9997)
+        torch.cuda.manual_seed_all(9997)
         torch.set_num_threads(40)
 
         print(colored('Fold ', 'blue'), num_fold, '')

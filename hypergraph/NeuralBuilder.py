@@ -30,7 +30,6 @@ class NeuralBuilder(nn.Module):
         # parent_k -> network.nn_output  score
         pass
 
-    def extract(self, network, parent_k):
-        score = self.get_nn_score(network, parent_k)
-
-        return score
+    @abstractmethod
+    def build_node2nn_output(self, network):
+        pass

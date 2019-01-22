@@ -58,7 +58,7 @@ class NetworkModel(nn.Module):
         gnp.locked = True
 
 
-    def learn_batch(self, train_insts, max_iterations, dev_insts, batch_size = 10):
+    def learn_batch(self, train_insts, max_iterations, dev_insts, test_insts, batch_size = 10, optimizer = 'adam'):
 
         insts_before_split = train_insts
 
@@ -69,22 +69,31 @@ class NetworkModel(nn.Module):
 
         self.touch(self.all_instances)
 
-        label_networks = []
-        unlabel_networks = []
-        for i in range(0, len(self.all_instances), 2):
-            label_networks.append(self.get_network(i))
-            unlabel_networks.append(self.get_network(i + 1))
+        # label_networks = []
+        # unlabel_networks = []
+        # for i in range(0, len(self.all_instances), 2):
+        #     label_networks.append(self.get_network(i))
+        #     unlabel_networks.append(self.get_network(i + 1))
 
 
         batches = self.fm.generate_batches(insts_before_split, batch_size)
 
 
         self.lock_it()
+        parameters = filter(lambda p: p.requires_grad, self.parameters())
 
+        if optimizer == 'adam':
+            optimizer = torch.optim.Adam(parameters)
+        elif optimizer == 'sgd':
+            optimizer = torch.optim.SGD(parameters,lr=NetworkConfig.NEURAL_LEARNING_RATE)
+        else:
+            print(colored('Unsupported optimizer:', 'red'), optimizer)
+            return
 
-        optimizer = torch.optim.Adam(self.parameters())
+        self.best_score = None
 
-        self.best_ret = [0, 0, 0]
+        if self.check_every == None:
+            self.check_every = len(batches)
 
 
 
@@ -103,75 +112,120 @@ class NetworkModel(nn.Module):
                 batch_input_seqs, batch_network_id_range = batch
                 nn_output_batch = self.fm.build_nn_graph_batch(batch_input_seqs)
 
-                batch_label_networks = label_networks[batch_network_id_range[0]:batch_network_id_range[1]]
-                batch_unlabel_networks = unlabel_networks[batch_network_id_range[0]:batch_network_id_range[1]]
+
+                # batch_label_networks = label_networks[batch_network_id_range[0]:batch_network_id_range[1]]
+                # batch_unlabel_networks = unlabel_networks[batch_network_id_range[0]:batch_network_id_range[1]]
+                inst_ids = list(range(batch_network_id_range[0], batch_network_id_range[1]))
+                batch_label_networks = [self.get_network(i * 2) for i in inst_ids]
+                batch_unlabel_networks = [self.get_network(i * 2 + 1) for i in inst_ids]
 
                 this_batch_size = nn_output_batch.shape[0]
 
                 for b in range(this_batch_size):
+
+                    if not NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH:
+                        batch_label_networks[b].touch()
+                        batch_unlabel_networks[b].touch()
+
                     batch_label_networks[b].nn_output = nn_output_batch[b]
                     batch_unlabel_networks[b].nn_output = nn_output_batch[b]
 
-                if NetworkConfig.NUM_THREADS == 1:
-                    for b in range(this_batch_size):
-                        label_score = self.forward(batch_label_networks[b])
-                        unlabel_score = self.forward(batch_unlabel_networks[b])
-                        loss = -unlabel_score - label_score
-                        batch_loss += loss
-                else:
-                    num_thread = NetworkConfig.NUM_THREADS
-                    tasks = list(range(0, this_batch_size))
-                    num_per_basket = this_batch_size // num_thread if this_batch_size % num_thread == 0 else batch_size // num_thread + 1
-                    task_ids_each_thread = [tasks[i:i + num_per_basket] for i in range(0, this_batch_size, num_per_basket)]
-                    task_ids_each_thread += [[]] * (num_thread - len(task_ids_each_thread))
-
-                    batch_loss_per_thread = [0] * num_thread
-
-                    def calc_score_thread(task_ids, thread_idx):
-                        for id in task_ids:
-                            label_score = self.forward(batch_label_networks[id])
-                            unlabel_score = self.forward(batch_unlabel_networks[id])
-                            loss = -unlabel_score - label_score
-                            batch_loss_per_thread[thread_idx] = batch_loss_per_thread[thread_idx] + loss
+                #for b in range(this_batch_size):
+                    label_score = self.forward(batch_label_networks[b])
+                    unlabel_score = self.forward(batch_unlabel_networks[b])
+                    loss = -unlabel_score - label_score
+                    batch_loss += loss
 
 
-                    processes = []
-                    for thread_idx in range(NetworkConfig.NUM_THREADS):
-                        p = Process(target=calc_score_thread(task_ids_each_thread[thread_idx], thread_idx))
-                        processes.append(p)
-                        p.start()
-
-                    for thread_idx in range(NetworkConfig.NUM_THREADS):
-                        processes[thread_idx].join()
-
-                    for thread_idx in range(NetworkConfig.NUM_THREADS):
-                        batch_loss += batch_loss_per_thread[thread_idx]
+                # if NetworkConfig.NUM_THREADS == 1:
+                #     for b in range(this_batch_size):
+                #         label_score = self.forward(batch_label_networks[b])
+                #         unlabel_score = self.forward(batch_unlabel_networks[b])
+                #         loss = -unlabel_score - label_score
+                #         batch_loss += loss
+                # else:
+                #     num_thread = NetworkConfig.NUM_THREADS
+                #     tasks = list(range(0, this_batch_size))
+                #     num_per_basket = this_batch_size // num_thread if this_batch_size % num_thread == 0 else batch_size // num_thread + 1
+                #     task_ids_each_thread = [tasks[i:i + num_per_basket] for i in range(0, this_batch_size, num_per_basket)]
+                #     task_ids_each_thread += [[]] * (num_thread - len(task_ids_each_thread))
+                #
+                #     batch_loss_per_thread = [0] * num_thread
+                #
+                #     def calc_score_thread(task_ids, thread_idx):
+                #         for id in task_ids:
+                #             label_score = self.forward(batch_label_networks[id])
+                #             unlabel_score = self.forward(batch_unlabel_networks[id])
+                #             loss = -unlabel_score - label_score
+                #             batch_loss_per_thread[thread_idx] = batch_loss_per_thread[thread_idx] + loss
+                #
+                #
+                #     processes = []
+                #     for thread_idx in range(NetworkConfig.NUM_THREADS):
+                #         p = Process(target=calc_score_thread(task_ids_each_thread[thread_idx], thread_idx))
+                #         processes.append(p)
+                #         p.start()
+                #
+                #     for thread_idx in range(NetworkConfig.NUM_THREADS):
+                #         processes[thread_idx].join()
+                #
+                #     for thread_idx in range(NetworkConfig.NUM_THREADS):
+                #         batch_loss += batch_loss_per_thread[thread_idx]
 
 
                 batch_loss.backward()
                 optimizer.step()
 
                 all_loss += batch_loss.item()
-                #print(colored("Batch {0}".format(batch_idx), 'yellow'), iteration, ": batch loss =", batch_loss.item(), flush=True)
+                print(colored("Batch {0}".format(batch_idx), 'blue'), iteration, ": batch loss =", batch_loss.item(), flush=True)
 
+                if not NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH:
+                    for b in range(this_batch_size):
+                        del batch_label_networks[0]
+                        del batch_unlabel_networks[0]
+                    for i in inst_ids:
+                        self.networks[i * 2] = None
+                        self.networks[i * 2 + 1] = None
+
+
+                def eval():
+                    start_time = time.time()
+                    self.decode(dev_insts)
+                    score = self.evaluator.eval(dev_insts)
+                    end_time = time.time()
+                    print("Dev  -- ", str(score), '\tTime={:.2f}s'.format(end_time - start_time), flush=True)
+
+                    if self.best_score == None or score.larger_than(self.best_score):
+
+                        if self.best_score == None:
+                            self.best_score = score
+                        else:
+                            self.best_score.update_score(score)
+                        self.save()
+
+                        start_time = time.time()
+                        self.decode(test_insts)
+                        test_score = self.evaluator.eval(test_insts)
+                        end_time = time.time()
+                        print(colored("Test -- ", 'red'), str(test_score),
+                              '\tTime={:.2f}s'.format(end_time - start_time), flush=True)
+
+                    else:
+                        if NetworkConfig.ECHO_TEST_RESULT_DURING_EVAL_ON_DEV:
+                            start_time = time.time()
+                            self.decode(test_insts)
+                            test_score = self.evaluator.eval(test_insts)
+                            end_time = time.time()
+                            print("Test -- ", str(test_score), '\tTime={:.2f}s'.format(end_time - start_time),
+                                  flush=True)
+
+                if (batch_idx + 1) % self.check_every == 0:
+                    eval()
 
             end_time = time.time()
+            print(colored("Epoch ", 'yellow'), iteration, ": Obj=", all_loss, '\tTime=', end_time - start_time, flush=True)
 
-            print(colored("Epoch ", 'red'), iteration, ": Obj=", all_loss, '\tTime=', end_time - start_time, flush=True)
-
-
-            start_time = time.time()
-            self.decode(dev_insts)
-            ret = self.evaluator.eval(dev_insts)
-            end_time = time.time()
-            print(ret, '\tTime=', end_time - start_time, flush=True)
-            print()
-
-            if self.best_ret[2] < ret[2]:
-                self.best_ret = ret
-                self.save()
-
-        print("Best F1:", self.best_ret)
+        print("Best Result:", self.best_score)
 
 
     def learn(self, train_insts, max_iterations, dev_insts, test_insts, optimizer = 'adam'):
@@ -216,18 +270,18 @@ class NetworkModel(nn.Module):
                 if inst.get_instance_id() > 0:
                     optimizer.zero_grad()
                     self.zero_grad()
-                    network = self.get_network(i)
-                    negative_network = self.get_network(i + 1)
+                    gold_network = self.get_network(i)
+                    partition_network = self.get_network(i + 1)
 
                     if not NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH:
-                        network.touch()
-                        negative_network.touch()
+                        gold_network.touch()
+                        partition_network.touch()
 
-                    network.nn_output = self.fm.build_nn_graph(inst)
-                    negative_network.nn_output = network.nn_output
+                    gold_network.nn_output = self.fm.build_nn_graph(inst)
+                    partition_network.nn_output = gold_network.nn_output
 
-                    label_score = self.forward(network)
-                    unlabel_score = self.forward(negative_network)
+                    label_score = self.forward(gold_network)
+                    unlabel_score = self.forward(partition_network)
                     loss = -unlabel_score - label_score
                     all_loss += loss.item()
 
@@ -235,12 +289,12 @@ class NetworkModel(nn.Module):
                     optimizer.step()
 
                     if not NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH:
-                        del network
+                        del gold_network
                         self.networks[i] = None
-                        del negative_network
+                        del partition_network
                         self.networks[i + 1] = None
-                if NetworkConfig.ECHO_TRAINING_PROGRESS and (i + 1) % 100 == 0:
-                    print('x', end='')
+                if NetworkConfig.ECHO_TRAINING_PROGRESS > 0 and (i + 1) % NetworkConfig.ECHO_TRAINING_PROGRESS == 0:
+                    print('x', end='', flush=True)
 
                 def eval():
                     start_time = time.time()
@@ -375,6 +429,8 @@ class NetworkModel(nn.Module):
         if self.networks == None:
             self.networks = [None for i in range(len(insts))]
 
+        self.fm.gnp.set_network2nodeid2nn_size(len(insts))
+
         if NetworkConfig.IGNORE_TRANSITION:
             print('Ignore Transition...')
             return
@@ -448,7 +504,7 @@ class NetworkModel(nn.Module):
             instance = instances[k]
 
             network = self.compiler.compile(k, instance, self.fm)
-            network.touch()
+            network.touch(is_train = False)
             network.nn_output = self.fm.build_nn_graph(instance)
             network.max()
             instance_output = self.compiler.decompile(network)
