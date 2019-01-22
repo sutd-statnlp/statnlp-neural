@@ -1,5 +1,5 @@
 from hypergraph.TensorNetwork import TensorNetwork
-
+from hypergraph.NetworkIDMapper import NetworkIDMapper
 
 class TensorTableLookupNetwork(TensorNetwork):
 
@@ -9,6 +9,15 @@ class TensorTableLookupNetwork(TensorNetwork):
         self.children = children
         # self.num_stage = num_stage
         # self.num_row = num_row
+        self.nodeid2arr = [None] * self.size
+        for k in range(len(self.nodeid2arr)):
+            node_long = self.get_node(k)
+            self.nodeid2arr[k] = NetworkIDMapper.to_hybrid_node_array(node_long)
+
+    def get_node_array(self, k):
+        return self.nodeid2arr[k]
+        # node = self.get_node(k)
+        # return NetworkIDMapper.to_hybrid_node_array(node)
 
     def get_node(self, k):
         return self.nodes[k]

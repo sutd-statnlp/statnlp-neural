@@ -26,11 +26,6 @@ class TensorNetwork:
         self.neg_inf_idx = -1
         self.zero_idx = self.neg_inf_idx - 1
 
-        self.nodeid2arr = [None] * len(self.size)
-        for k in range(len(self.nodeid2arr)):
-            node_long = self.get_node(k)
-            self.nodeid2arr[k] = NetworkIDMapper.to_hybrid_node_array(node_long)
-
 
     def get_network_id(self):
         return self.network_id
@@ -124,11 +119,6 @@ class TensorNetwork:
             self.trans_id[stage_idx] = torch.from_numpy(trans_stage_np).to(NetworkConfig.DEVICE)
 
         self.staged_nodes[stage_idx] = torch.from_numpy(self.staged_nodes[stage_idx]).to(NetworkConfig.DEVICE)
-
-    def get_node_array(self, k):
-        return self.nodeid2arr[k]
-        # node = self.get_node(k)
-        # return NetworkIDMapper.to_hybrid_node_array(node)
 
 
     @abstractmethod

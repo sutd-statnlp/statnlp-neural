@@ -17,6 +17,15 @@ class TensorBaseNetwork(TensorTableLookupNetwork):
     def count_nodes(self):
         return self.node_count
 
+    def __del__(self):
+        del self.nodes
+        if self.children:
+            for item in self.children:
+                del item
+        if self.staged_nodes:
+            for item in self.staged_nodes:
+                del item
+
     class NetworkBuilder:
 
         def __init__(self):
