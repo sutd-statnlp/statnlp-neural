@@ -49,7 +49,8 @@ class TensorNetwork:
             emissions = torch.stack(emissions, 0)
             self.inside_scores[self.staged_nodes[0]] = emissions[self.staged_nodes[0]]  ## REIMINDER: stageIdx = 0.
         else:
-            emissions = torch.take(self.nn_output, self.nodeid2nn[self.staged_nodes[0]])
+            #emissions = torch.take(self.nn_output, self.nodeid2nn[self.staged_nodes[0]])
+            emissions = torch.take(self.nn_output,  self.stagenodes2nodeid2nn[0])
             self.inside_scores[self.staged_nodes[0]] = emissions  ## REIMINDER: stageIdx = 0.
 
 
@@ -64,7 +65,8 @@ class TensorNetwork:
             if not NetworkConfig.NEUTRAL_BUILDER_ENABLE_NODE_TO_NN_OUTPUT_MAPPING:
                 emission_expr = emissions[self.staged_nodes[stage_idx]].view(self.num_row[stage_idx], 1).expand(self.num_row[stage_idx], self.num_hyperedge)
             else:
-                emission_expr = torch.take(self.nn_output, self.nodeid2nn[self.staged_nodes[stage_idx]]).view(self.num_row[stage_idx], 1).expand(self.num_row[stage_idx], self.num_hyperedge)
+                #emission_expr = torch.take(self.nn_output, self.nodeid2nn[self.staged_nodes[stage_idx]]).view(self.num_row[stage_idx], 1).expand(self.num_row[stage_idx], self.num_hyperedge)
+                emission_expr = torch.take(self.nn_output, self.stagenodes2nodeid2nn[stage_idx]).view(self.num_row[stage_idx], 1).expand(self.num_row[stage_idx], self.num_hyperedge)
 
             if not NetworkConfig.IGNORE_TRANSITION:
                 trans_expr = torch.take(self.gnp.transition_mat, self.trans_id[stage_idx])  # this line is same as the above two lines
@@ -108,13 +110,30 @@ class TensorNetwork:
         self.children = [torch.from_numpy(self.children[stage_idx]).to(NetworkConfig.DEVICE) for stage_idx in range(self.num_stage)]
 
         if NetworkConfig.NEUTRAL_BUILDER_ENABLE_NODE_TO_NN_OUTPUT_MAPPING:
-            if is_train:
-                if self.fm.gnp.network2nodeid2nn[self.network_id] == None:
-                    self.fm.gnp.network2nodeid2nn[self.network_id] = self.fm.build_node2nn_output(self)
+            # if is_train:
+            #     if self.fm.gnp.network2nodeid2nn[self.network_id] == None:
+            #         self.fm.gnp.network2nodeid2nn[self.network_id] = self.fm.build_node2nn_output(self)
+            #
+            #     self.nodeid2nn = torch.LongTensor(self.fm.gnp.network2nodeid2nn[self.network_id])
+            # else:
+            #     self.nodeid2nn = torch.LongTensor(self.fm.build_node2nn_output(self))
 
-                self.nodeid2nn = torch.LongTensor(self.fm.gnp.network2nodeid2nn[self.network_id])
+
+            if is_train:
+                if self.fm.gnp.network2stagenodes2nodeid2nn[self.network_id] == None:
+                    nodeid2nn = torch.LongTensor(self.fm.build_node2nn_output(self))
+                    self.stagenodes2nodeid2nn = [None] * self.num_stage
+                    for stage_idx in range(self.num_stage):
+                        self.stagenodes2nodeid2nn[stage_idx] = nodeid2nn[self.staged_nodes[stage_idx]]
+                    self.fm.gnp.network2stagenodes2nodeid2nn[self.network_id] = self.stagenodes2nodeid2nn
+                else:
+                    self.stagenodes2nodeid2nn = self.fm.gnp.network2stagenodes2nodeid2nn[self.network_id]
             else:
-                self.nodeid2nn = torch.LongTensor(self.fm.build_node2nn_output(self))
+                nodeid2nn = torch.LongTensor(self.fm.build_node2nn_output(self))
+                self.stagenodes2nodeid2nn = [None] * self.num_stage
+                for stage_idx in range(self.num_stage):
+                    self.stagenodes2nodeid2nn[stage_idx] = nodeid2nn[self.staged_nodes[stage_idx]]
+
 
         #self.num_row = torch.LongTensor(self.num_row)
 
@@ -172,7 +191,8 @@ class TensorNetwork:
             emissions = torch.stack(emissions, 0)
             self._max[self.staged_nodes[0]] = emissions[self.staged_nodes[0]]
         else:
-            emissions = torch.take(self.nn_output, self.nodeid2nn[self.staged_nodes[0]])
+            #emissions = torch.take(self.nn_output, self.nodeid2nn[self.staged_nodes[0]])
+            emissions = torch.take(self.nn_output, self.stagenodes2nodeid2nn[0])
             self._max[self.staged_nodes[0]] = emissions  ## REIMINDER: stageIdx = 0.
 
         for stage_idx in range(1, self.num_stage):  ## starting from stage Idx = 1
@@ -184,7 +204,8 @@ class TensorNetwork:
             if not NetworkConfig.NEUTRAL_BUILDER_ENABLE_NODE_TO_NN_OUTPUT_MAPPING:
                 emission_expr = emissions[self.staged_nodes[stage_idx]].view(self.num_row[stage_idx], 1).expand(self.num_row[stage_idx], self.num_hyperedge)
             else:
-                emission_expr = torch.take(self.nn_output, self.nodeid2nn[self.staged_nodes[stage_idx]]).view(self.num_row[stage_idx], 1).expand(self.num_row[stage_idx], self.num_hyperedge)
+                #emission_expr = torch.take(self.nn_output, self.nodeid2nn[self.staged_nodes[stage_idx]]).view(self.num_row[stage_idx], 1).expand(self.num_row[stage_idx], self.num_hyperedge)
+                emission_expr = torch.take(self.nn_output, self.stagenodes2nodeid2nn[stage_idx]).view(self.num_row[stage_idx], 1).expand(self.num_row[stage_idx], self.num_hyperedge)
 
             if not NetworkConfig.IGNORE_TRANSITION:
                 trans_expr = torch.take(self.gnp.transition_mat, self.trans_id[stage_idx])  # this line is same as the above two lines

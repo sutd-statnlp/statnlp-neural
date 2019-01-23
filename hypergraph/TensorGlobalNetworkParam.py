@@ -18,9 +18,11 @@ class TensorGlobalNetworkParam(nn.Module):
         self.lock = threading.Lock()
 
         self.network2nodeid2nn = None
+        self.network2stagenodes2nodeid2nn = None
 
     def set_network2nodeid2nn_size(self, size):
         self.network2nodeid2nn = [None] * size
+        self.network2stagenodes2nodeid2nn = [None] * size
 
     def is_locked(self):
         return self.locked

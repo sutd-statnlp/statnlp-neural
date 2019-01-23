@@ -395,27 +395,34 @@ class TreeNeuralBuilder(NeuralBuilder):
         square_t = square.transpose(0, 1)
 
         ret = square_t - square
-        half_lstm_dim = lstm_dim // 2
-        ret[:,:,half_lstm_dim:] = ret[:,:,half_lstm_dim:].transpose(0,1)  #sent_len * sent_len * hidden_size
-        spans = self.f_label(ret)
-        zeros = torch.zeros((sent_len, sent_len, 1)).to(NetworkConfig.DEVICE) # score of (), empty label
+        ret = ret[:, 1 : sent_len - 1, :]
 
+        half_lstm_dim = lstm_dim // 2
+
+        fwd = ret[:sent_len - 2, :, :half_lstm_dim]
+
+        bwd = ret[2:, :, half_lstm_dim:].transpose(0,1)
+
+        bi = torch.cat([fwd, bwd], 2)
+        spans = self.f_label(bi)
+
+        zeros = torch.zeros((sent_len - 2, sent_len - 2, 1)).to(NetworkConfig.DEVICE) # score of (), empty label
         spans = torch.cat([zeros, spans], 2)
 
-        spans[sent_len - 1, 0, 0] = 0
+        spans[sent_len - 3, 0, 0] = 0
 
         return spans
 
     def build_node2nn_output(self, network):
-        size = network.count_nodes()
-        nodeid2nn = [0] * size
-        for k in range(size):
+        num_nodes = network.count_nodes()
+        nodeid2nn = [0] * num_nodes
+        for k in range(num_nodes):
             parent_arr = network.get_node_array(k)  # pos, label_id, node_type
             size = network.get_instance().size()
             right, length, node_type, label_id = parent_arr
             left = right - length
 
-            if node_type != NodeType.label.value or node_type == NodeType.sink.value:
+            if node_type != NodeType.label.value:
                 idx = (size - 1) * size  ## a index with 0
             else:
                 row = left * size + right - 1
@@ -468,7 +475,7 @@ class TreeNeuralBuilder(NeuralBuilder):
         spans = []
         for i in range(size):
             spans_i = []
-            for j in range(i + 1):
+            for j in range(1, i + 1):
                 zeros = torch.zeros((self.label_size)).to(NetworkConfig.DEVICE)
                 spans_i.append(zeros)
             for j in range(i + 1, size + 1):
