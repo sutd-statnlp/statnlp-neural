@@ -429,7 +429,8 @@ class NetworkModel(nn.Module):
         if self.networks == None:
             self.networks = [None for i in range(len(insts))]
 
-        self.fm.gnp.set_network2nodeid2nn_size(len(insts))
+        if NetworkConfig.NEUTRAL_BUILDER_ENABLE_NODE_TO_NN_OUTPUT_MAPPING:
+            self.fm.gnp.set_network2nodeid2nn_size(len(insts))
 
         if NetworkConfig.IGNORE_TRANSITION:
             print('Ignore Transition...')
@@ -513,32 +514,32 @@ class NetworkModel(nn.Module):
         return instances_output
 
 
-    def get_network_test(self, network_id):
-        if self.networks_test[network_id] != None:
-            return self.networks_test[network_id]
+    # def get_network_test(self, network_id):
+    #     if self.networks_test[network_id] != None:
+    #         return self.networks_test[network_id]
+    #
+    #     inst = self.all_instances_test[network_id]
+    #
+    #     network = self.compiler.compile(network_id, inst, self.fm)
+    #
+    #
+    #     self.networks_test[network_id] = network
+    #
+    #     return network
 
-        inst = self.all_instances_test[network_id]
 
-        network = self.compiler.compile(network_id, inst, self.fm)
-
-
-        self.networks_test[network_id] = network
-
-        return network
-
-
-    def touch_test(self, insts):
-        if self.networks_test == None:
-            self.networks_test = [None for i in range(len(insts))]
-
-        for network_id in range(len(insts)):
-            if network_id % 100 == 0:
-                print('.', end='')
-            network = self.get_network_test(network_id)
-
-            network.touch()
-
-        print()
+    # def touch_test(self, insts):
+    #     if self.networks_test == None:
+    #         self.networks_test = [None for i in range(len(insts))]
+    #
+    #     for network_id in range(len(insts)):
+    #         if network_id % 100 == 0:
+    #             print('.', end='')
+    #         network = self.get_network_test(network_id)
+    #
+    #         network.touch()
+    #
+    #     print()
 
 
     def save(self):

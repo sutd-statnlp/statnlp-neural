@@ -119,7 +119,6 @@ class TreeNetworkCompiler(NetworkCompiler):
 
         self.all_nodes, self.all_children, self.num_hyperedge = builder.pre_build()
 
-
     def to_sink(self):
         return self.to_node(0, 0, NodeType.sink.value, 0)
 
@@ -219,7 +218,6 @@ class TreeNetworkCompiler(NetworkCompiler):
         network = builder.build_from_generic(network_id, inst, self.all_nodes, self.all_children, node_count, self.num_hyperedge, param, self)
         return network
 
-
     def compile_unlabeled_old(self, network_id, inst, param):
         # return self.compile_labeled(network_id, inst, param)
         builder = TensorBaseNetwork.NetworkBuilder.builder()
@@ -281,12 +279,6 @@ class TreeNetworkCompiler(NetworkCompiler):
 
         network = builder.build(network_id, inst, param, self)
         return network
-
-    # def build_generic_network(self, ):
-    #
-    #     network = builder.build(None, None, None, None)
-    #     self._all_nodes = network.get_all_nodes()
-    #     self._all_children = network.get_all_children()
 
     def decompile(self, network):
         inst = network.get_instance()
@@ -376,8 +368,6 @@ class TreeNeuralBuilder(NeuralBuilder):
         ).to(NetworkConfig.DEVICE)
 
 
-
-
     def load_pretrain(self, word2idx):
         emb = load_emb_glove(None, word2idx, self.word_embed_dim)
         self.word_embeddings.weight.data.copy_(torch.from_numpy(emb))
@@ -385,7 +375,6 @@ class TreeNeuralBuilder(NeuralBuilder):
 
 
     def build_nn_graph(self, instance):
-
 
         word_seq = instance.word_seq
         tag_seq = instance.tag_seq
@@ -409,6 +398,10 @@ class TreeNeuralBuilder(NeuralBuilder):
         half_lstm_dim = lstm_dim // 2
         ret[:,:,half_lstm_dim:] = ret[:,:,half_lstm_dim:].transpose(0,1)  #sent_len * sent_len * hidden_size
         spans = self.f_label(ret)
+        zeros = torch.zeros((sent_len, sent_len, 1)).to(NetworkConfig.DEVICE) # score of (), empty label
+
+        spans = torch.cat([zeros, spans], 2)
+
         spans[sent_len - 1, 0, 0] = 0
 
         return spans
@@ -419,11 +412,9 @@ class TreeNeuralBuilder(NeuralBuilder):
         for k in range(size):
             parent_arr = network.get_node_array(k)  # pos, label_id, node_type
             size = network.get_instance().size()
-            right = parent_arr[0]
-            length = parent_arr[1]
+            right, length, node_type, label_id = parent_arr
             left = right - length
-            node_type = parent_arr[2]
-            label_id = parent_arr[3]
+
             if node_type != NodeType.label.value or node_type == NodeType.sink.value:
                 idx = (size - 1) * size  ## a index with 0
             else:
@@ -466,16 +457,30 @@ class TreeNeuralBuilder(NeuralBuilder):
             label_vec = torch.cat([torch.tensor([0.0]).to(NetworkConfig.DEVICE), non_empty_label_scores], 0)
             return label_vec
 
+        #
+        # spans = {}
+        #
+        # for i in range(size):
+        #     for j in range(i + 1, size + 1):
+        #         label_scores = get_label_scores(i, j)
+        #         spans[i,j] = label_scores
 
-        spans = {}
-
+        spans = []
         for i in range(size):
+            spans_i = []
+            for j in range(i + 1):
+                zeros = torch.zeros((self.label_size)).to(NetworkConfig.DEVICE)
+                spans_i.append(zeros)
             for j in range(i + 1, size + 1):
-                label_scores = get_label_scores(i, j)
-                spans[i,j] = label_scores
+                label_scores = get_label_scores(i, j)  #  label_size
+                spans_i.append(label_scores)
+            spans_i = torch.stack(spans_i, 0)
+            spans.append(spans_i)
+            del spans_i
+
+        spans = torch.stack(spans, 0)
 
         return spans
-
 
 
     def build_nn_graph_batch(self, batch_input_seqs):
@@ -582,26 +587,17 @@ class TreeNeuralBuilder(NeuralBuilder):
         return batches
 
 
-
-
-
     def get_nn_score(self, network, parent_k):
         parent_arr = network.get_node_array(parent_k)  # pos, label_id, node_type
-        right= parent_arr[0]
-        length = parent_arr[1]
+        right, length, node_type, label_id= parent_arr
         left = right - length
-        node_type = parent_arr[2]
-        label_id = parent_arr[3]
-
 
         if node_type != NodeType.label.value or node_type == NodeType.sink.value:  # Start, End
             return torch.tensor(0.0).to(NetworkConfig.DEVICE)
         else:
-            # children_list = network.get_children(parent_k)
-            # if len(children_list) == 1 and len(children_list[0]) == 0:
-            #     print()
             spans = network.nn_output
             return spans[left, right][label_id]
+
 
     def get_label_id(self, network, parent_k):
         parent_arr = network.get_node_array(parent_k)
@@ -640,88 +636,6 @@ class TreeReader():
         return insts
 
 
-# from hypergraph.Visualizer import Visualizer
-# class TreeVisualizer(Visualizer):
-#     def __init__(self, compiler, fm, labels):
-#         super().__init__(compiler, fm)
-#         self.labels = labels
-#         self.span = 50
-#
-#
-#     def nodearr2label(self, node_arr):
-#         right_idx, length, node_type, label_id = node_arr
-#         # sink = 0
-#         # leaf = 1
-#         # label = 2
-#         # span_prime = 3
-#         # span = 4
-#         # root = 5
-#         label = self.labels[label_id]
-#         label_str = '-'.join(label) if label else '()'
-#         return str(right_idx - length) + ',' + str(right_idx) + ' ' + label_str
-#         # if node_arr[2] == 1:
-#         #     label_id = node_arr[2]
-#         #     label = self.labels[label_id]
-#         #
-#         #     if label == 'eM0':
-#         #         return self.input[node_arr[0]]
-#         #     else:
-#         #         return self.labels[node_arr[2]] #+ ' ' + str(node_arr)
-#         # else:
-#         #     if node_arr[1] == 0:
-#         #         return "<X>"
-#         #     else:
-#         #         return "<Root>"
-#
-#
-#     def nodearr2color(self, node_arr):
-#         if node_arr[2] == 0 or node_arr[2] == 5:
-#             return 'blue'
-#
-#         elif node_arr[2] == 1:
-#             return 'green'
-#         elif node_arr[2] == 2:
-#             return 'red'
-#         elif node_arr[2] == 3:
-#             return 'yellow'
-#         elif node_arr[2] == 4:
-#             return 'orange'
-#         else:
-#             return 'blue'
-#
-#
-#     def nodearr2coord(self, node_arr):
-#         span = self.span
-#
-#         right_idx, length , node_type, label_id = node_arr
-#
-#         if node_type == 0: ##Sink
-#             x = 0
-#             y = -1 * span
-#         elif node_type == 5: ##Root
-#             x = 2.5
-#             y = (length + 1) * span
-#
-#         elif node_type == 4 : #Span or
-#             x = right_idx
-#             y = length * span
-#         elif node_type == 1: #leaf
-#             x = right_idx
-#             y = length * span - 30
-#
-#         elif node_type == 3:  # SpanPrime
-#             x = right_idx + 5
-#             y = length * span - 20
-#         elif node_type == 2:  # label
-#             x = right_idx - 5
-#             y = length * span - 20
-#
-#
-#         return (x, y)
-
-
-
-
 if __name__ == "__main__":
 
     torch.manual_seed(1234)
@@ -749,8 +663,9 @@ if __name__ == "__main__":
     NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH = False
     NetworkConfig.IGNORE_TRANSITION = True
     NetworkConfig.GPU_ID = -1
-    NetworkConfig.ECHO_TRAINING_PROGRESS = 10000
+    NetworkConfig.ECHO_TRAINING_PROGRESS = -1
     NetworkConfig.LOSS_TYPE = LossType.SSVM
+    NetworkConfig.NEUTRAL_BUILDER_ENABLE_NODE_TO_NN_OUTPUT_MAPPING = True
 
     if TRIAL == True:
         data_size = -1
@@ -825,15 +740,70 @@ if __name__ == "__main__":
     model.model_path = model_path
     model.check_every = check_every
 
-    # if DEBUG:
-    #     if visual:
-    #         visualizer = TreeVisualizer(compiler, fm, labels)
-    #         inst = train_insts[0]
-    #         inst.is_labeled = False
-    #         visualizer.visualize_inst(inst)
-    #         #inst.is_labeled = False
-    #         #ts_visualizer.visualize_inst(inst)
-    #         exit()
+    if DEBUG and visual:
+        from hypergraph.Visualizer import Visualizer
+        class TreeVisualizer(Visualizer):
+            def __init__(self, compiler, fm, labels, span = 50):
+                super().__init__(compiler, fm)
+                self.labels = labels
+                self.span = span
+
+            def nodearr2label(self, node_arr):
+                right_idx, length, node_type, label_id = node_arr
+                label = self.labels[label_id]
+                label_str = '-'.join(label) if label else '()'
+                return str(right_idx - length) + ',' + str(right_idx) + ' ' + label_str
+
+            def nodearr2color(self, node_arr):
+                if node_arr[2] == 0 or node_arr[2] == 5:
+                    return 'blue'
+                elif node_arr[2] == 1:
+                    return 'green'
+                elif node_arr[2] == 2:
+                    return 'red'
+                elif node_arr[2] == 3:
+                    return 'yellow'
+                elif node_arr[2] == 4:
+                    return 'orange'
+                else:
+                    return 'blue'
+
+            def nodearr2coord(self, node_arr):
+                span = self.span
+
+                right_idx, length , node_type, label_id = node_arr
+
+                if node_type == 0: ##Sink
+                    x = 0
+                    y = -1 * span
+                elif node_type == 5: ##Root
+                    x = 2.5
+                    y = (length + 1) * span
+
+                elif node_type == 4 : #Span or
+                    x = right_idx
+                    y = length * span
+                elif node_type == 1: #leaf
+                    x = right_idx
+                    y = length * span - 30
+
+                elif node_type == 3:  # SpanPrime
+                    x = right_idx + 5
+                    y = length * span - 20
+                elif node_type == 2:  # label
+                    x = right_idx - 5
+                    y = length * span - 20
+
+                x -= label_id * 2
+                y -= label_id * 2
+
+                return (x, y)
+
+        visualizer = TreeVisualizer(compiler, fm, labels)
+        inst = train_insts[0]
+        inst.is_labeled = True # True
+        visualizer.visualize_inst(inst)
+        exit()
 
 
     if batch_size == 1:
@@ -847,8 +817,8 @@ if __name__ == "__main__":
     results = model.test(test_insts)
     for inst in results:
         print(inst.get_input())
-        print(inst.get_output())
-        print(inst.get_prediction())
+        print(inst.get_output().linearize())
+        print(inst.get_prediction().linearize())
         print()
 
     ret = model.evaluator.eval(test_insts)
