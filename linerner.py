@@ -13,7 +13,7 @@ from termcolor import colored
 
 class TagNetworkCompiler(NetworkCompiler):
 
-    def __init__(self, label_map):
+    def __init__(self, label_map, max_size=20):
         super().__init__()
         self.labels = ["x"] * len(label_map)
         self.label2id = label_map
@@ -28,9 +28,11 @@ class TagNetworkCompiler(NetworkCompiler):
         print(self.labels)
         self._all_nodes = None
         self._all_children = None
-        self._max_size = 100
+        self._max_size = max_size
+        print("The max size: ", self._max_size)
 
-        # self.build_generic_network()
+        print("Building generic network..")
+        self.build_generic_network()
 
     def to_root(self, size):
         return self.to_node(size - 1, len(self.labels) - 1, 2)
@@ -64,7 +66,7 @@ class TagNetworkCompiler(NetworkCompiler):
         network = builder.build(network_id, inst, param, self)
         return network
 
-    def compile_unlabeled(self, network_id, inst, param):
+    def compile_unlabeled_old(self, network_id, inst, param):
         # return self.compile_labeled(network_id, inst, param)
         builder = TensorBaseNetwork.NetworkBuilder.builder()
         leaf = self.to_leaf()
@@ -88,11 +90,39 @@ class TagNetworkCompiler(NetworkCompiler):
         network = builder.build(network_id, inst, param, self)
         return network
 
-    # def build_generic_network(self, ):
-    #
-    #     network = builder.build(None, None, None, None)
-    #     self._all_nodes = network.get_all_nodes()
-    #     self._all_children = network.get_all_children()
+    def compile_unlabeled(self, network_id, inst, param):
+        builder = TensorBaseNetwork.NetworkBuilder.builder()
+        root_node = self.to_root(inst.size())
+        all_nodes = self._all_nodes
+        root_idx = np.argwhere(all_nodes == root_node)[0][0]
+        node_count = root_idx + 1
+        network = builder.build_from_generic(network_id, inst, self._all_nodes, self._all_children, node_count, self.num_hyperedge, param, self)
+        return network
+
+
+    def build_generic_network(self, ):
+
+        builder = TensorBaseNetwork.NetworkBuilder.builder()
+        leaf = self.to_leaf()
+        builder.add_node(leaf)
+
+        children = [leaf]
+        for i in range(self._max_size):
+            current = [None for k in range(len(self.labels))]
+            for l in range(len(self.labels)):
+                tag_node = self.to_tag(i, l)
+                builder.add_node(tag_node)
+                for child in children:
+                    builder.add_edge(tag_node, [child])
+                current[l] = tag_node
+
+            children = current
+
+            root = self.to_root(i+1)
+            builder.add_node(root)
+            for child in children:
+                builder.add_edge(root, [child])
+        self._all_nodes, self._all_children, self.num_hyperedge = builder.pre_build()
 
     def decompile(self, network):
         inst = network.get_instance()
@@ -148,7 +178,10 @@ class TagNeuralBuilder(NeuralBuilder):
         linear_output = self.linear(lstm_out).squeeze(0)
         #word_vec = self.word_embed(instance.word_seq) #.unsqueeze(0)
         #linear_output = self.linear(word_vec)#.squeeze(0)
-        return linear_output
+        # return linear_output   ##sent_len x num_label
+
+        zero_col = torch.zeros(1, self.label_size)
+        return torch.cat([linear_output, zero_col], 0)
 
     def generate_batches(self, train_insts, batch_size):
         '''
@@ -209,6 +242,24 @@ class TagNeuralBuilder(NeuralBuilder):
         parent_arr = network.get_node_array(parent_k)
         return parent_arr[1]
 
+    def build_node2nn_output(self, network):
+        size = network.count_nodes()
+        sent_len = network.get_instance().size()
+        nodeid2nn = [0] * size
+        for k in range(size):
+            parent_arr = network.get_node_array(k)  # pos, label_id, node_type
+            pos = parent_arr[0]
+            label_id = parent_arr[1]
+            node_type = parent_arr[2]
+
+            if node_type == 0 or node_type == 2:  # Start, End
+                idx = sent_len * self.label_size
+            else:
+                idx = pos * self.label_size  + label_id
+            nodeid2nn[k] = idx
+        return nodeid2nn
+
+
 
 class TagReader():
     label2id_map = {}
@@ -263,6 +314,12 @@ class TagReader():
 
 if __name__ == "__main__":
 
+    # NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH = False
+    # NetworkConfig.IGNORE_TRANSITION = True
+    # NetworkConfig.GPU_ID = -1
+    # NetworkConfig.ECHO_TRAINING_PROGRESS = -1
+    # NetworkConfig.LOSS_TYPE = LossType.SSVM
+    NetworkConfig.NEUTRAL_BUILDER_ENABLE_NODE_TO_NN_OUTPUT_MAPPING = True
     torch.manual_seed(1234)
     torch.set_num_threads(40)
     np.random.seed(1234)
@@ -305,8 +362,10 @@ if __name__ == "__main__":
     TagReader.label2id_map["<ROOT>"] = len(TagReader.label2id_map)
     print("map:", TagReader.label2id_map)
     #vocab2id = {'<PAD>':0}
+    max_size = -1
     vocab2id = {}
     for inst in train_insts + dev_insts + test_insts:
+        max_size = max(len(inst.input), max_size)
         for word in inst.input:
             if word not in vocab2id:
                 vocab2id[word] = len(vocab2id)
@@ -321,7 +380,7 @@ if __name__ == "__main__":
     #fm.load_pretrain('data/glove.6B.100d.txt', vocab2id)
     fm.load_pretrain(None, vocab2id)
     print(list(TagReader.label2id_map.keys()))
-    compiler = TagNetworkCompiler(TagReader.label2id_map)
+    compiler = TagNetworkCompiler(TagReader.label2id_map, max_size)
 
 
     evaluator = nereval()
