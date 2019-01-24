@@ -972,7 +972,7 @@ if __name__ == "__main__":
         VINILAA = 0
         ATT = 1
 
-
+    lang = 'es'
     fold_start_idx = 1
     fold_end_idx = 10
     TRIAL = True
@@ -990,14 +990,14 @@ if __name__ == "__main__":
     char_embed_dim = 50
     SENT_embed_dim = 0
     lstm_dim = 400
-    check_every = 700
+    check_every = 700 if lang == 'en' else 1500
     SEPARATE_DEV_FROM_TRAIN = True
     APPEND_START_END = False
     NetworkConfig.ECHO_TEST_RESULT_DURING_EVAL_ON_DEV = True
     visual = True
     DEBUG = False
     neural_builder_type = TSNeuralBuilderType.VINILAA
-    lang = 'es'
+
 
 
 

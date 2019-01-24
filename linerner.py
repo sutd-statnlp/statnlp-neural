@@ -198,7 +198,7 @@ class TagNeuralBuilder(NeuralBuilder):
         #linear_output = self.linear(word_vec)#.squeeze(0)
         # return linear_output   ##sent_len x num_label
 
-        zero_col = torch.zeros(1, self.label_size)
+        zero_col = torch.zeros(1, self.label_size).to(NetworkConfig.DEVICE)
         return torch.cat([linear_output, zero_col], 0)
 
     def generate_batches(self, train_insts, batch_size):
