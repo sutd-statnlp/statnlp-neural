@@ -436,9 +436,14 @@ class NetworkModel(nn.Module):
         if NetworkConfig.NEUTRAL_BUILDER_ENABLE_NODE_TO_NN_OUTPUT_MAPPING:
             self.fm.gnp.set_network2nodeid2nn_size(len(insts))
 
-        if NetworkConfig.IGNORE_TRANSITION:
-            print('Ignore Transition...')
+        if not NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH:
+            print('Exit Full Touch ...')
             return
+
+
+        # if NetworkConfig.IGNORE_TRANSITION:
+        #     print('Ignore Transition...')
+        #     return
 
 
         start_time = time.time()

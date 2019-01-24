@@ -36,12 +36,12 @@ class TensorGlobalNetworkParam(nn.Module):
     def finalize_transition(self):
         self.tuple_size = len(self.tuple2id)
         if NetworkConfig.IGNORE_TRANSITION:
-            self.transition_mat = nn.Parameter(torch.zeros(self.tuple_size)).to(NetworkConfig.DEVICE)
+            pass
+            #self.transition_mat = nn.Parameter(torch.zeros(self.tuple_size)).to(NetworkConfig.DEVICE)
             #self.transition_mat.requires_grad = False
         else:
             self.transition_mat = nn.Parameter(torch.randn(self.tuple_size)).to(NetworkConfig.DEVICE)
-
-        self.transition_mat.data[0] = -float('inf') # padding
+            self.transition_mat.data[0] = -float('inf') # padding
 
         self.locked = True
 
