@@ -293,7 +293,10 @@ class TreeNetworkCompiler(NetworkCompiler):
         if len(prediction_tmp) > 1:
             prediction = trees.InternalParseNode(('S',), prediction_tmp)
         else:
-            prediction = prediction_tmp[0]
+            if isinstance(prediction_tmp[0], trees.LeafParseNode):
+                prediction = trees.InternalParseNode(('NP',), prediction_tmp)
+            else:
+                prediction = prediction_tmp[0]
         pred_tree = prediction.convert()
         inst.set_prediction(pred_tree)
         return inst
@@ -657,17 +660,17 @@ if __name__ == "__main__":
     DEBUG = False
     visual = True
     TRIAL = True
-    num_train = -1
+    num_train = 1
     num_dev = -1
     num_test = -1
-    num_iter = 50
+    num_iter = 40
     batch_size = 1
     #device = "cpu"
     num_thread = 1
     model_path = "best_parsingtree.pt"
-    check_every = 1000
+    check_every = None
     dev_file = test_file
-    NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH = False
+    NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH = True
     NetworkConfig.IGNORE_TRANSITION = True
     NetworkConfig.GPU_ID = -1
     NetworkConfig.ECHO_TRAINING_PROGRESS = -1
