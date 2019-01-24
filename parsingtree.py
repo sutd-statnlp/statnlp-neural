@@ -665,7 +665,7 @@ if __name__ == "__main__":
     #device = "cpu"
     num_thread = 1
     model_path = "best_parsingtree.pt"
-    check_every = None
+    check_every = 1000
     dev_file = test_file
     NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH = False
     NetworkConfig.IGNORE_TRANSITION = True
@@ -673,6 +673,7 @@ if __name__ == "__main__":
     NetworkConfig.ECHO_TRAINING_PROGRESS = -1
     NetworkConfig.LOSS_TYPE = LossType.SSVM
     NetworkConfig.NEUTRAL_BUILDER_ENABLE_NODE_TO_NN_OUTPUT_MAPPING = True
+
 
     if TRIAL == True:
         data_size = -1

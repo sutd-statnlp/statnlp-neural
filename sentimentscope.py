@@ -558,17 +558,6 @@ class TSNeuralBuilder(NeuralBuilder):
             return self.zero#torch.tensor(0.0).to(NetworkConfig.DEVICE)
         else:
             return network.nn_output[pos][label_id]
-            # nn_output = network.nn_output[pos]
-            # label = self.labels[label_id]
-            # scope_tag = label[:2]
-            # if scope_tag[0] == 'e':
-            #     return  self.e_linear(nn_output)[self.e2id[label[1]]]
-            # else: #B A
-            #     if scope_tag == 'Be':
-            #         return self.zero #torch.tensor(0.0).to(NetworkConfig.DEVICE)
-            #     else:
-            #         polar = label[2]
-            #         return self.sent_linear(nn_output)[self.polar2id[polar]]
 
 
 
@@ -598,7 +587,6 @@ class TSATTNeuralBuilder(TSNeuralBuilder):
 
     def build_nn_graph(self, instance):
         lstm_outputs = self.build_features(instance)
-        #lstm_outputs = self.linear(lstm_outputs)
         nn_output_e_linear = self.e_linear(lstm_outputs)
         nn_output_sent_linear = self.sent_linear(lstm_outputs)
         nn_output = (nn_output_e_linear, nn_output_sent_linear)
@@ -614,14 +602,19 @@ class TSATTNeuralBuilder(TSNeuralBuilder):
             nn_output_e_linear, nn_output_sent_linear = network.nn_output
             label = self.labels[label_id]
             scope_tag = label[:2]
+            polar_tag = label[2]
+            polar_tag_id = self.polar2id[polar_tag]
             if scope_tag[0] == 'e':
-                return  nn_output_e_linear[pos][self.e2id[label[1]]]
+                target_score = nn_output_e_linear[pos][self.e2id[label[1]]]
+                sent_score = 0
+                return target_score + sent_score
             else: #B A
                 if scope_tag == 'Be':
                     return self.zero #torch.tensor(0.0).to(NetworkConfig.DEVICE)
                 else:
-                    polar = label[2]
-                    return nn_output_sent_linear[pos][self.polar2id[polar]]
+                    target_score = 0
+                    sent_score = nn_output_sent_linear[pos][polar_tag_id]
+                    return target_score + sent_score
 
 
 
@@ -722,7 +715,6 @@ class TScore(Score):
         self.compare_type = compare_type
         self.accumulated = accumulated
         if accumulated:
-            self.num_fold = 0
             self.fold_rets = []
 
     def set_scores(self, target_fscore: FScore, sentiment_fscore: FScore):
@@ -758,15 +750,24 @@ class TScore(Score):
 
     def accumulate(self, obj):
         self.fold_rets.append(obj)
-        self.target_fscore = self.target_fscore + obj.target_fscore
-        self.sentiment_fscore = self.sentiment_fscore + obj.sentiment_fscore
-        self.num_fold += 1
+        # self.target_fscore = self.target_fscore + obj.target_fscore
+        # self.sentiment_fscore = self.sentiment_fscore + obj.sentiment_fscore
 
-    def get_average(self):
-        num_fold = self.num_fold + 0.0
-        self.target_fscore = self.target_fscore.divide(num_fold)
-        self.sentiment_fscore = self.sentiment_fscore.divide(num_fold)
-        return self
+    def get_average(self, indices = None):
+
+        if indices == None:
+            indices = list(range(len(self.fold_rets)))
+        num_fold = len(indices) + 0.0
+
+        average_score = TScore()
+        for idx in indices:
+            tscore = self.fold_rets[idx]
+            average_score.target_fscore = average_score.target_fscore + tscore.target_fscore
+            average_score.sentiment_fscore = average_score.sentiment_fscore + tscore.sentiment_fscore
+
+        average_score.target_fscore = average_score.target_fscore.divide(num_fold)
+        average_score.sentiment_fscore = average_score.sentiment_fscore.divide(num_fold)
+        return average_score
 
 
 
@@ -968,8 +969,8 @@ if __name__ == "__main__":
     # dev_file = "data/ts/test.1.conll.train_test"
 
     class TSNeuralBuilderType(Enum):
-        vinalla = 0
-        att = 1
+        VINILAA = 0
+        ATT = 1
 
 
     fold_start_idx = 1
@@ -982,12 +983,12 @@ if __name__ == "__main__":
     batch_size = 1
     num_thread = 1
     NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH = True
-    NetworkConfig.GPU_ID = 0
+    NetworkConfig.GPU_ID = -1
     embed_path = 'embedding/glove.6B.100d.txt'
     word_embed_dim = 100
     postag_embed_dim = 0
     char_embed_dim = 50
-    SENT_embed_dim = 25
+    SENT_embed_dim = 0
     lstm_dim = 400
     check_every = 700
     SEPARATE_DEV_FROM_TRAIN = True
@@ -995,7 +996,8 @@ if __name__ == "__main__":
     NetworkConfig.ECHO_TEST_RESULT_DURING_EVAL_ON_DEV = True
     visual = True
     DEBUG = False
-    neural_builder_type = TSNeuralBuilderType.att
+    neural_builder_type = TSNeuralBuilderType.VINILAA
+    lang = 'es'
 
 
 
@@ -1012,12 +1014,13 @@ if __name__ == "__main__":
         print(colored('Fold ', 'blue'), num_fold, '')
 
         num_fold_str = str(num_fold)
-        train_file = "data/ts/train." + num_fold_str + ".coll"
-        dev_file = "data/ts/test." + num_fold_str + ".coll"
-        test_file = "data/ts/test." + num_fold_str + ".coll"
+        path = 'data/ts/' + lang + '/'
+        train_file = path + "train." + num_fold_str + ".coll"
+        dev_file = path + "test." + num_fold_str + ".coll"
+        test_file = path + "test." + num_fold_str + ".coll"
         dev_file = test_file
         trial_file = "data/ts/trial.txt"
-        model_path = 'result/ss_' + num_fold_str + ".pt"
+        model_path = 'result/ss_' + lang + '_' + num_fold_str + ".pt"
 
 
         if TRIAL == True:
@@ -1025,13 +1028,13 @@ if __name__ == "__main__":
             train_file = trial_file
             dev_file = trial_file
             test_file = trial_file
-            num_iter = 40
+            num_iter = 10
             check_every = 4
             NetworkConfig.GPU_ID = -1
             embed_path = None
             SEPARATE_DEV_FROM_TRAIN = False
-            if num_fold > 1:
-                break
+            # if num_fold > 1:
+            #     break
 
         if NetworkConfig.GPU_ID > -1:
             NetworkConfig.DEVICE = torch.device("cuda:" + str(NetworkConfig.GPU_ID))
@@ -1128,9 +1131,9 @@ if __name__ == "__main__":
         print('Train:', len(train_insts), '\tDev:', len(dev_insts), '\tTest:', len(test_insts))
 
         gnp = TensorGlobalNetworkParam()
-        if neural_builder_type == TSNeuralBuilderType.vinalla:
+        if neural_builder_type == TSNeuralBuilderType.VINILAA:
             neural_builder = TSNeuralBuilder(gnp, labels, len(vocab2id), word_embed_dim, len(postag2id), postag_embed_dim, char_embed_dim, char_embed_dim, len(SENT2id) ,SENT_embed_dim, lstm_dim=lstm_dim)
-        elif neural_builder_type == TSNeuralBuilderType.att:
+        elif neural_builder_type == TSNeuralBuilderType.ATT:
             neural_builder = TSATTNeuralBuilder(gnp, labels, len(vocab2id), word_embed_dim, len(postag2id),
                                              postag_embed_dim, char_embed_dim, char_embed_dim, len(SENT2id),
                                              SENT_embed_dim, lstm_dim=lstm_dim)
@@ -1173,8 +1176,8 @@ if __name__ == "__main__":
         ret = model.evaluator.eval(results)
         print(ret)
 
-        if num_fold > 1:
-            overall_score.accumulate(ret)
+
+        overall_score.accumulate(ret)
         # except:
         #     print('Loading model fails ...')
         #     exit()
@@ -1188,8 +1191,12 @@ if __name__ == "__main__":
     print('Result across folds ', fold_start_idx, ' .. ', fold_end_idx)
     print(average_score)
     print()
+    average_score = overall_score.get_average(indices=range(1, fold_end_idx))
+    print('Result across 9 folds ', 2, ' .. ', fold_end_idx)
+    print(average_score)
+    print()
     print('Results of each folds:')
-    for i in range(average_score.num_fold):
+    for i in range(len(average_score.fold_rets)):
         print(average_score.fold_rets[i])
 
 

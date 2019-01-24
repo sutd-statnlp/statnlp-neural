@@ -288,6 +288,10 @@ class NetworkModel(nn.Module):
                     loss.backward()
                     optimizer.step()
 
+                    del label_score
+                    del unlabel_score
+                    del loss
+
                     if not NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH:
                         del gold_network
                         self.networks[i] = None
