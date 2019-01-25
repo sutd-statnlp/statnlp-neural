@@ -17,14 +17,14 @@ class Span:
 
 
 class FScore(object):
-    def __init__(self, recall, precision, fscore):
+    def __init__(self, precision, recall, fscore):
         self.recall = recall
         self.precision = precision
         self.fscore = fscore
 
     def __str__(self):
-        return "(Recall={:.2f}%, Precision={:.2f}%, FScore={:.2f}%)".format(
-            self.recall * 100, self.precision * 100, self.fscore * 100)
+        return "(Precision={:.2f}%, Recall={:.2f}%, FScore={:.2f}%)".format(
+            self.precision * 100, self.recall * 100, self.fscore * 100)
 
 
     def to_tuple(self):

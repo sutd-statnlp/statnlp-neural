@@ -17,15 +17,15 @@ class TagNetworkCompiler(NetworkCompiler):
         super().__init__()
         self.labels = ["x"] * len(label_map)
         self.label2id = label_map
-        print(self.labels)
+        #print(self.labels)
         for key in self.label2id:
             self.labels[self.label2id[key]] = key
 
-        print("Inside compiler: ", self.labels)
+        #print("Inside compiler: ", self.labels)
         NetworkIDMapper.set_capacity(np.asarray([200, 100, 3], dtype=np.int64))
 
-        print(self.label2id)
-        print(self.labels)
+        # print(self.label2id)
+        # print(self.labels)
         self._all_nodes = None
         self._all_children = None
         self._max_size = max_size
@@ -367,7 +367,7 @@ if __name__ == "__main__":
     batch_size = 1
     device = "cpu"
     num_thread = 1
-    dev_file = test_file
+    #dev_file = test_file
 
     char_emb_size= 25
     charlstm_hidden_dim = 50

@@ -574,7 +574,7 @@ class TSNeuralBuilder(NeuralBuilder):
 class TSATTNeuralBuilder(TSNeuralBuilder):
     def __init__(self, gnp, labels, voc_size, word_embed_dim, postag_size, postag_embed_dim, char_emb_size, charlstm_hidden_dim, SENT_emb_size, SENT_embed_dim, lstm_dim = 200, dropout = 0.5):
         super().__init__(gnp, labels, voc_size, word_embed_dim, postag_size, postag_embed_dim, char_emb_size, charlstm_hidden_dim, SENT_emb_size, SENT_embed_dim, lstm_dim, dropout)
-        #self.build_linear_layers()
+        print('[Info] TSATTNeuralBuilder is initialized')
 
     def build_linear_layers(self):
         self.e2id = {'B':0, 'M':1, 'E':2, 'S':3, 'O':4}
@@ -605,20 +605,16 @@ class TSATTNeuralBuilder(TSNeuralBuilder):
             polar_tag = label[2]
             polar_tag_id = self.polar2id[polar_tag]
             if scope_tag[0] == 'e':
-                target_score = nn_output_e_linear[pos][self.e2id[label[1]]]
-                sent_score = 0
+                target_score = nn_output_e_linear[pos][self.e2id[scope_tag[1]]]
+                sent_score = 0 #nn_output_sent_linear[pos][polar_tag_id]
                 return target_score + sent_score
             else: #B A
                 if scope_tag == 'Be':
                     return self.zero #torch.tensor(0.0).to(NetworkConfig.DEVICE)
                 else:
-                    target_score = 0
+                    target_score = 0 #nn_output_e_linear[pos][self.e2id['O']]
                     sent_score = nn_output_sent_linear[pos][polar_tag_id]
                     return target_score + sent_score
-
-
-
-
 
 
 
@@ -663,7 +659,7 @@ class TSReader():
                     return re.sub(pattern, repl, word, flags=FLAGS)
 
                 word = re_sub(r"https?:\/\/\S+\b|www\.(\w+\.)+\S*", "<url>")
-                #text = re_sub(r"@\w+", "<user>")
+                #word = re_sub(r"@\w+", "<user>")
 
                 TSReader.Stats['MAX_WORD_LENGTH'] = max(TSReader.Stats['MAX_WORD_LENGTH'], len(word))
                 # ner = fields[1]
@@ -770,8 +766,6 @@ class TScore(Score):
         return average_score
 
 
-
-
 class sentimentscope_eval(Eval):
 
     def __init__(self):
@@ -852,106 +846,6 @@ class sentimentscope_eval(Eval):
 
         return ts_score
 
-# from hypergraph.Visualizer import Visualizer
-# class TSVisualizer(Visualizer):
-#     def __init__(self, compiler, fm, labels):
-#         super().__init__(compiler, fm)
-#         self.labels = labels
-#         self.span = 50
-#
-#
-#     def nodearr2label(self, node_arr):
-#         if node_arr[1] == 1:
-#             label_id = node_arr[2]
-#             label = self.labels[label_id]
-#
-#             if label == 'eM0':
-#                 return self.input[node_arr[0]]
-#             else:
-#                 return self.labels[node_arr[2]] #+ ' ' + str(node_arr)
-#         else:
-#             if node_arr[1] == 0:
-#                 return "<X>"
-#             else:
-#                 return "<Root>"
-#
-#
-#     def nodearr2color(self, node_arr):
-#         if node_arr[1] == 1:
-#             label_id = node_arr[2]
-#             label = self.labels[label_id]
-#             if label[0] == 'B':
-#                 return 'purple'
-#             elif label[0] == 'e':
-#                 return 'yellow'
-#             else:
-#                 return 'green'
-#         else:
-#             return 'blue'
-#
-#
-#     def nodearr2coord(self, node_arr):
-#         span = self.span
-#
-#         if node_arr[1] == 1:
-#             x = node_arr[0] * span
-#             label_id = node_arr[2]
-#             label = self.labels[label_id]
-#             scope_tag = label[:2]
-#             polar = label[2]
-#
-#             if polar == '+':
-#                 polar_id = 2
-#             elif polar == '0':
-#                 polar_id = 1
-#             else:
-#                 polar_id = 0
-#
-#             y = (polar_id + 1) * span
-#
-#             if label[0] == 'B':
-#                 x -= 15
-#                 y += 4
-#                 if label[1] == 'B':
-#                     y += 6
-#
-#             elif label[0] == 'A':
-#                 x += 15
-#                 y -= 4
-#                 if label[1] == 'B':
-#                     y -= 6
-#
-#                     if label[3] == '+':
-#                         y -= 0
-#                     elif label[3] == '0':
-#                         y -= 6
-#                     else: #label[2] == '-':
-#                         y -= 12
-#
-#             else: #label[0] == 'e':
-#                 if label[1] == 'B':
-#                     y += 6
-#                 elif label[1] == 'M':
-#                     y += 2
-#                 elif label[1] == 'E':
-#                     y -= 2
-#                 else:
-#                     y -= 6
-#
-#
-#             return (x, y)
-#
-#
-#         else:
-#             if node_arr[1] == 0:
-#                 return (-1 * span , 0.0)
-#             else:
-#                 return (node_arr[0] * span, 0.0)
-
-
-
-
-
 
 if __name__ == "__main__":
 
@@ -972,10 +866,10 @@ if __name__ == "__main__":
         VINILAA = 0
         ATT = 1
 
-    lang = 'es'
+    lang = 'en'
+    TRIAL = False
     fold_start_idx = 1
-    fold_end_idx = 10
-    TRIAL = True
+    fold_end_idx = 10 if not TRIAL else 1
     num_train = -1
     num_dev = -1
     num_test = -1
@@ -996,7 +890,7 @@ if __name__ == "__main__":
     NetworkConfig.ECHO_TEST_RESULT_DURING_EVAL_ON_DEV = True
     visual = True
     DEBUG = False
-    neural_builder_type = TSNeuralBuilderType.VINILAA
+    neural_builder_type = TSNeuralBuilderType.ATT
 
 
 
@@ -1028,7 +922,7 @@ if __name__ == "__main__":
             train_file = trial_file
             dev_file = trial_file
             test_file = trial_file
-            num_iter = 10
+            num_iter = 6
             check_every = 4
             NetworkConfig.GPU_ID = -1
             embed_path = None
@@ -1148,15 +1042,108 @@ if __name__ == "__main__":
         model.model_path = model_path
         model.check_every = check_every
 
-        # if DEBUG:
-        #     if visual:
-        #         ts_visualizer = TSVisualizer(compiler, neural_builder, labels)
-        #         inst = train_insts[0]
-        #         inst.is_labeled = False
-        #         ts_visualizer.visualize_inst(inst)
-        #         #inst.is_labeled = False
-        #         #ts_visualizer.visualize_inst(inst)
-        #         exit()
+        if DEBUG:
+            if visual:
+                from hypergraph.Visualizer import Visualizer
+                class TSVisualizer(Visualizer):
+                    def __init__(self, compiler, fm, labels):
+                        super().__init__(compiler, fm)
+                        self.labels = labels
+                        self.span = 50
+
+
+                    def nodearr2label(self, node_arr):
+                        if node_arr[1] == 1:
+                            label_id = node_arr[2]
+                            label = self.labels[label_id]
+
+                            if label == 'eM0':
+                                return self.input[node_arr[0]]
+                            else:
+                                return self.labels[node_arr[2]] #+ ' ' + str(node_arr)
+                        else:
+                            if node_arr[1] == 0:
+                                return "<X>"
+                            else:
+                                return "<Root>"
+
+
+                    def nodearr2color(self, node_arr):
+                        if node_arr[1] == 1:
+                            label_id = node_arr[2]
+                            label = self.labels[label_id]
+                            if label[0] == 'B':
+                                return 'purple'
+                            elif label[0] == 'e':
+                                return 'yellow'
+                            else:
+                                return 'green'
+                        else:
+                            return 'blue'
+
+
+                    def nodearr2coord(self, node_arr):
+                        span = self.span
+
+                        if node_arr[1] == 1:
+                            x = node_arr[0] * span
+                            label_id = node_arr[2]
+                            label = self.labels[label_id]
+                            scope_tag = label[:2]
+                            polar = label[2]
+
+                            if polar == '+':
+                                polar_id = 2
+                            elif polar == '0':
+                                polar_id = 1
+                            else:
+                                polar_id = 0
+
+                            y = (polar_id + 1) * span
+
+                            if label[0] == 'B':
+                                x -= 15
+                                y += 4
+                                if label[1] == 'B':
+                                    y += 6
+
+                            elif label[0] == 'A':
+                                x += 15
+                                y -= 4
+                                if label[1] == 'B':
+                                    y -= 6
+
+                                    if label[3] == '+':
+                                        y -= 0
+                                    elif label[3] == '0':
+                                        y -= 6
+                                    else: #label[2] == '-':
+                                        y -= 12
+
+                            else: #label[0] == 'e':
+                                if label[1] == 'B':
+                                    y += 6
+                                elif label[1] == 'M':
+                                    y += 2
+                                elif label[1] == 'E':
+                                    y -= 2
+                                else:
+                                    y -= 6
+
+
+                            return (x, y)
+
+
+                        else:
+                            if node_arr[1] == 0:
+                                return (-1 * span , 0.0)
+                            else:
+                                return (node_arr[0] * span, 0.0)
+                ts_visualizer = TSVisualizer(compiler, neural_builder, labels)
+                inst = train_insts[0]
+                inst.is_labeled = False
+                ts_visualizer.visualize_inst(inst)
+                exit()
 
         if batch_size == 1:
             model.learn(train_insts, num_iter, dev_insts, test_insts)
@@ -1167,11 +1154,12 @@ if __name__ == "__main__":
         model.load()
 
         results = model.test(test_insts)
-        # for inst in results:
-        #     print(inst.get_input())
-        #     print(inst.get_output())
-        #     print(inst.get_prediction())
-        #     print()
+        if TRIAL:
+            for inst in results:
+                print(inst.get_input())
+                print(inst.get_output())
+                print(inst.get_prediction())
+                print()
         evaluator.set_result_path_prefix('result/ss_' + num_fold_str)
         ret = model.evaluator.eval(results)
         print(ret)
@@ -1191,13 +1179,14 @@ if __name__ == "__main__":
     print('Result across folds ', fold_start_idx, ' .. ', fold_end_idx)
     print(average_score)
     print()
-    average_score = overall_score.get_average(indices=range(1, fold_end_idx))
-    print('Result across 9 folds ', 2, ' .. ', fold_end_idx)
-    print(average_score)
-    print()
-    print('Results of each folds:')
-    for i in range(len(average_score.fold_rets)):
-        print(average_score.fold_rets[i])
+    if not TRIAL:
+        average_score = overall_score.get_average(indices=range(1, fold_end_idx))
+        print('Result across 9 folds ', 2, ' .. ', fold_end_idx)
+        print(average_score)
+        print()
+        print('Results of each folds:')
+        for i in range(len(overall_score.fold_rets)):
+            print(overall_score.fold_rets[i])
 
 
 
