@@ -159,3 +159,24 @@ class constituent_eval(Eval):
         #     print("Output path: {}".format(result_path))
 
         return fscore
+
+
+class label_eval(Eval):
+    def eval(self, insts):
+
+        p = 0
+
+        for inst in insts:
+
+            output = inst.output
+            prediction = inst.prediction
+            #convert to span
+            if output == prediction:
+                p += 1
+
+
+        #ret = [precision, recall, fscore]
+        acc = p / len(insts)
+        fscore = FScore(acc, acc, acc)
+
+        return fscore
