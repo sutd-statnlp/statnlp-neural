@@ -11,6 +11,7 @@ from common.eval import label_eval
 import re
 from termcolor import colored
 import torch.nn.functional as F
+import random
 
 class LRNetworkCompiler(NetworkCompiler):
 
@@ -219,6 +220,7 @@ if __name__ == "__main__":
     torch.manual_seed(42)
     torch.set_num_threads(40)
     np.random.seed(1234)
+    random.seed(1234)
 
 
 
@@ -253,6 +255,7 @@ if __name__ == "__main__":
         print('Set NUM_THREADS = ', num_thread)
 
     train_insts = TagReader.read_insts(train_file, True, num_train)
+    random.shuffle(train_insts)
     dev_insts = TagReader.read_insts(dev_file, False, num_dev)
     test_insts = TagReader.read_insts(test_file, False, num_test)
     print("map:", TagReader.label2id_map)
@@ -285,7 +288,7 @@ if __name__ == "__main__":
 
     evaluator = label_eval()
     model = NetworkModel(fm, compiler, evaluator)
-
+    model.check_every = 2000
 
 
 
