@@ -264,7 +264,9 @@ class NetworkModel(nn.Module):
         for iteration in range(max_iterations):
             all_loss = 0
             start_time = time.time()
-            for i in range(len(self.all_instances)):
+
+            # for i in range(len(self.all_instances)):
+            for i in np.random.permutation(len(self.all_instances)):
                 self.train()
                 inst = self.all_instances[i]
                 if inst.get_instance_id() > 0:
