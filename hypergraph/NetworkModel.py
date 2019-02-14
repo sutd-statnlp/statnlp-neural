@@ -228,9 +228,16 @@ class NetworkModel(nn.Module):
         print("Best Result:", self.best_score)
 
 
-    def learn(self, train_insts, max_iterations, dev_insts, test_insts, optimizer = 'adam'):
+    def lrDecay(self, trainer, epoch):
+        lr = NetworkConfig.NEURAL_LEARNING_RATE / (1 + NetworkConfig.lr_decay * (epoch - 1))
+        for param_group in trainer.param_groups:
+            param_group['lr'] = lr
+        print('learning rate is set to: ', lr)
+        return trainer
 
-        if optimizer == "lbfgs":
+    def learn(self, train_insts, max_iterations, dev_insts, test_insts, optimizer_str = 'adam', batch_size=1):
+
+        if optimizer_str == "lbfgs":
             self.learn_lbfgs(train_insts, max_iterations, dev_insts)
             return
 
@@ -245,12 +252,12 @@ class NetworkModel(nn.Module):
 
         parameters = filter(lambda p: p.requires_grad, self.parameters())
 
-        if optimizer == 'adam':
+        if optimizer_str == 'adam':
             optimizer = torch.optim.Adam(parameters)
-        elif optimizer == 'sgd':
+        elif optimizer_str == 'sgd':
             optimizer = torch.optim.SGD(parameters,lr=NetworkConfig.NEURAL_LEARNING_RATE)
         else:
-            print(colored('Unsupported optimizer:', 'red'), optimizer)
+            print(colored('Unsupported optimizer:', 'red'), optimizer_str)
             return
 
         self.best_score = None
@@ -264,14 +271,18 @@ class NetworkModel(nn.Module):
         for iteration in range(max_iterations):
             all_loss = 0
             start_time = time.time()
-
+            k = 0
+            idx = 0
+            if optimizer_str == "sgd":
+                self.lrDecay(optimizer, iteration + 1)
             # for i in range(len(self.all_instances)):
             for i in np.random.permutation(len(self.all_instances)):
                 self.train()
                 inst = self.all_instances[i]
                 if inst.get_instance_id() > 0:
-                    optimizer.zero_grad()
-                    self.zero_grad()
+                    if k == 0:
+                        optimizer.zero_grad()
+                        self.zero_grad()
                     gold_network = self.get_network(i)
                     partition_network = self.get_network(i + 1)
 
@@ -288,7 +299,11 @@ class NetworkModel(nn.Module):
                     all_loss += loss.item()
 
                     loss.backward()
-                    optimizer.step()
+                    idx += 1
+                    k += 1
+                    if k == batch_size or idx == len(self.all_instances) // 2:
+                        k = 0
+                        optimizer.step()
 
                     del label_score
                     del unlabel_score
