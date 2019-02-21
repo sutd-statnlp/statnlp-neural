@@ -100,6 +100,43 @@ class nereval(Eval):
         return fscore
 
 
+class semieval(Eval):
+
+    def eval(self, insts):
+
+        p = 0
+        total_entity = 0
+        total_predict = 0
+
+        for inst in insts:
+
+            output = inst.output
+            prediction = inst.prediction
+            #convert to span
+            output_spans = set()
+            start = -1
+            for i in range(len(output)):
+                if output[i][2] != "O":
+                    output_spans.add(Span(output[i][0], output[i][1], output[i][2]))
+            predict_spans = set()
+            for i in range(len(prediction)):
+                if prediction[i][2] != "O":
+                    predict_spans.add(Span(prediction[i][0], prediction[i][1], prediction[i][2]))
+
+            total_entity += len(output_spans)
+            total_predict += len(predict_spans)
+            p += len(predict_spans.intersection(output_spans))
+
+        precision = p * 1.0 / total_predict  if total_predict != 0 else 0
+        recall = p * 1.0 / total_entity  if total_entity != 0 else 0
+        fscore = 2.0 * precision * recall / (precision + recall) if precision != 0 or recall != 0 else 0
+
+        #ret = [precision, recall, fscore]
+        fscore = FScore(recall, precision, fscore)
+
+        return fscore
+
+
 class constituent_eval(Eval):
     def eval(self, insts):
 
@@ -157,5 +194,26 @@ class constituent_eval(Eval):
         #     print("Gold path: {}".format(gold_path))
         #     print("Predicted path: {}".format(pred_path))
         #     print("Output path: {}".format(result_path))
+
+        return fscore
+
+
+class label_eval(Eval):
+    def eval(self, insts):
+
+        p = 0
+
+        for inst in insts:
+
+            output = inst.output
+            prediction = inst.prediction
+            #convert to span
+            if output == prediction:
+                p += 1
+
+
+        #ret = [precision, recall, fscore]
+        acc = p / len(insts)
+        fscore = FScore(acc, acc, acc)
 
         return fscore

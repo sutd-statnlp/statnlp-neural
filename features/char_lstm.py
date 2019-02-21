@@ -18,15 +18,16 @@ class CharBiLSTM(nn.Module):
         self.char_size = len(self.chars)
         self.device = NetworkConfig.DEVICE
         self.hidden = charlstm_hidden_dim
-        self.dropout = nn.Dropout(dropout).to(self.device)
+        # self.dropout = nn.Dropout(dropout).to(self.device)
         self.char_embeddings = nn.Embedding(self.char_size, self.char_emb_size)
-        self.char_embeddings.weight.data.copy_(torch.from_numpy(self.random_embedding(self.char_size, self.char_emb_size)))
+        # self.char_embeddings.weight.data.copy_(torch.from_numpy(self.random_embedding(self.char_size, self.char_emb_size)))
         self.char_embeddings = self.char_embeddings.to(self.device)
 
-        self.char_lstm = nn.LSTM(self.char_emb_size, self.hidden // 2,num_layers=1, batch_first=True, bidirectional=True).to(self.device)
+        self.char_lstm = nn.LSTM(self.char_emb_size, self.hidden // 2, num_layers=1, batch_first=True, bidirectional=True).to(self.device)
 
 
     def random_embedding(self, vocab_size, embedding_dim):
+        print("Randomly initialize character embedding with scale")
         pretrain_emb = np.empty([vocab_size, embedding_dim])
         scale = np.sqrt(3.0 / embedding_dim)
         for index in range(vocab_size):
@@ -49,7 +50,7 @@ class CharBiLSTM(nn.Module):
         _, recover_idx = permIdx.sort(0, descending=False)
         sorted_seq_tensor = char_seq_tensor[permIdx]
 
-        char_embeds = self.dropout(self.char_embeddings(sorted_seq_tensor))
+        char_embeds = self.char_embeddings(sorted_seq_tensor)
         pack_input = pack_padded_sequence(char_embeds, sorted_seq_len, batch_first=True)
 
         char_rnn_out, char_hidden = self.char_lstm(pack_input, None)  ###
@@ -59,7 +60,6 @@ class CharBiLSTM(nn.Module):
         ## transpose because the first dimension is num_direction x num-layer
         hidden = char_hidden[0].transpose(1,0).contiguous().view(batch_size * sent_len, 1, -1)   ### before view, the size is ( batch_size * sent_len, 2, lstm_dimension) 2 means 2 direciton..
         return hidden[recover_idx].view(batch_size, sent_len, -1)
-
 
 
     def forward(self, char_input, seq_lengths):
