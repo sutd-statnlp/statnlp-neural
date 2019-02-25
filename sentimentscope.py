@@ -462,7 +462,7 @@ class TSNetworkCompiler(NetworkCompiler):
 
 
 class TSNeuralBuilder(NeuralBuilder):
-    def __init__(self, gnp, labels, voc_size, word_embed_dim, postag_size, postag_embed_dim, char_emb_size, charlstm_hidden_dim, SENT_emb_size, SENT_embed_dim, THER_SENT_embed_dim, lstm_dim = 200, dropout = 0.5):
+    def __init__(self, gnp, labels, voc_size, word_embed_dim, postag_size, postag_embed_dim, char_emb_size, charlstm_hidden_dim, SENT_emb_size, SENT_embed_dim, THER_SENT_embed_dim, browncluster5_embed_dim, browncluster3_embed_dim, lstm_dim = 200, dropout = 0.5):
         super().__init__(gnp)
 
         self.labels = labels
@@ -474,30 +474,35 @@ class TSNeuralBuilder(NeuralBuilder):
         self.char_emb_size = char_emb_size
         self.SENT_embed_dim = SENT_embed_dim
         self.THER_SENT_embed_dim = THER_SENT_embed_dim
+        self.browncluster5_embed_dim = browncluster5_embed_dim
+        self.browncluster3_embed_dim = browncluster3_embed_dim
+
+
+        self.linear_dim = lstm_dim * 2 + self.postag_embed_dim + self.SENT_embed_dim + self.THER_SENT_embed_dim +  self.browncluster5_embed_dim + self.browncluster3_embed_dim
 
         self.zero = torch.tensor(0.0).to(NetworkConfig.DEVICE)
 
         self.word_embeddings = nn.Embedding(voc_size, word_embed_dim).to(NetworkConfig.DEVICE)
 
-        if postag_embed_dim > 0:
-            self.posttag_embeddings = nn.Embedding(postag_size, postag_embed_dim).to(NetworkConfig.DEVICE)
-            tag_embed_parameter = np.empty([postag_size, postag_embed_dim])
-            scale = np.sqrt(3.0 / postag_embed_dim)
-            for i in range(postag_size):
-                tag_embed_parameter[i] = np.random.uniform(-scale, scale, [1, postag_embed_dim])
-            self.posttag_embeddings.weight.data.copy_(torch.from_numpy(tag_embed_parameter))
+        # if postag_embed_dim > 0:
+        #     self.posttag_embeddings = nn.Embedding(postag_size, postag_embed_dim).to(NetworkConfig.DEVICE)
+        #     tag_embed_parameter = np.empty([postag_size, postag_embed_dim])
+        #     scale = np.sqrt(3.0 / postag_embed_dim)
+        #     for i in range(postag_size):
+        #         tag_embed_parameter[i] = np.random.uniform(-scale, scale, [1, postag_embed_dim])
+        #     self.posttag_embeddings.weight.data.copy_(torch.from_numpy(tag_embed_parameter))
 
         if char_emb_size > 0:
             from features.char_lstm import CharBiLSTM
             self.char_bilstm = CharBiLSTM(char2id, chars, char_emb_size, charlstm_hidden_dim).to(NetworkConfig.DEVICE)
 
 
-        if SENT_embed_dim > 0:
-            self.SENT_embeddings = nn.Embedding(SENT_emb_size, SENT_embed_dim).to(NetworkConfig.DEVICE)
+        # if SENT_embed_dim > 0:
+        #     self.SENT_embeddings = nn.Embedding(SENT_emb_size, SENT_embed_dim).to(NetworkConfig.DEVICE)
 
         self.dropout = nn.Dropout(dropout).to(NetworkConfig.DEVICE)
 
-        embed_dim = word_embed_dim + postag_embed_dim + char_emb_size #+ SENT_embed_dim
+        embed_dim = word_embed_dim + char_emb_size # + postag_embed_dim+ SENT_embed_dim
 
         self.rnn = nn.LSTM(embed_dim, lstm_dim, batch_first=True, bidirectional=True, num_layers=1).to(NetworkConfig.DEVICE)
 
@@ -505,7 +510,7 @@ class TSNeuralBuilder(NeuralBuilder):
 
 
     def build_linear_layers(self):
-        self.linear = nn.Linear(lstm_dim * 2 + self.SENT_embed_dim + self.THER_SENT_embed_dim, self.label_size).to(NetworkConfig.DEVICE)
+        self.linear = nn.Linear(self.linear_dim, self.label_size).to(NetworkConfig.DEVICE)
 
 
     def load_pretrain(self, word2idx, path = None):
@@ -520,10 +525,10 @@ class TSNeuralBuilder(NeuralBuilder):
         word_embs = self.dropout(word_embs)
         word_rep = [word_embs]
 
-        if self.postag_embed_dim > 0:
-            postag_seq = instance.postag_seq.unsqueeze(0)
-            postag_embs = self.posttag_embeddings(postag_seq)
-            word_rep.append(postag_embs)
+        # if self.postag_embed_dim > 0:
+        #     postag_seq = instance.postag_seq.unsqueeze(0)
+        #     postag_embs = self.posttag_embeddings(postag_seq)
+        #     word_rep.append(postag_embs)
 
         if self.char_emb_size > 0:
             char_seq_tensor = instance.char_seq_tensor.unsqueeze(0)
@@ -542,21 +547,22 @@ class TSNeuralBuilder(NeuralBuilder):
 
         feature_output = [lstm_outputs]
 
-        if self.SENT_embed_dim > 0:
-            SENT_seq = instance.SENT_seq.unsqueeze(0)
-            SENT_seq = SENT_seq.view(size, 1)
-            #SENT_embs = self.SENT_embeddings(SENT_seq)
-            SENT_embs = torch.zeros(size, self.SENT_embed_dim).to(NetworkConfig.DEVICE)
-            SENT_embs.scatter_(1, SENT_seq, 1.0)
-            #word_rep.append(SENT_embs)
-            feature_output.append(SENT_embs)
 
-        if self.THER_SENT_embed_dim > 0:
-            THER_SENT_seq = instance.THER_SENT_seq.unsqueeze(0)
-            THER_SENT_seq = THER_SENT_seq.view(size, 1)
-            THER_SENT_embs = torch.zeros(size, self.THER_SENT_embed_dim).to(NetworkConfig.DEVICE)
-            THER_SENT_embs.scatter_(1, THER_SENT_seq, 1.0)
-            feature_output.append(THER_SENT_embs)
+        def create_discrete_feature(seq, embed_dim):
+            if embed_dim > 0:
+                seq = seq.unsqueeze(0).view(size, 1)
+                discrete_embs = torch.zeros(size, embed_dim).to(NetworkConfig.DEVICE)
+                discrete_embs.scatter_(1, seq, 1.0)
+                feature_output.append(discrete_embs)
+                #return discrete_embs
+
+
+        create_discrete_feature(instance.postag_seq, self.postag_embed_dim)
+        create_discrete_feature(instance.browncluster5_seq, self.browncluster5_embed_dim)
+        create_discrete_feature(instance.browncluster3_seq, self.browncluster3_embed_dim)
+        create_discrete_feature(instance.SENT_seq, self.SENT_embed_dim)
+        create_discrete_feature(instance.THER_SENT_seq, self.THER_SENT_embed_dim)
+
 
         feature_output = torch.cat(feature_output, 1)
 
@@ -590,8 +596,8 @@ class TSNeuralBuilder(NeuralBuilder):
 
 
 class TSATTNeuralBuilder(TSNeuralBuilder):
-    def __init__(self, gnp, labels, voc_size, word_embed_dim, postag_size, postag_embed_dim, char_emb_size, charlstm_hidden_dim, SENT_emb_size, SENT_embed_dim, lstm_dim = 200, dropout = 0.5):
-        super().__init__(gnp, labels, voc_size, word_embed_dim, postag_size, postag_embed_dim, char_emb_size, charlstm_hidden_dim, SENT_emb_size, SENT_embed_dim, lstm_dim, dropout)
+    def __init__(self, gnp, labels, voc_size, word_embed_dim, postag_size, postag_embed_dim, char_emb_size, charlstm_hidden_dim, SENT_emb_size, SENT_embed_dim, THER_SENT_embed_dim, browncluster5_embed_dim, browncluster3_embed_dim, lstm_dim = 200, dropout = 0.5):
+        super().__init__(gnp, labels, voc_size, word_embed_dim, postag_size, postag_embed_dim, char_emb_size, charlstm_hidden_dim, SENT_emb_size, SENT_embed_dim, THER_SENT_embed_dim, browncluster5_embed_dim, browncluster3_embed_dim, lstm_dim, dropout)
         print('[Info] TSATTNeuralBuilder is initialized')
 
     def init_attention(self, attention_type, attention_size = 100):
@@ -609,8 +615,8 @@ class TSATTNeuralBuilder(TSNeuralBuilder):
         self.e2id = {'B':0, 'M':1, 'E':2, 'S':3, 'O':4}
         self.polar2id = {'+':0, '0':1, '-':2}
 
-        self.e_linear = nn.Linear(lstm_dim * 2, len(self.e2id)).to(NetworkConfig.DEVICE)
-        self.sent_linear = nn.Linear(lstm_dim * 2, len(self.polar2id)).to(NetworkConfig.DEVICE) # +, 0, -
+        self.e_linear = nn.Linear(self.linear_dim, len(self.e2id)).to(NetworkConfig.DEVICE)
+        self.sent_linear = nn.Linear(self.linear_dim, len(self.polar2id)).to(NetworkConfig.DEVICE) # +, 0, -
         self.zero = torch.tensor(0.0).to(NetworkConfig.DEVICE)
 
     def build_attention(self, lstm_outputs):
@@ -747,6 +753,7 @@ class TSReader():
                 THER_SENT_3 = fields[-4]
                 SENT =  fields[-5] #if fields[-5] == "_" else fields[-5].split(':')[1]
                 browncluster5 = fields[2]
+                jerbo = fields[3]
                 browncluster3 = fields[4]
 
                 ner_tag = tag[0]
@@ -761,7 +768,7 @@ class TSReader():
 
 
 
-                inputs.append((word, postag, SENT, THER_SENT_3))
+                inputs.append((word, postag, SENT, THER_SENT_3, browncluster5, jerbo, browncluster3))
                 outputs.append(output)
 
         f.close()
@@ -889,7 +896,7 @@ class sentimentscope_eval(Eval):
             sent_gold = [item[0] + '-' + symbol2polar[item[1]] if item[0][0] != 'O' else 'O' for item in gold]
             sent_pred = [item[0] + '-' + symbol2polar[item[1]] if item[0][0] != 'O' else 'O' for item in pred]
 
-            words = [word for word, _, _, _ in input]
+            words = [word for word, _, _, _, _, _ ,_ in input]
 
             target_lines = list(zip(words, target_gold, target_pred))
             sent_lines = list(zip(words, sent_gold, sent_pred))
@@ -948,14 +955,14 @@ if __name__ == "__main__":
     parser.add_argument("--attention-type", type=int, default=0)
     parser.add_argument("--lstm-layers", type=int, default=2)
     parser.add_argument("--lstm-dim", type=int, default=500)
-    parser.add_argument("--dropout", type=float, default=0.4)
+    parser.add_argument("--dropout", type=float, default=0.5)
     parser.add_argument("--trial", action="store_true")
     #parser.add_argument("--model-path-base", required=True)
     parser.add_argument("--batch-size", type=int, default=1)
     parser.add_argument("--epochs", type=int, default=5)
     parser.add_argument("--gpuid", type=int, default=0)
     parser.add_argument("--compare-type", type=int, default=0)
-    parser.add_argument("--checks-per-epoch", type=int, default=4)
+    parser.add_argument("--check-every", type=int, default=4000)
     parser.add_argument("--print-vocabs", action="store_true")
     parser.add_argument("--modelname", default="ss")
     parser.add_argument("--neuraltype", default="VANILLA")
@@ -978,12 +985,12 @@ if __name__ == "__main__":
     emb = ('embedding/glove.6B.100d.txt', 100) if lang == 'en' else ('embedding/SBW-vectors-300-min5.txt', 300)
     embed_path = emb[0]
     word_embed_dim = emb[1]
-    postag_embed_dim = args.tag_embedding_dim
+    postag_embed_dim = 0 # args.tag_embedding_dim
     char_embed_dim = args.char_embedding_dim
     SENT_embed_dim = 0
     THER_SENT_embed_dim = 0
     lstm_dim = args.lstm_dim #word_embed_dim + char_embed_dim + 100
-    check_every = 700 if lang == 'en' else 1500
+    check_every = args.check_every #700 if lang == 'en' else 1500
     SEPARATE_DEV_FROM_TRAIN = True
     APPEND_START_END = False
     NetworkConfig.ECHO_TEST_RESULT_DURING_EVAL_ON_DEV = True
@@ -1052,6 +1059,10 @@ if __name__ == "__main__":
         SENT2id = {PAD:0, UNK:1}
         THER_SENT2id = {PAD:0, UNK:1}
 
+        browncluster52id = {PAD: 0, UNK: 1}
+        browncluster32id = {PAD: 0, UNK: 1}
+        jerbo2id = {PAD: 0, UNK: 1}
+
         label2id = {}
         scope_tags = ['BB', 'Be', 'eB', 'eM', 'eE', 'eS', 'AA', 'AB+', 'AB0', 'AB-']
         polar_tags = ['+', '0', '-']
@@ -1071,7 +1082,7 @@ if __name__ == "__main__":
 
 
         for inst in train_insts:  #+ dev_insts + test_insts:
-            for word, postag, SENT, THER_SENT_3 in inst.input:
+            for word, postag, SENT, THER_SENT_3, browncluster5, jerbo, browncluster3 in inst.input:
                 if word not in vocab2id:
                     vocab2id[word] = len(vocab2id)
 
@@ -1089,8 +1100,24 @@ if __name__ == "__main__":
                 if THER_SENT_3 not in THER_SENT2id:
                     THER_SENT2id[THER_SENT_3] = len(THER_SENT2id)
 
+                if browncluster5 not in browncluster52id:
+                    browncluster52id[browncluster5] = len(browncluster52id)
+
+
+                if browncluster3 not in browncluster32id:
+                    browncluster32id[browncluster3] = len(browncluster32id)
+
+                if jerbo not in jerbo2id:
+                    jerbo2id[jerbo] = len(jerbo2id)
+
+
+
         SENT_embed_dim = len(SENT2id)
         THER_SENT_embed_dim = len(THER_SENT2id)
+        #postag_embed_dim = len(postag2id)
+        browncluster5_embed_dim = len(browncluster52id)
+        browncluster3_embed_dim = len(browncluster32id)
+
 
         chars = [None] * len(char2id)
         for key in char2id:
@@ -1102,15 +1129,18 @@ if __name__ == "__main__":
 
         for inst in train_insts: # + dev_insts + test_insts:
             input_seq = inst.input
-            inst.word_seq = torch.tensor([vocab2id[word] for word, _ , _ , _ in input_seq]).to(NetworkConfig.DEVICE)
-            inst.postag_seq = torch.tensor([postag2id[postag] for _, postag, _, _ in input_seq]).to(NetworkConfig.DEVICE)
-            char_seq_list = [[char2id[ch] for ch in word] + [char2id[PAD]] * (max_word_length - len(word)) for word, _ , _ , _ in input_seq]
+            inst.word_seq = torch.tensor([vocab2id[word] for word, _ , _ , _, _, _, _ in input_seq]).to(NetworkConfig.DEVICE)
+            inst.postag_seq = torch.tensor([postag2id[postag] for _, postag, _, _, _, _, _ in input_seq]).to(NetworkConfig.DEVICE)
+            char_seq_list = [[char2id[ch] for ch in word] + [char2id[PAD]] * (max_word_length - len(word)) for word, _ , _ , _, _, _, _  in input_seq]
             inst.char_seq_tensor = torch.tensor(char_seq_list).to(NetworkConfig.DEVICE)
             # char_seq_tensor: (1, sent_len, word_length)
-            inst.char_seq_len = torch.tensor([len(word) for word, _ , _ , _ in input_seq]).to(NetworkConfig.DEVICE)
+            inst.char_seq_len = torch.tensor([len(word) for word, _ , _ , _, _, _, _ in input_seq]).to(NetworkConfig.DEVICE)
             # char_seq_len: (1, sent_len)
-            inst.SENT_seq = torch.tensor([SENT2id[SENT] for _, _, SENT, _ in input_seq]).to(NetworkConfig.DEVICE)
-            inst.THER_SENT_seq = torch.tensor([THER_SENT2id[THER_SENT_3] for _, _, _, THER_SENT_3 in input_seq]).to(NetworkConfig.DEVICE)
+            inst.SENT_seq = torch.tensor([SENT2id[SENT] for _, _, SENT, _ ,_, _, _ in input_seq]).to(NetworkConfig.DEVICE)
+            inst.THER_SENT_seq = torch.tensor([THER_SENT2id[THER_SENT_3] for _, _, _,  THER_SENT_3, _, _, _ in input_seq]).to(NetworkConfig.DEVICE)
+
+            inst.browncluster5_seq = torch.tensor([browncluster52id[browncluster5] for _, _, _, _, browncluster5, _, _ in input_seq]).to(NetworkConfig.DEVICE)
+            inst.browncluster3_seq = torch.tensor([browncluster32id[browncluster3] for _, _, _, _, _, _, browncluster3 in input_seq]).to(NetworkConfig.DEVICE)
 
         if SEPARATE_DEV_FROM_TRAIN:
             old_train_insts = list(train_insts)
@@ -1125,27 +1155,28 @@ if __name__ == "__main__":
 
         for inst in dev_insts + test_insts:
             input_seq = inst.input
-            inst.word_seq = torch.tensor([vocab2id[word] if word in vocab2id else vocab2id[UNK] for word, _, _, _ in input_seq]).to(NetworkConfig.DEVICE)
-            inst.postag_seq = torch.tensor([postag2id[postag] if word in postag2id else postag2id[UNK] for _, postag, _, _ in input_seq]).to(NetworkConfig.DEVICE)
-            char_seq_list = [[char2id[ch] if ch in char2id else char2id[UNK] for ch in word] + [char2id[PAD]] * (max_word_length - len(word)) for word, _, _, _ in input_seq]
+            inst.word_seq = torch.tensor([vocab2id[word] if word in vocab2id else vocab2id[UNK] for word, _, _, _, _, _ ,_ in input_seq]).to(NetworkConfig.DEVICE)
+            inst.postag_seq = torch.tensor([postag2id[postag] if word in postag2id else postag2id[UNK] for _, postag, _, _, _, _ ,_ in input_seq]).to(NetworkConfig.DEVICE)
+            char_seq_list = [[char2id[ch] if ch in char2id else char2id[UNK] for ch in word] + [char2id[PAD]] * (max_word_length - len(word)) for word, _, _, _, _, _ ,_ in input_seq]
             inst.char_seq_tensor = torch.tensor(char_seq_list).to(NetworkConfig.DEVICE)
             # char_seq_tensor: (1, sent_len, word_length)
-            inst.char_seq_len = torch.tensor([len(word) for word, _, _, _ in input_seq]).to(NetworkConfig.DEVICE)
-            inst.SENT_seq = torch.tensor([SENT2id[SENT] if SENT in SENT2id else SENT2id[UNK] for _, _, SENT, _ in input_seq]).to(NetworkConfig.DEVICE)
-            inst.THER_SENT_seq = torch.tensor([THER_SENT2id[THER_SENT_3] if THER_SENT_3 in THER_SENT2id else THER_SENT2id[UNK] for _, _, _, THER_SENT_3 in input_seq]).to(NetworkConfig.DEVICE)
+            inst.char_seq_len = torch.tensor([len(word) for word, _, _, _, _, _ ,_ in input_seq]).to(NetworkConfig.DEVICE)
+            inst.SENT_seq = torch.tensor([SENT2id[SENT] if SENT in SENT2id else SENT2id[UNK] for _, _, SENT, _, _, _ ,_ in input_seq]).to(NetworkConfig.DEVICE)
+            inst.THER_SENT_seq = torch.tensor([THER_SENT2id[THER_SENT_3] if THER_SENT_3 in THER_SENT2id else THER_SENT2id[UNK] for _, _, _, THER_SENT_3, _, _ ,_ in input_seq]).to(NetworkConfig.DEVICE)
             # char_seq_len: (1, sent_len)
+
+            inst.browncluster5_seq = torch.tensor([browncluster52id[browncluster5] if browncluster5 in browncluster52id else browncluster52id[UNK] for _, _, _, _, browncluster5, _, _ in input_seq]).to(NetworkConfig.DEVICE)
+            inst.browncluster3_seq = torch.tensor([browncluster32id[browncluster3] if browncluster3 in browncluster32id else browncluster32id[UNK] for _, _, _, _, _, _, browncluster3 in input_seq]).to(NetworkConfig.DEVICE)
 
         print('Train:', len(train_insts), '\tDev:', len(dev_insts), '\tTest:', len(test_insts))
 
         gnp = TensorGlobalNetworkParam()
         if neural_builder_type == TSNeuralBuilderType.VANILLA:
-            neural_builder = TSNeuralBuilder(gnp, labels, len(vocab2id), word_embed_dim, len(postag2id), postag_embed_dim, char_embed_dim, char_embed_dim, len(SENT2id) ,SENT_embed_dim, THER_SENT_embed_dim, lstm_dim=lstm_dim)
+            neural_builder =    TSNeuralBuilder(gnp, labels, len(vocab2id), word_embed_dim, len(postag2id), postag_embed_dim, char_embed_dim, char_embed_dim, len(SENT2id) ,SENT_embed_dim, THER_SENT_embed_dim, browncluster5_embed_dim, browncluster3_embed_dim, lstm_dim = lstm_dim, dropout=args.dropout)
         elif neural_builder_type == TSNeuralBuilderType.ATT:
-            neural_builder = TSATTNeuralBuilder(gnp, labels, len(vocab2id), word_embed_dim, len(postag2id),
-                                             postag_embed_dim, char_embed_dim, char_embed_dim, len(SENT2id),
-                                             SENT_embed_dim, THER_SENT_embed_dim, lstm_dim=lstm_dim)
+            neural_builder = TSATTNeuralBuilder(gnp, labels, len(vocab2id), word_embed_dim, len(postag2id), postag_embed_dim, char_embed_dim, char_embed_dim, len(SENT2id), SENT_embed_dim, THER_SENT_embed_dim, browncluster5_embed_dim, browncluster3_embed_dim, lstm_dim = lstm_dim, dropout=args.dropout)
             neural_builder.init_attention(attention_type, attention_size)
-        else:
+        else:#gnp, labels, voc_size, word_embed_dim, postag_size, postag_embed_dim, char_emb_size, charlstm_hidden_dim, SENT_emb_size, SENT_embed_dim, browncluster5_embed_dim, browncluster3_embed_dim, lstm_dim, dropout)
             print('Unsupported TS Neural Builder Type')
             exit()
 
