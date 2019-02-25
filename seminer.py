@@ -68,7 +68,7 @@ class TagNetworkCompiler(NetworkCompiler):
             right = span_tuple[1]
             label = span_tuple[2]
             tag_node = self.to_tag(left, right, self.label2id[label])
-            tag_prime = self.to_tag_prime(right, self.label2id[label])
+            tag_prime = self.to_tag_prime(right, self.label2id[label+"_prime"])
             builder.add_node(tag_node)
             builder.add_node(tag_prime)
             builder.add_edge(tag_node, children)
@@ -112,15 +112,53 @@ class TagNetworkCompiler(NetworkCompiler):
         return network
 
     def compile_unlabeled(self, network_id, inst, param):
-
-        # return self.compile_labeled(network_id, inst, param)
         builder = TensorBaseNetwork.NetworkBuilder.builder()
-        root_node = self.to_root(inst.size())
-        all_nodes = self._all_nodes
-        root_idx = np.argwhere(all_nodes == root_node)[0][0]
-        node_count = root_idx + 1
-        network = builder.build_from_generic(network_id, inst, self._all_nodes, self._all_children, node_count, self.num_hyperedge, param, self)
+        leaf = self.to_leaf()
+        builder.add_node(leaf)
+
+        for i in range(inst.size()):
+            for j in range(i, min(i + self._max_seg_size, inst.size())):
+                for l in range(len(self.labels)):
+                    if l == 0 or l == len(self.labels) - 1:
+                        continue
+                    if i != j and l == self.label2id["O"]:
+                        continue
+                    if self.labels[l].endswith("_prime"):
+                        continue
+                    span_node = self.to_tag(i, j, l)
+                    added = False
+                    for prev_label_id in range(len(self.labels)):
+                        if i > 0:
+                            if not self.labels[prev_label_id].endswith("_prime"):
+                                continue
+                            child_node = self.to_tag_prime(i - 1, prev_label_id)
+                            if builder.contains_node(child_node):
+                                added = True
+                                builder.add_node(span_node)
+                                builder.add_edge(span_node, [child_node])
+                        else:
+                            added = True
+                            builder.add_node(span_node)
+                            builder.add_edge(span_node, [leaf])
+                    if added:
+                        end_prime_node = self.to_tag_prime(j, self.label2id[self.labels[l] + "_prime"])
+                        # end_prime_node = self.to_tag_prime(j, l)
+                        builder.add_node(end_prime_node)
+                        builder.add_edge(end_prime_node, [span_node])
+                        if j == inst.size() - 1:
+                            root = self.to_root(j + 1)
+                            builder.add_node(root)
+                            builder.add_edge(root, [end_prime_node])
+        network = builder.build(network_id, inst, param, self)
         return network
+        # return self.compile_labeled(network_id, inst, param)
+        # builder = TensorBaseNetwork.NetworkBuilder.builder()
+        # root_node = self.to_root(inst.size())
+        # all_nodes = self._all_nodes
+        # root_idx = np.argwhere(all_nodes == root_node)[0][0]
+        # node_count = root_idx + 1
+        # network = builder.build_from_generic(network_id, inst, self._all_nodes, self._all_children, node_count, self.num_hyperedge, param, self)
+        # return network
 
     def build_generic_network(self, ):
 
@@ -135,14 +173,14 @@ class TagNetworkCompiler(NetworkCompiler):
                         continue
                     if i!= j and l == self.label2id["O"]:
                         continue
-                    # if self.labels[l].endswith("_prime"):
-                    #     continue
+                    if self.labels[l].endswith("_prime"):
+                        continue
                     span_node = self.to_tag(i, j, l)
                     added = False
                     for prev_label_id in range(len(self.labels)):
                         if i > 0:
-                            # if not self.labels[prev_label_id].endswith("_prime"):
-                            #     continue
+                            if not self.labels[prev_label_id].endswith("_prime"):
+                                continue
                             child_node = self.to_tag_prime(i-1, prev_label_id)
                             if builder.contains_node(child_node):
                                 added = True
@@ -153,8 +191,8 @@ class TagNetworkCompiler(NetworkCompiler):
                             builder.add_node(span_node)
                             builder.add_edge(span_node, [leaf])
                     if added:
-                        # end_prime_node = self.to_tag_prime(j, self.label2id[self.labels[l] + "_prime"])
-                        end_prime_node = self.to_tag_prime(j, l)
+                        end_prime_node = self.to_tag_prime(j, self.label2id[self.labels[l] + "_prime"])
+                        # end_prime_node = self.to_tag_prime(j, l)
                         builder.add_node(end_prime_node)
                         builder.add_edge(end_prime_node, [span_node])
 
@@ -176,7 +214,7 @@ class TagNetworkCompiler(NetworkCompiler):
             child = children[0]
             child_arr = network.get_node_array(child)
             type = child_arr[3]
-            if type == 1:
+            if type == 1: ## label node
                 end = child_arr[0]
                 start =  end - child_arr[1] + 1
                 label = self.labels[child_arr[2]]
@@ -458,7 +496,7 @@ class TagReader():
                     label = output[2:]
                 if not label in TagReader.label2id_map:
                     TagReader.label2id_map[label] = len(TagReader.label2id_map)
-                    # TagReader.label2id_map[label+"_prime"] = len(TagReader.label2id_map)
+                    TagReader.label2id_map[label+"_prime"] = len(TagReader.label2id_map)
 
                 if label == "O":
                     start = pos
@@ -510,10 +548,10 @@ if __name__ == "__main__":
 
     TRIAL = False
     visualization = False
-    num_train = 10
-    num_dev = 10
-    num_test = 10
-    num_iter = 200
+    num_train = 1
+    num_dev = 1
+    num_test = 1
+    num_iter = 100
     batch_size = 1
     device = "cpu"
     optimizer_str = "adam"
@@ -521,6 +559,7 @@ if __name__ == "__main__":
     # train_file = trial_file
     dev_file = train_file
     test_file = train_file
+    mode = "train"
 
     char_emb_size= 25
     charlstm_hidden_dim = 50
@@ -673,13 +712,14 @@ if __name__ == "__main__":
 
 
 
+
     if batch_size == 1:
         model.learn(train_insts, num_iter, dev_insts, test_insts, optimizer_str, batch_size)
     else:
         model.learn_batch(train_insts, num_iter, dev_insts, batch_size)
 
     model.load_state_dict(torch.load('best_model.pt'))
-
+    gnp.print_transition(labels)
 
 
     results = model.test(test_insts)

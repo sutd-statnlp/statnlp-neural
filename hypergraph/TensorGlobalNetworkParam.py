@@ -56,6 +56,11 @@ class TensorGlobalNetworkParam(nn.Module):
 
             return self.tuple2id[t]
 
+    def print_transition(self, id2labels):
+        for tuple in self.tuple2id:
+            labels = [id2labels[l] for l in tuple]
+            print(labels, self.transition_mat[self.tuple2id[tuple]].data)
+
 
 
 
