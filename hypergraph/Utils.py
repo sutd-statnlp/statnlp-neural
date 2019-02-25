@@ -84,6 +84,8 @@ def load_emb_glove(path, word2idx, random_embedding_dim = 100):
                 if len(line) == 0:
                     continue
                 tokens = line.split()
+                if len(tokens) == 2:
+                    continue
                 if embedding_dim < 0:
                     embedding_dim = len(tokens) - 1
                 else:
@@ -114,6 +116,22 @@ def load_emb_glove(path, word2idx, random_embedding_dim = 100):
         word_embedding = np.empty([len(word2idx), embedding_dim])
         for word in word2idx:
             word_embedding[word2idx[word]] = np.random.uniform(-scale, scale, [1, embedding_dim])
+    return word_embedding
+
+
+def load_emb_google(google_model, word2idx):
+
+    print("[Info] Use the pretrained word embedding to initialize: %d x %d" % (len(word2idx), 300))
+    word_embedding = np.empty([len(word2idx), 300])
+    for word in word2idx:
+        if word in google_model:
+            word_embedding[word2idx[word]] = google_model[word]
+        elif word.lower() in google_model:
+            word_embedding[word2idx[word]] = google_model[word.lower()]
+        else:
+            word_embedding[word2idx[word]] = google_model['</s>']
+            # self.word_embedding[self.word2idx[word], :] = np.random.uniform(-scale, scale, [1, self.embedding_dim])
+    del google_model
     return word_embedding
 
 

@@ -12,6 +12,7 @@ import re
 from termcolor import colored
 import torch.nn.functional as F
 import random
+import gensim
 
 class LRNetworkCompiler(NetworkCompiler):
 
@@ -123,7 +124,12 @@ class LRNeuralBuilder(NeuralBuilder):
         self.linear = nn.Linear(self.num_filters * len(self.windows), label_size).to(NetworkConfig.DEVICE)
 
 
-
+    def load_google_pretrain(self, path, word2idx):
+        print("Loading google binary word2vec model")
+        model = gensim.models.KeyedVectors.load_word2vec_format(path, binary=True)
+        emb = load_emb_google(model, word2idx)
+        self.word_embed.weight.data.copy_(torch.from_numpy(emb))
+        self.word_embed = self.word_embed.to(NetworkConfig.DEVICE)
 
     def load_pretrain(self, path, word2idx):
         emb = load_emb_glove(path, word2idx, self.token_embed)
@@ -280,8 +286,9 @@ if __name__ == "__main__":
 
     gnp = TensorGlobalNetworkParam()
     fm = LRNeuralBuilder(gnp, len(vocab2id), len(TagReader.label2id_map))
-    #fm.load_pretrain('data/glove.6B.100d.txt', vocab2id)
-    fm.load_pretrain(None, vocab2id)
+    # fm.load_pretrain('data/glove.6B.100d.txt', vocab2id)
+    fm.load_google_pretrain('data/GoogleNews-vectors-negative300.bin', vocab2id)
+    # fm.load_pretrain(None, vocab2id)
     print(list(TagReader.label2id_map.keys()))
     compiler = LRNetworkCompiler(TagReader.label2id_map)
 
