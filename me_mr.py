@@ -183,7 +183,7 @@ class LRNeuralBuilder(NeuralBuilder):
 
 
 
-class TagReader():
+class LRReader():
     label2id_map = {}
     @staticmethod
     def read_insts(file, is_labeled, number):
@@ -193,18 +193,18 @@ class TagReader():
             line = line.strip()
 
             fields = line.split()
-            label, _ = fields[0].split(":")
+            label = fields[0]
 
-            words = [re.sub('\d', '0', word) for word in fields[1:]]
+            words = [word for word in fields[1:]]
             inst = BaseInstance(len(insts) + 1, 1, words, label)
             if is_labeled:
                 inst.set_labeled()
             else:
                 inst.set_unlabeled()
             insts.append(inst)
-            if not label in TagReader.label2id_map:
-                output_id = len(TagReader.label2id_map)
-                TagReader.label2id_map[label] = output_id
+            if not label in LRReader.label2id_map:
+                output_id = len(LRReader.label2id_map)
+                LRReader.label2id_map[label] = output_id
 
             if len(insts) >= number and number > 0:
                 break
@@ -225,18 +225,13 @@ if __name__ == "__main__":
     NetworkConfig.NEUTRAL_BUILDER_ENABLE_NODE_TO_NN_OUTPUT_MAPPING = True
     torch.manual_seed(42)
     torch.set_num_threads(40)
-    np.random.seed(1234)
-    random.seed(1234)
+    np.random.seed(42)
+    random.seed(42)
 
 
 
-    train_file = "data/trec/train_5500.label"
-    dev_file = "data/trec/TREC_10.label"
-    test_file = "data/trec/TREC_10.label"
-    trial_file = "data/trec/trial.txt.bieos"
+    data_file = "data/movie_review/movie_review.tokenized.txt"
 
-
-    TRIAL = False
     num_train = -1
     num_dev = -1
     num_test = -1
@@ -247,12 +242,6 @@ if __name__ == "__main__":
     #dev_file = test_file
 
 
-
-    if TRIAL == True:
-        # train_file = trial_file
-        dev_file = train_file
-        test_file = train_file
-
     if device == "gpu":
         NetworkConfig.DEVICE = torch.device("cuda:0")
 
@@ -260,62 +249,60 @@ if __name__ == "__main__":
         NetworkConfig.NUM_THREADS = num_thread
         print('Set NUM_THREADS = ', num_thread)
 
-    train_insts = TagReader.read_insts(train_file, True, num_train)
-    random.shuffle(train_insts)
-    dev_insts = TagReader.read_insts(dev_file, False, num_dev)
-    test_insts = TagReader.read_insts(test_file, False, num_test)
-    print("map:", TagReader.label2id_map)
-    # vocab2id = {'<PAD>':0}
-
+    all_insts = LRReader.read_insts(data_file, True, num_train)
     vocab2id = {}
     vocab2id[PAD] = 0
-    for inst in train_insts + dev_insts + test_insts:
+    for inst in all_insts:
         for word in inst.input:
             if word not in vocab2id:
                 vocab2id[word] = len(vocab2id)
-
+    print("map:", LRReader.label2id_map)
     print(colored('vocab_2id:', 'red'), len(vocab2id))
+    print(list(LRReader.label2id_map.keys()))
 
-
-
-    for inst in train_insts + dev_insts + test_insts:
-        seq = [vocab2id[word] for word in inst.input] + [0] * (5-len(inst.input))
+    for inst in all_insts:
+        seq = [vocab2id[word] for word in inst.input] + [0] * (5 - len(inst.input))
         inst.word_seq = torch.tensor(seq).to(NetworkConfig.DEVICE)
 
+    num_folds = 10
+    fold_size = len(all_insts) // num_folds
+    all_acc= 0
+    for k in range(num_folds):
+        print("Running fold: {}".format(k+1))
+        end = (k+1) * fold_size if k != num_folds - 1 else len(all_insts)
+        test_insts = all_insts[k * fold_size: end]
+        train_insts = all_insts[0:k * fold_size] + all_insts[end: len(all_insts)]
+        assert len(train_insts) + len(test_insts) == len(all_insts)
+        for inst in train_insts:
+            inst.set_labeled()
+        for inst in test_insts:
+            inst.set_unlabeled()
 
+        gnp = TensorGlobalNetworkParam()
+        fm = LRNeuralBuilder(gnp, len(vocab2id), len(LRReader.label2id_map))
+        # fm.load_pretrain('data/glove.6B.100d.txt', vocab2id)
+        fm.load_google_pretrain('data/GoogleNews-vectors-negative300.bin', vocab2id)
+        # fm.load_pretrain(None, vocab2id)
 
-    gnp = TensorGlobalNetworkParam()
-    fm = LRNeuralBuilder(gnp, len(vocab2id), len(TagReader.label2id_map))
-    # fm.load_pretrain('data/glove.6B.100d.txt', vocab2id)
-    fm.load_google_pretrain('data/GoogleNews-vectors-negative300.bin', vocab2id)
-    # fm.load_pretrain(None, vocab2id)
-    print(list(TagReader.label2id_map.keys()))
-    compiler = LRNetworkCompiler(TagReader.label2id_map)
+        compiler = LRNetworkCompiler(LRReader.label2id_map)
+        evaluator = label_eval()
+        model = NetworkModel(fm, compiler, evaluator)
+        model.check_every = 2000
+        if batch_size == 1:
+            model.learn(train_insts, num_iter, test_insts, test_insts)
+        else:
+            model.learn_batch(train_insts, num_iter, test_insts, batch_size)
+        model.load_state_dict(torch.load('best_model.pt'))
+        results = model.test(test_insts)
+        # for inst in results:
+        #     print(inst.get_input())
+        #     print(inst.get_output())
+        #     print(inst.get_prediction())
+        #     print()
 
-
-    evaluator = label_eval()
-    model = NetworkModel(fm, compiler, evaluator)
-    model.check_every = 2000
-
-
-
-    if batch_size == 1:
-        model.learn(train_insts, num_iter, dev_insts, test_insts)
-    else:
-        model.learn_batch(train_insts, num_iter, dev_insts, batch_size)
-
-    model.load_state_dict(torch.load('best_model.pt'))
-
-
-
-    results = model.test(test_insts)
-    for inst in results:
-        print(inst.get_input())
-        print(inst.get_output())
-        print(inst.get_prediction())
-        print()
-
-    ret = model.evaluator.eval(test_insts)
-    print(ret)
+        ret = model.evaluator.eval(test_insts)
+        all_acc += ret.fscore
+        print(ret)
+    print("Average accuracy: {}".format(all_acc/num_folds))
 
 
