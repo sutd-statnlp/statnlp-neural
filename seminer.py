@@ -560,7 +560,7 @@ if __name__ == "__main__":
     dev_file = train_file
     test_file = train_file
     mode = "train"
-  
+
     char_emb_size= 25
     charlstm_hidden_dim = 50
 
@@ -575,7 +575,7 @@ if __name__ == "__main__":
         NetworkConfig.DEVICE = torch.device("cuda:0")
         torch.cuda.manual_seed(seed)
 
-    if num_thread > 1:
+    if num_thread > 1:  
         NetworkConfig.NUM_THREADS = num_thread
         print('Set NUM_THREADS = ', num_thread)
 
