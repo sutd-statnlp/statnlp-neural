@@ -560,7 +560,7 @@ if __name__ == "__main__":
     dev_file = train_file
     test_file = train_file
     mode = "train"
-
+  
     char_emb_size= 25
     charlstm_hidden_dim = 50
 
