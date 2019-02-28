@@ -13,6 +13,7 @@ from termcolor import colored
 import torch.nn.functional as F
 import random
 import gensim
+import argparse
 
 class LRNetworkCompiler(NetworkCompiler):
 
@@ -193,9 +194,9 @@ class LRReader():
             line = line.strip()
 
             fields = line.split()
-            label, _ = fields[0].split(":")
+            label = fields[0]
 
-            words = [re.sub('\d', '0', word) for word in fields[1:]]
+            words = [word for word in fields[1:]]
             inst = BaseInstance(len(insts) + 1, 1, words, label)
             if is_labeled:
                 inst.set_labeled()
@@ -215,11 +216,20 @@ class LRReader():
 UNK = "<UNK>"
 PAD = "<PAD>"
 
+
+def parse_arguments(parser):
+    ###Training Hyperparameters
+    parser.add_argument('--dataset', type=str, default='subj')
+    parser.add_argument('--device', type=str, default="cpu")
+    parser.add_argument('--num_iter', type=int, default=10)
+    parser.add_argument('--emb', type=str, default='glove')
+    args = parser.parse_args()
+    return args
+
 if __name__ == "__main__":
 
     NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH = True
     NetworkConfig.IGNORE_TRANSITION = True
-    NetworkConfig.GPU_ID = -1
     # NetworkConfig.ECHO_TRAINING_PROGRESS = -1
     # NetworkConfig.LOSS_TYPE = LossType.SSVM
     NetworkConfig.NEUTRAL_BUILDER_ENABLE_NODE_TO_NN_OUTPUT_MAPPING = True
@@ -228,94 +238,84 @@ if __name__ == "__main__":
     np.random.seed(42)
     random.seed(42)
 
+    parser = argparse.ArgumentParser(description="Maximum Entropy Model")
+    args = parse_arguments(parser)
 
 
-    train_file = "data/trec/train_5500.label"
-    dev_file = "data/trec/TREC_10.label"
-    test_file = "data/trec/TREC_10.label"
-    trial_file = "data/trec/trial.txt.bieos"
+    data_file = "data/classification/"+args.dataset+".txt"
 
-
-    TRIAL = False
     num_train = -1
     num_dev = -1
     num_test = -1
-    num_iter = 100
+    num_iter = args.num_iter
     batch_size = 1
-    device = "cpu"
     num_thread = 1
+    emb_path = args.emb
     #dev_file = test_file
 
 
 
-    if TRIAL == True:
-        # train_file = trial_file
-        dev_file = train_file
-        test_file = train_file
-
-    if device == "gpu":
-        NetworkConfig.DEVICE = torch.device("cuda:0")
+    NetworkConfig.DEVICE = torch.device(args.device)
 
     if num_thread > 1:
         NetworkConfig.NUM_THREADS = num_thread
         print('Set NUM_THREADS = ', num_thread)
 
-    train_insts = LRReader.read_insts(train_file, True, num_train)
-    random.shuffle(train_insts)
-    dev_insts = LRReader.read_insts(dev_file, False, num_dev)
-    test_insts = LRReader.read_insts(test_file, False, num_test)
-    print("map:", LRReader.label2id_map)
-    # vocab2id = {'<PAD>':0}
-
+    all_insts = LRReader.read_insts(data_file, True, num_train)
     vocab2id = {}
     vocab2id[PAD] = 0
-    for inst in train_insts + dev_insts + test_insts:
+    for inst in all_insts:
         for word in inst.input:
             if word not in vocab2id:
                 vocab2id[word] = len(vocab2id)
-
+    print("map:", LRReader.label2id_map)
     print(colored('vocab_2id:', 'red'), len(vocab2id))
+    print(list(LRReader.label2id_map.keys()))
 
-
-
-    for inst in train_insts + dev_insts + test_insts:
-        seq = [vocab2id[word] for word in inst.input] + [0] * (5-len(inst.input))
+    for inst in all_insts:
+        seq = [vocab2id[word] for word in inst.input] + [0] * (5 - len(inst.input))
         inst.word_seq = torch.tensor(seq).to(NetworkConfig.DEVICE)
 
+    num_folds = 10
+    fold_size = len(all_insts) // num_folds
+    all_acc= 0
+    for k in range(num_folds):
+        print("Running fold: {}".format(k+1))
+        end = (k+1) * fold_size if k != num_folds - 1 else len(all_insts)
+        test_insts = all_insts[k * fold_size: end]
+        train_insts = all_insts[0:k * fold_size] + all_insts[end: len(all_insts)]
+        assert len(train_insts) + len(test_insts) == len(all_insts)
+        for inst in train_insts:
+            inst.set_labeled()
+        for inst in test_insts:
+            inst.set_unlabeled()
 
+        gnp = TensorGlobalNetworkParam()
+        fm = LRNeuralBuilder(gnp, len(vocab2id), len(LRReader.label2id_map))
+        # fm.load_pretrain('data/glove.6B.100d.txt', vocab2id)
+        if load_emb:
+            fm.load_google_pretrain('data/GoogleNews-vectors-negative300.bin', vocab2id)
+        # fm.load_pretrain(None, vocab2id)
 
-    gnp = TensorGlobalNetworkParam()
-    fm = LRNeuralBuilder(gnp, len(vocab2id), len(LRReader.label2id_map))
-    # fm.load_pretrain('data/glove.6B.100d.txt', vocab2id)
-    fm.load_google_pretrain('data/GoogleNews-vectors-negative300.bin', vocab2id)
-    # fm.load_pretrain(None, vocab2id)
-    print(list(LRReader.label2id_map.keys()))
-    compiler = LRNetworkCompiler(LRReader.label2id_map)
+        compiler = LRNetworkCompiler(LRReader.label2id_map)
+        evaluator = label_eval()
+        model = NetworkModel(fm, compiler, evaluator)
+        model.check_every = 2000
+        if batch_size == 1:
+            model.learn(train_insts, num_iter, test_insts, test_insts)
+        else:
+            model.learn_batch(train_insts, num_iter, test_insts, batch_size)
+        model.load_state_dict(torch.load('best_model.pt'))
+        results = model.test(test_insts)
+        # for inst in results:
+        #     print(inst.get_input())
+        #     print(inst.get_output())
+        #     print(inst.get_prediction())
+        #     print()
 
-
-    evaluator = label_eval()
-    model = NetworkModel(fm, compiler, evaluator)
-    model.check_every = 2000
-
-
-
-    if batch_size == 1:
-        model.learn(train_insts, num_iter, dev_insts, test_insts)
-    else:
-        model.learn_batch(train_insts, num_iter, dev_insts, batch_size)
-
-    model.load_state_dict(torch.load('best_model.pt'))
-
-
-
-    results = model.test(test_insts)
-    for inst in results:
-        print(inst.get_input())
-        print(inst.get_output())
-        print(inst.get_prediction())
-        print()
-
-    ret = model.evaluator.eval(test_insts)
-    print(ret)
+        ret = model.evaluator.eval(test_insts)
+        all_acc += ret.fscore
+        print(ret)
+    print("Average accuracy: {}".format(all_acc/num_folds))
 
 

@@ -9,7 +9,7 @@ from multiprocessing import Process
 class NetworkModel(nn.Module):
     Iter = 0
 
-    def __init__(self, fm, compiler, evaluator):
+    def __init__(self, fm, compiler, evaluator, model_path = 'best_model.pt'):
         super().__init__()
         self.fm = fm
         self.compiler = compiler
@@ -18,7 +18,7 @@ class NetworkModel(nn.Module):
         self.networks = None
         self.networks_test = None
         self.evaluator = evaluator
-        self.model_path = 'best_model.pt'
+        self.model_path = model_path
         self.check_every = None
 
     def set_model_path(self, path):
