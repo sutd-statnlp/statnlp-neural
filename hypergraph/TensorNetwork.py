@@ -60,7 +60,7 @@ class TensorNetwork:
 
             childrens_stage = self.get_children(stage_idx)
 
-            for_expr = torch.sum(torch.take(self.inside_scores, childrens_stage), NetworkConfig.HYPEREDGE_ORDER)  # this line is same as the above two lines
+            for_expr = torch.sum(torch.take(self.inside_scores, childrens_stage), 2)  # this line is same as the above two lines
 
             if not NetworkConfig.NEUTRAL_BUILDER_ENABLE_NODE_TO_NN_OUTPUT_MAPPING:
                 emission_expr = emissions[self.staged_nodes[stage_idx]].view(self.num_row[stage_idx], 1).expand(self.num_row[stage_idx], self.num_hyperedge[stage_idx])
@@ -199,7 +199,7 @@ class TensorNetwork:
 
             childrens_stage = self.get_children(stage_idx)
 
-            for_expr = torch.sum(torch.take(self._max, childrens_stage), NetworkConfig.HYPEREDGE_ORDER)  # this line is same as the above two lines
+            for_expr = torch.sum(torch.take(self._max, childrens_stage), 2)  # this line is same as the above two lines
 
             if not NetworkConfig.NEUTRAL_BUILDER_ENABLE_NODE_TO_NN_OUTPUT_MAPPING:
                 emission_expr = emissions[self.staged_nodes[stage_idx]].view(self.num_row[stage_idx], 1).expand(self.num_row[stage_idx], self.num_hyperedge[stage_idx])

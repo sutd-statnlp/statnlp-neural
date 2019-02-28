@@ -2,7 +2,7 @@ import threading
 import torch
 import torch.nn as nn
 from hypergraph.NetworkConfig import NetworkConfig
-from termcolor import colored
+
 
 class TensorGlobalNetworkParam(nn.Module):
 

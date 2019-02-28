@@ -364,11 +364,20 @@ class TreeNeuralBuilder(NeuralBuilder):
         embed_dim = word_embed_dim + tag_embed_dim
         self.rnn = nn.LSTM(embed_dim, lstm_dim, batch_first=True, bidirectional=True, dropout=dropout).to(NetworkConfig.DEVICE)
 
+        self.linear1 = nn.Linear(lstm_dim * 2, label_hidden_size).to(NetworkConfig.DEVICE)
+        self.linear2 = nn.Linear(label_hidden_size, label_size - 1).to(NetworkConfig.DEVICE)
+
+        nn.init.xavier_uniform_(self.linear1.weight)
+        nn.init.xavier_uniform_(self.linear2.weight)
+
         self.f_label = nn.Sequential(
-            nn.Linear(lstm_dim * 2, label_hidden_size).to(NetworkConfig.DEVICE),
+            #nn.Linear(lstm_dim * 2, label_hidden_size).to(NetworkConfig.DEVICE),
+            self.linear1,
             nn.ReLU().to(NetworkConfig.DEVICE),
-            nn.Linear(label_hidden_size, label_size - 1).to(NetworkConfig.DEVICE)
+            #nn.Linear(label_hidden_size, label_size - 1).to(NetworkConfig.DEVICE)
+            self.linear2
         ).to(NetworkConfig.DEVICE)
+
 
 
     def load_pretrain(self, word2idx):
@@ -387,7 +396,7 @@ class TreeNeuralBuilder(NeuralBuilder):
         tag_embs = self.tag_embeddings(tag_seq)
         word_embs = self.word_embeddings(word_seq)
 
-        word_rep = torch.cat([word_embs, tag_embs], 1).unsqueeze(0)
+        word_rep = torch.cat([tag_embs, word_embs], 1).unsqueeze(0)
 
         lstm_outputs, _ = self.rnn(word_rep, None)
         lstm_outputs = lstm_outputs.squeeze(0)  #sent_len * hidden_size
@@ -409,9 +418,12 @@ class TreeNeuralBuilder(NeuralBuilder):
         bi = torch.cat([fwd, bwd], 2)
         spans = self.f_label(bi)
 
+        #add the score for label ()
         zeros = torch.zeros((sent_len - 2, sent_len - 2, 1)).to(NetworkConfig.DEVICE) # score of (), empty label
         spans = torch.cat([zeros, spans], 2)
 
+        spans = spans + instance.augment
+        # sent_len - 2 - 1
         spans[sent_len - 3, 0, 0] = 0
 
         return spans
@@ -426,7 +438,8 @@ class TreeNeuralBuilder(NeuralBuilder):
             left = right - length
 
             if node_type != NodeType.label.value:
-                idx = (size - 1) * size  ## a index with 0
+                #idx = (size - 1) * size  ## a index with 0
+                idx = (size - 2) * size * self.label_size  ## a index with 0
             else:
                 row = left * size + right - 1
                 idx = row * self.label_size + label_id
@@ -658,9 +671,9 @@ if __name__ == "__main__":
     trial_file = "data/ptb/trial.txt"
 
     DEBUG = False
-    visual = True
-    TRIAL = True
-    num_train = 1
+    visual = False
+    TRIAL = False
+    num_train = -1
     num_dev = -1
     num_test = -1
     num_iter = 40
@@ -669,11 +682,11 @@ if __name__ == "__main__":
     num_thread = 1
     model_path = "best_parsingtree.pt"
     check_every = None
-    dev_file = test_file
-    NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH = True
+    #dev_file = test_file
+    NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH = False
     NetworkConfig.IGNORE_TRANSITION = True
     NetworkConfig.GPU_ID = -1
-    NetworkConfig.ECHO_TRAINING_PROGRESS = -1
+    NetworkConfig.ECHO_TRAINING_PROGRESS = 100
     NetworkConfig.LOSS_TYPE = LossType.SSVM
     NetworkConfig.NEUTRAL_BUILDER_ENABLE_NODE_TO_NN_OUTPUT_MAPPING = True
 
@@ -716,11 +729,14 @@ if __name__ == "__main__":
         while nodes:
             node = nodes.pop()
             if isinstance(node, trees.InternalParseNode):
+
                 if node.label not in label2id:
                     label2id[node.label] = len(label2id)
                 nodes.extend(reversed(node.children))
             else:
                 pass
+
+
 
     print('label2id:',list(label2id.keys()))
     label_size = len(label2id)
@@ -732,10 +748,27 @@ if __name__ == "__main__":
         labels[label2id[key]] = key
 
 
+    for inst in train_insts:
+        size = len(inst.input)
+        augment = np.ones((size, size, label_size), dtype=np.float32)
+        nodes = [inst.output]
+        while nodes:
+            node = nodes.pop()
+            if isinstance(node, trees.InternalParseNode):
+                augment[node.left][node.right - 1][label2id[node.label]] = 0
+                nodes.extend(reversed(node.children))
+            else:
+                pass
+
+        inst.augment = torch.from_numpy(augment)
+
+
     for inst in dev_insts + test_insts:
         inst.word_seq = torch.tensor([vocab2id[word] if word in vocab2id else vocab2id[UNK] for word, tag in [(START, START)] + inst.input + [(STOP, STOP)]]).to(NetworkConfig.DEVICE)
-        inst.tag_seq = torch.tensor([tag2id[tag] if word in vocab2id else tag2id[UNK] for word, tag in [(START, START)] + inst.input + [(STOP, STOP)]]).to(NetworkConfig.DEVICE)
-
+        inst.tag_seq = torch.tensor([tag2id[tag] if tag in tag2id else tag2id[UNK] for word, tag in [(START, START)] + inst.input + [(STOP, STOP)]]).to(NetworkConfig.DEVICE)
+        size = len(inst.input)
+        augment = np.zeros((size, size, label_size) , dtype=np.float32)
+        inst.augment = torch.from_numpy(augment)
 
     gnp = TensorGlobalNetworkParam()
 

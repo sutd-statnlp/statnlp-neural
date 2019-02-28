@@ -20,6 +20,7 @@ class NetworkModel(nn.Module):
         self.evaluator = evaluator
         self.model_path = 'best_model.pt'
         self.check_every = None
+        self.weight_decay = 0
 
     def set_model_path(self, path):
         self.model_path = path
@@ -348,14 +349,18 @@ class NetworkModel(nn.Module):
                             print("Test -- ", str(test_score), '\tTime={:.2f}s'.format(end_time - start_time),
                                   flush=True)
 
-                if (i + 1) % self.check_every == 0:
+                if self.check_every >= 0 and (idx + 1) % self.check_every == 0:
                     eval()
+
+            if self.check_every >= 0:
+                eval()
 
             end_time = time.time()
             print(colored("Iteration ", 'yellow'), iteration, ": Obj=", all_loss, '\tTime={:.2f}s'.format(end_time - start_time), flush=True)
             print()
 
-
+        if self.check_every == -1: #Just take one evaluation at the end of training
+            eval()
 
         print("Best Result:", self.best_score)
 

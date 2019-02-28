@@ -14,6 +14,7 @@ class TreeInstance(Instance):
         dup = TreeInstance(self.instance_id, self.weight, self.input, self.output)
         dup.word_seq = self.word_seq
         dup.tag_seq = self.tag_seq
+        dup.augment = self.augment
         # print('dup input:', dup.get_input())
         return dup
 

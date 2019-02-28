@@ -68,8 +68,7 @@ def print_insts(insts):
 
 
 
-def load_emb_glove(path, word2idx, random_embedding_dim = 100):
-    UNK = 'unk'
+def load_emb_glove(path, word2idx, random_embedding_dim = 100, UNK = 'unk'):
     embedding_dim = -1
     embedding = dict()
 
@@ -84,6 +83,10 @@ def load_emb_glove(path, word2idx, random_embedding_dim = 100):
                 if len(line) == 0:
                     continue
                 tokens = line.split()
+
+                if len(tokens) == 2:
+                    continue
+
                 if embedding_dim < 0:
                     embedding_dim = len(tokens) - 1
                 else:
@@ -114,6 +117,41 @@ def load_emb_glove(path, word2idx, random_embedding_dim = 100):
         word_embedding = np.empty([len(word2idx), embedding_dim])
         for word in word2idx:
             word_embedding[word2idx[word]] = np.random.uniform(-scale, scale, [1, embedding_dim])
+    return word_embedding
+
+
+def load_emb_word2vec(path, word2idx, emb_dim = 300, UNK = '</s>'):
+    from gensim.models.keyedvectors import KeyedVectors
+    #word2vec_path = '~/glove/GoogleNews-vectors-negative300.bin'
+    binary = True
+    embedding = None
+
+    print("reading the pretraing embedding: %s" % (path), flush=True)
+    if path is None:
+        print("pretrain embedding in None, using random embedding")
+    else:
+        embedding = KeyedVectors.load_word2vec_format(path, binary=binary)
+
+
+    if embedding is not None:
+        print("[Info] Use the pretrained word embedding to initialize: %d x %d" % (len(word2idx), emb_dim))
+        word_embedding = np.empty([len(word2idx), emb_dim])
+        for word in word2idx:
+            if word in embedding:
+                word_embedding[word2idx[word]] = embedding[word]
+            elif word.lower() in embedding:
+                word_embedding[word2idx[word]] = embedding[word.lower()]
+            else:
+                word_embedding[word2idx[word]] = embedding[UNK]
+                # self.word_embedding[self.word2idx[word], :] = np.random.uniform(-scale, scale, [1, self.embedding_dim])
+        del embedding
+    else:
+        print('[Info] Use random embedding')
+        scale = np.sqrt(3.0 / emb_dim)
+        word_embedding = np.empty([len(word2idx), emb_dim])
+        for word in word2idx:
+            word_embedding[word2idx[word]] = np.random.uniform(-scale, scale, [1, emb_dim])
+
     return word_embedding
 
 

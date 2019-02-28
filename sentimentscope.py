@@ -545,15 +545,16 @@ class TSNeuralBuilder(NeuralBuilder):
 
         lstm_outputs = lstm_outputs.squeeze(0)
 
-        feature_output = [lstm_outputs]
+        #feature_output = [lstm_outputs]
 
+        discrete_feature = []
 
         def create_discrete_feature(seq, embed_dim):
             if embed_dim > 0:
                 seq = seq.unsqueeze(0).view(size, 1)
                 discrete_embs = torch.zeros(size, embed_dim).to(NetworkConfig.DEVICE)
                 discrete_embs.scatter_(1, seq, 1.0)
-                feature_output.append(discrete_embs)
+                discrete_feature.append(discrete_embs)
                 #return discrete_embs
 
 
@@ -563,13 +564,13 @@ class TSNeuralBuilder(NeuralBuilder):
         create_discrete_feature(instance.SENT_seq, self.SENT_embed_dim)
         create_discrete_feature(instance.THER_SENT_seq, self.THER_SENT_embed_dim)
 
-
+        feature_output = [lstm_outputs] + discrete_feature
         feature_output = torch.cat(feature_output, 1)
 
-        return feature_output
+        return feature_output, word_rep, discrete_feature
 
     def build_nn_graph(self, instance):
-        lstm_outputs = self.build_features(instance)
+        lstm_outputs, _ , _ = self.build_features(instance)
         nn_output = self.linear(lstm_outputs)
         return nn_output
 
@@ -602,14 +603,14 @@ class TSATTNeuralBuilder(TSNeuralBuilder):
 
     def init_attention(self, attention_type, attention_size = 100):
         self.attention_type = attention_type
-        self.attention_size = attention_size
+        self.attention_size = self.linear_dim #attention_size
         #0: no attention
         #1: attention for each token in the targets
         print('[Info] Initialize attention with attention type =', attention_type)
         if attention_type == 1:
-            self.context_linear = nn.Linear(lstm_dim * 4, attention_size).to(NetworkConfig.DEVICE)
-            self.attention_U = nn.Parameter(torch.randn(1, attention_size))
-            self.attention_linear = nn.Linear(lstm_dim * 2, len(self.polar2id)).to(NetworkConfig.DEVICE)
+            self.context_linear = nn.Linear(self.linear_dim * 2, self.attention_size).to(NetworkConfig.DEVICE)
+            self.attention_U = nn.Parameter(torch.randn(1, self.attention_size)).to(NetworkConfig.DEVICE)
+            self.attention_linear = nn.Linear(self.linear_dim, len(self.polar2id)).to(NetworkConfig.DEVICE)
 
     def build_linear_layers(self):
         self.e2id = {'B':0, 'M':1, 'E':2, 'S':3, 'O':4}
@@ -619,21 +620,21 @@ class TSATTNeuralBuilder(TSNeuralBuilder):
         self.sent_linear = nn.Linear(self.linear_dim, len(self.polar2id)).to(NetworkConfig.DEVICE) # +, 0, -
         self.zero = torch.tensor(0.0).to(NetworkConfig.DEVICE)
 
-    def build_attention(self, lstm_outputs):
+    def build_attention(self, features):
         if self.attention_type == 1:
-            size, hidden_size = lstm_outputs.size()
+            size, hidden_size = features.size()
             sents = []
             for pos in range(size):
-                curr_hidden = lstm_outputs[pos]  # hidden_size
+                curr_hidden = features[pos]  # hidden_size
                 curr_hidden = curr_hidden.view(1, hidden_size).expand(size, hidden_size)  # size * hidden_size
-                context = torch.cat([curr_hidden, lstm_outputs], 1)
+                context = torch.cat([curr_hidden, features], 1)
                 context = self.context_linear(context) # size * attention_size
                 context = F.relu(context).transpose(0, 1) # attention_size * size
                 beta = self.attention_U @ context # 1 * size  #TODO: correct the way to multipty U with each element in context
                 beta = beta.squeeze(0) # size
                 alpha = F.softmax(beta, 0)  #size
                 alpha = alpha.view(size, 1).expand(size, hidden_size) #
-                sent = alpha * lstm_outputs  # size * hidden_size #TODO: correct the way to multipy alpha[i] by lstm_outputs[i]
+                sent = alpha * features  # size * hidden_size #TODO: correct the way to multipy alpha[i] by lstm_outputs[i]
                 sent = torch.sum(sent, 0)  # hidden_size
                 sent = self.attention_linear(sent)
                 sents.append(sent)
@@ -646,7 +647,7 @@ class TSATTNeuralBuilder(TSNeuralBuilder):
 
 
     def build_nn_graph(self, instance):
-        lstm_outputs = self.build_features(instance) #sent_len * hidden_size
+        lstm_outputs, word_rep, discrete_feature = self.build_features(instance) #sent_len * hidden_size
         nn_output_e_linear = self.e_linear(lstm_outputs)
         nn_output_sent_linear = self.sent_linear(lstm_outputs)
         nn_attention = self.build_attention(lstm_outputs)
@@ -684,6 +685,190 @@ class TSATTNeuralBuilder(TSNeuralBuilder):
                         target_score = target_score + nn_output_e_linear[pos][self.e2id['O']]
                     sent_score = nn_output_sent_linear[pos][polar_tag_id]
                     return target_score + sent_score
+
+
+
+class Attention(nn.Module):
+    def __init__(self, input_size, output_size):
+        super(Attention, self).__init__()
+
+        self.linear = nn.Linear(input_size * 2, output_size, bias=True).to(NetworkConfig.DEVICE)
+        nn.init.xavier_uniform_(self.linear.weight)
+
+        self.u = nn.Parameter(torch.randn(output_size, 1)).to(NetworkConfig.DEVICE)
+        nn.init.xavier_uniform_(self.u)
+
+
+    def forward(self, h, attention):
+        m_combine = torch.cat([attention for _ in range(h.size(0))], 0)
+        m_combine = torch.cat([h, m_combine], 1)
+        m_combine = F.tanh(self.linear(m_combine))
+
+        beta = torch.mm(m_combine, self.u)
+        beta = torch.t(beta)
+
+        alpha = F.softmax(beta, 1)
+        s = torch.mm(alpha, h)
+
+        return s
+
+class TSSELFATTNeuralBuilder(TSNeuralBuilder):
+    def __init__(self, gnp, labels, voc_size, word_embed_dim, postag_size, postag_embed_dim, char_emb_size, charlstm_hidden_dim, SENT_emb_size, SENT_embed_dim, THER_SENT_embed_dim, browncluster5_embed_dim, browncluster3_embed_dim, lstm_dim = 200, dropout = 0.5):
+        super().__init__(gnp, labels, voc_size, word_embed_dim, postag_size, postag_embed_dim, char_emb_size, charlstm_hidden_dim, SENT_emb_size, SENT_embed_dim, THER_SENT_embed_dim, browncluster5_embed_dim, browncluster3_embed_dim, lstm_dim, dropout)
+
+        self.attention = Attention(self.attention_output_dim, self.attention_output_dim)
+
+        print('[Info] TSSELFATTNeuralBuilder is initialized')
+
+
+    def init_attention(self, attention_type, attention_size):
+        pass
+
+
+
+    def build_linear_layers(self):
+        self.attention_output_dim = self.word_embed_dim + self.char_emb_size + self.SENT_embed_dim + self.THER_SENT_embed_dim
+
+        self.e2id = {'B':0, 'M':1, 'E':2, 'S':3, 'O':4}
+        self.polar2id = {'+':0, '0':1, '-':2}
+
+        self.linear_dim = lstm_dim * 2 + self.postag_embed_dim + self.SENT_embed_dim + self.THER_SENT_embed_dim + self.browncluster5_embed_dim + self.browncluster3_embed_dim
+
+        self.e_linear = nn.Linear(self.linear_dim, len(self.e2id)).to(NetworkConfig.DEVICE)
+        nn.init.xavier_uniform_(self.e_linear.weight)
+        self.sent_linear = nn.Linear(self.linear_dim, len(self.polar2id)).to(NetworkConfig.DEVICE) # +, 0, -
+        nn.init.xavier_uniform_(self.sent_linear.weight)
+
+        #self.linear = nn.Linear(self.encoder_output_dim, self.label_size).to(NetworkConfig.DEVICE)
+
+        self.att2label = nn.Linear(self.attention_output_dim, len(self.polar2id), bias=True).to(NetworkConfig.DEVICE)
+        nn.init.xavier_uniform_(self.att2label.weight)
+
+        self.zero = torch.tensor(0.0).to(NetworkConfig.DEVICE)
+
+
+    def build_word_repr(self, instance):
+        word_seq = instance.word_seq.unsqueeze(0)
+        word_embs = self.word_embeddings(word_seq)
+        word_embs = self.dropout(word_embs)
+        word_rep = [word_embs]
+
+        if self.char_emb_size > 0:
+            char_seq_tensor = instance.char_seq_tensor.unsqueeze(0)
+            char_seq_len = instance.char_seq_len.unsqueeze(0)
+            char_features = self.char_bilstm.get_last_hiddens(char_seq_tensor, char_seq_len)  # batch_size, sent_len, char_hidden_dim
+            word_rep.append(char_features)
+
+        word_rep = torch.cat(word_rep, 2)
+        return word_rep
+
+
+    def build_attention_encoder(self, features):
+        size, hidden_size = features.size()
+        sents = []
+        for pos in range(size):
+            feature = features[pos]
+            target = feature.view(1, hidden_size)  # hidden_size
+            s = self.attention(features, target)
+            sents.append(s)
+        sents = torch.cat(sents, 0)  # size * label_size
+
+        return sents
+
+    def build_features(self, instance):
+        size = instance.size()
+
+        word_rep = self.build_word_repr(instance)  # 1 * size * hidden_size
+
+        lstm_outputs, _ = self.rnn(word_rep, None)
+
+        lstm_outputs = lstm_outputs.squeeze(0)
+
+        discrete_feature = []
+
+
+        def create_discrete_feature(seq, embed_dim):
+            if embed_dim > 0:
+                seq = seq.unsqueeze(0).view(size, 1)
+                discrete_embs = torch.zeros(size, embed_dim).to(NetworkConfig.DEVICE)
+                discrete_embs.scatter_(1, seq, 1.0)
+                discrete_feature.append(discrete_embs)
+                # return discrete_embs
+
+        create_discrete_feature(instance.postag_seq, self.postag_embed_dim)
+        create_discrete_feature(instance.browncluster5_seq, self.browncluster5_embed_dim)
+        create_discrete_feature(instance.browncluster3_seq, self.browncluster3_embed_dim)
+        create_discrete_feature(instance.SENT_seq, self.SENT_embed_dim)
+        create_discrete_feature(instance.THER_SENT_seq, self.THER_SENT_embed_dim)
+
+        feature_output = [lstm_outputs] + discrete_feature
+        feature_output = torch.cat(feature_output, 1)
+
+
+        discrete_feature_for_attention = []
+        def create_discrete_feature_for_attention(seq, embed_dim):
+            if embed_dim > 0:
+                seq = seq.unsqueeze(0).view(size, 1)
+                discrete_embs = torch.zeros(size, embed_dim).to(NetworkConfig.DEVICE)
+                discrete_embs.scatter_(1, seq, 1.0)
+                discrete_feature_for_attention.append(discrete_embs)
+
+        create_discrete_feature_for_attention(instance.SENT_seq, self.SENT_embed_dim)
+        create_discrete_feature_for_attention(instance.THER_SENT_seq, self.THER_SENT_embed_dim)
+
+
+        attention_input = [word_rep.squeeze(0)] + discrete_feature_for_attention
+        attention_input = torch.cat(attention_input, 1)
+        attention_output = self.build_attention_encoder(attention_input) #word_rep.squeeze(0)
+
+
+        return feature_output, attention_output, word_rep, discrete_feature
+
+    def build_nn_graph(self, instance):
+        feature_output, attention_output, word_rep, discrete_feature = self.build_features(instance) #sent_len * hidden_size
+        nn_output_e_linear = self.e_linear(feature_output)
+        nn_output_sent_linear = self.sent_linear(feature_output)
+        nn_linear = None #self.linear(encoder_outputs)
+        nn_att_linear = self.att2label(attention_output) / 2
+        nn_output = (nn_output_e_linear, nn_output_sent_linear, nn_linear, nn_att_linear)
+        return nn_output
+
+    def get_nn_score(self, network, parent_k):
+        parent_arr = network.get_node_array(parent_k)
+        pos, node_type, label_id = parent_arr
+
+        if node_type != NodeType.scope.value:  # Start, End
+            return self.zero #torch.tensor(0.0).to(NetworkConfig.DEVICE)
+        else:
+            nn_output_e_linear, nn_output_sent_linear, nn_linear, nn_att_linear = network.nn_output
+
+            label = self.labels[label_id]
+            scope_tag = label[:2]
+            polar_tag = label[2]
+            polar_tag_id = self.polar2id[polar_tag]
+
+            if scope_tag[0] == 'e':
+                target_score = nn_output_e_linear[pos][self.e2id[scope_tag[1]]]
+
+                sent_score = 0 #nn_output_sent_linear[pos][polar_tag_id]
+
+                if scope_tag == 'eA':
+                    sent_score = sent_score + nn_att_linear[pos][polar_tag_id]
+
+                # if self.attention_type == 1:
+                #     sent_score = sent_score + nn_attention[pos][polar_tag_id]
+
+                return target_score + sent_score
+            else: #B A
+                if scope_tag == 'Be':
+                    return nn_att_linear[pos][polar_tag_id] #self.zero #torch.tensor(0.0).to(NetworkConfig.DEVICE)
+                else:
+                    target_score = 0
+                    # if self.attention_type == 1:
+                    #     target_score = target_score + nn_output_e_linear[pos][self.e2id['O']]
+                    sent_score = nn_output_sent_linear[pos][polar_tag_id]
+                    return target_score + sent_score
+
 
 
 
@@ -938,6 +1123,7 @@ if __name__ == "__main__":
     class TSNeuralBuilderType(Enum):
         VANILLA = 0
         ATT = 1
+        SELFATT = 2
 
     import argparse
     parser = argparse.ArgumentParser()
@@ -948,6 +1134,8 @@ if __name__ == "__main__":
     # for arg in dynet_args:
     #     subparser.add_argument(arg)
     parser.add_argument("--numpy-seed", type=int, default=9997)
+    parser.add_argument("--begin-index", type=int, default=1)
+    parser.add_argument("--end-index", type=int, default=10)
     parser.add_argument("--lang", choices=["en", "es"], default='en') #
     parser.add_argument("--tag-embedding-dim", type=int, default=50)
     parser.add_argument("--word-embedding-dim", type=int, default=100)
@@ -966,14 +1154,16 @@ if __name__ == "__main__":
     parser.add_argument("--print-vocabs", action="store_true")
     parser.add_argument("--modelname", default="ss")
     parser.add_argument("--neuraltype", default="VANILLA")
+    parser.add_argument("--weight-decay", type=float, default=0.0)
+
 
     args = parser.parse_args()
 
     seed = args.numpy_seed
     lang = args.lang
     TRIAL = args.trial
-    fold_start_idx = 1
-    fold_end_idx = 10 if not TRIAL else 1
+    fold_start_idx = args.begin_index #1
+    fold_end_idx = args.end_index if not TRIAL else 1
     num_train = -1
     num_dev = -1
     num_test = -1
@@ -1000,7 +1190,8 @@ if __name__ == "__main__":
     attention_type = args.attention_type
     attention_size = lstm_dim
     compare_type = args.compare_type
-    model_name = args.modelname + '_' + neural_builder_type.name
+    weight_decay = args.weight_decay
+    model_name = args.modelname #+ '_' + neural_builder_type.name
 
     print(args)
 
@@ -1033,8 +1224,8 @@ if __name__ == "__main__":
             train_file = trial_file
             dev_file = trial_file
             test_file = trial_file
-            num_iter = 30
-            check_every = 4
+            num_iter = args.epochs
+            check_every = args.check_every
             NetworkConfig.GPU_ID = -1
             embed_path = None
             SEPARATE_DEV_FROM_TRAIN = False
@@ -1176,6 +1367,9 @@ if __name__ == "__main__":
         elif neural_builder_type == TSNeuralBuilderType.ATT:
             neural_builder = TSATTNeuralBuilder(gnp, labels, len(vocab2id), word_embed_dim, len(postag2id), postag_embed_dim, char_embed_dim, char_embed_dim, len(SENT2id), SENT_embed_dim, THER_SENT_embed_dim, browncluster5_embed_dim, browncluster3_embed_dim, lstm_dim = lstm_dim, dropout=args.dropout)
             neural_builder.init_attention(attention_type, attention_size)
+        elif neural_builder_type == TSNeuralBuilderType.SELFATT:
+            neural_builder = TSSELFATTNeuralBuilder(gnp, labels, len(vocab2id), word_embed_dim, len(postag2id), postag_embed_dim, char_embed_dim, char_embed_dim, len(SENT2id), SENT_embed_dim, THER_SENT_embed_dim, browncluster5_embed_dim, browncluster3_embed_dim, lstm_dim = lstm_dim, dropout=args.dropout)
+            neural_builder.init_attention(attention_type, attention_size)
         else:#gnp, labels, voc_size, word_embed_dim, postag_size, postag_embed_dim, char_emb_size, charlstm_hidden_dim, SENT_emb_size, SENT_embed_dim, browncluster5_embed_dim, browncluster3_embed_dim, lstm_dim, dropout)
             print('Unsupported TS Neural Builder Type')
             exit()
@@ -1186,6 +1380,7 @@ if __name__ == "__main__":
         model = NetworkModel(neural_builder, compiler, evaluator)
         model.model_path = model_path
         model.check_every = check_every
+        model.weight_decay = weight_decay
 
         if visual:
             from hypergraph.Visualizer import Visualizer
