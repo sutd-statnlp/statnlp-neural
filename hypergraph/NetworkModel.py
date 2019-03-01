@@ -5,6 +5,7 @@ import time
 from termcolor import colored
 import copy
 from multiprocessing import Process
+from hypergraph.BatchTensorNetwork import BatchTensorNetwork
 
 class NetworkModel(nn.Module):
     Iter = 0
@@ -59,25 +60,41 @@ class NetworkModel(nn.Module):
         gnp.locked = True
 
 
-    def learn_batch(self, train_insts, max_iterations, dev_insts, test_insts, batch_size = 10, optimizer = 'adam'):
+    def learn_batch(self, train_insts, max_iterations, dev_insts, test_insts, optimizer = 'adam', batch_size = 10):
 
         insts_before_split = train_insts
 
         insts = self.split_instances_for_train(insts_before_split)
         self.all_instances = insts
 
+        batches = self.fm.generate_batches(insts_before_split, batch_size)
 
-
-        self.touch(self.all_instances)
 
         # label_networks = []
         # unlabel_networks = []
         # for i in range(0, len(self.all_instances), 2):
         #     label_networks.append(self.get_network(i))
         #     unlabel_networks.append(self.get_network(i + 1))
+        if self.networks == None:
+            self.networks = [None for i in range(len(insts))]
+
+        batch_tensor_networks = []
+
+        for batch_idx, batch in enumerate(batches):
+            batch_input_seqs, batch_network_id_range = batch
+            inst_ids = list(range(batch_network_id_range[0], batch_network_id_range[1]))
 
 
-        batches = self.fm.generate_batches(insts_before_split, batch_size)
+            batch_label_networks = [self.get_network(i * 2) for i in inst_ids]
+            batch_unlabel_networks = [self.get_network(i * 2 + 1) for i in inst_ids]
+
+            batch_tensor_label_networks = BatchTensorNetwork(self.fm, batch_idx * 2 + 0, batch_label_networks, batch_network_id_range)
+            batch_tensor_unlabel_networks = BatchTensorNetwork(self.fm, batch_idx * 2 + 1, batch_unlabel_networks, batch_network_id_range)
+
+            batch_tensor_networks.append((batch_tensor_label_networks, batch_tensor_unlabel_networks))
+
+
+        self.touch_batch(self.all_instances, batch_tensor_networks, batch_size)
 
 
         self.lock_it()
@@ -97,9 +114,12 @@ class NetworkModel(nn.Module):
             self.check_every = len(batches)
 
 
-
         print('Start Training...', flush=True)
-        for iteration in range(max_iterations):
+        for iteration in range(max_iterations): #Epoch
+
+            if iteration == 99:
+                print()
+
             self.train()
             all_loss = 0
             start_time = time.time()
@@ -111,88 +131,35 @@ class NetworkModel(nn.Module):
                 batch_loss = 0
 
                 batch_input_seqs, batch_network_id_range = batch
-                nn_output_batch = self.fm.build_nn_graph_batch(batch_input_seqs)
+                nn_batch_output = self.fm.build_nn_graph_batch(batch_input_seqs)
+                this_batch_size = nn_batch_output.shape[0]
+                batch_tensor_label_networks, batch_tensor_unlabel_networks = batch_tensor_networks[batch_idx]
+                batch_tensor_label_networks.nn_batch_output = nn_batch_output
+                batch_tensor_unlabel_networks.nn_batch_output = nn_batch_output
 
-
-                # batch_label_networks = label_networks[batch_network_id_range[0]:batch_network_id_range[1]]
-                # batch_unlabel_networks = unlabel_networks[batch_network_id_range[0]:batch_network_id_range[1]]
-                inst_ids = list(range(batch_network_id_range[0], batch_network_id_range[1]))
-                batch_label_networks = [self.get_network(i * 2) for i in inst_ids]
-                batch_unlabel_networks = [self.get_network(i * 2 + 1) for i in inst_ids]
-
-                this_batch_size = nn_output_batch.shape[0]
-
-                for b in range(this_batch_size):
-
-                    if not NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH:
-                        batch_label_networks[b].touch()
-                        batch_unlabel_networks[b].touch()
-
-                    batch_label_networks[b].nn_output = nn_output_batch[b]
-                    batch_unlabel_networks[b].nn_output = nn_output_batch[b]
-
-                #for b in range(this_batch_size):
-                    label_score = self.forward(batch_label_networks[b])
-                    unlabel_score = self.forward(batch_unlabel_networks[b])
-                    loss = -unlabel_score - label_score
-                    batch_loss += loss
-
-
-                # if NetworkConfig.NUM_THREADS == 1:
-                #     for b in range(this_batch_size):
-                #         label_score = self.forward(batch_label_networks[b])
-                #         unlabel_score = self.forward(batch_unlabel_networks[b])
-                #         loss = -unlabel_score - label_score
-                #         batch_loss += loss
-                # else:
-                #     num_thread = NetworkConfig.NUM_THREADS
-                #     tasks = list(range(0, this_batch_size))
-                #     num_per_basket = this_batch_size // num_thread if this_batch_size % num_thread == 0 else batch_size // num_thread + 1
-                #     task_ids_each_thread = [tasks[i:i + num_per_basket] for i in range(0, this_batch_size, num_per_basket)]
-                #     task_ids_each_thread += [[]] * (num_thread - len(task_ids_each_thread))
-                #
-                #     batch_loss_per_thread = [0] * num_thread
-                #
-                #     def calc_score_thread(task_ids, thread_idx):
-                #         for id in task_ids:
-                #             label_score = self.forward(batch_label_networks[id])
-                #             unlabel_score = self.forward(batch_unlabel_networks[id])
-                #             loss = -unlabel_score - label_score
-                #             batch_loss_per_thread[thread_idx] = batch_loss_per_thread[thread_idx] + loss
-                #
-                #
-                #     processes = []
-                #     for thread_idx in range(NetworkConfig.NUM_THREADS):
-                #         p = Process(target=calc_score_thread(task_ids_each_thread[thread_idx], thread_idx))
-                #         processes.append(p)
-                #         p.start()
-                #
-                #     for thread_idx in range(NetworkConfig.NUM_THREADS):
-                #         processes[thread_idx].join()
-                #
-                #     for thread_idx in range(NetworkConfig.NUM_THREADS):
-                #         batch_loss += batch_loss_per_thread[thread_idx]
-
+                label_score = self.forward(batch_tensor_label_networks)
+                unlabel_score = self.forward(batch_tensor_unlabel_networks)
+                batch_loss = torch.sum(unlabel_score - label_score, dim = 0)
+                all_loss += batch_loss.item()
 
                 batch_loss.backward()
                 optimizer.step()
 
-                all_loss += batch_loss.item()
-                print(colored("Batch {0}".format(batch_idx), 'blue'), iteration, ": batch loss =", batch_loss.item(), flush=True)
+                #print(colored("Batch {0}".format(batch_idx), 'blue'), iteration, ": batch loss =", batch_loss.item(), flush=True)
 
-                if not NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH:
-                    for b in range(this_batch_size):
-                        del batch_label_networks[0]
-                        del batch_unlabel_networks[0]
-                    for i in inst_ids:
-                        self.networks[i * 2] = None
-                        self.networks[i * 2 + 1] = None
+                # if not NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH:
+                #     for b in range(this_batch_size):
+                #         del batch_label_networks[0]
+                #         del batch_unlabel_networks[0]
+                #     for i in inst_ids:
+                #         self.networks[i * 2] = None
+                #         self.networks[i * 2 + 1] = None
 
 
                 def eval():
                     start_time = time.time()
-                    self.decode(dev_insts)
-                    score = self.evaluator.eval(dev_insts)
+                    results = self.decode_batch(dev_insts, batch_size)
+                    score = self.evaluator.eval(results)
                     end_time = time.time()
                     print("Dev  -- ", str(score), '\tTime={:.2f}s'.format(end_time - start_time), flush=True)
 
@@ -220,7 +187,7 @@ class NetworkModel(nn.Module):
                             print("Test -- ", str(test_score), '\tTime={:.2f}s'.format(end_time - start_time),
                                   flush=True)
 
-                if (batch_idx + 1) % self.check_every == 0:
+                if (batch_idx + 1) % self.check_every == 0 or batch_idx + 1 == len(batches) :
                     eval()
 
             end_time = time.time()
@@ -320,7 +287,7 @@ class NetworkModel(nn.Module):
 
                 def eval():
                     start_time = time.time()
-                    self.decode(dev_insts)
+                    results = self.decode(dev_insts)
                     score = self.evaluator.eval(dev_insts)
                     end_time = time.time()
                     print("Dev  -- ", str(score), '\tTime={:.2f}s'.format(end_time - start_time), flush=True)
@@ -523,8 +490,55 @@ class NetworkModel(nn.Module):
             self.networks = [None] * len(insts)
 
 
+    def touch_batch(self, insts, batches, batch_size, is_train=True):
+        print('Touching ...', flush=True)
+        # if self.networks == None:
+        #     self.networks = [None for i in range(len(insts))]
+
+        if NetworkConfig.NEUTRAL_BUILDER_ENABLE_NODE_TO_NN_OUTPUT_MAPPING:
+            self.fm.gnp.set_network2nodeid2nn_batch_size(len(batches))
+
+        # if not NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH:
+        #     print('Exit Full Touch ...')
+        #     return
+
+
+        # if NetworkConfig.IGNORE_TRANSITION:
+        #     print('Ignore Transition...')
+        #     return
+
+
+        start_time = time.time()
+
+        for batch_id in range(len(batches)):
+            if batch_id % 100 == 0:
+                print('.', end='', flush=True)
+
+            for item in batches[batch_id]:
+                item.touch(is_train)
+            # batches[batch_id][0].touch()
+            # batches[batch_id][1].touch()
+
+            # if not NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH:
+            #     del network
+
+        end_time = time.time()
+
+        print(flush=True)
+        print('Toucing Completes taking ', end_time - start_time, ' seconds.', flush=True)
+
+        # if not NetworkConfig.BUILD_GRAPH_WITH_FULL_BATCH:
+        #     del self.networks
+        #     self.networks = [None] * len(insts)
+
+
+
+
     def test(self, instances):
         return self.decode(instances=instances)
+
+    def test_batch(self, instances, batch_size):
+        return self.decode_batch(instances=instances, batch_size=batch_size)
 
     def decode(self, instances, cache_features=False):
 
@@ -543,6 +557,57 @@ class NetworkModel(nn.Module):
             instances_output.append(instance_output)
 
         return instances_output
+
+
+    def decode_batch(self, instances, batch_size = 10):
+
+        self.all_instances_test = instances
+
+        batches = self.fm.generate_batches(self.all_instances_test, batch_size)
+
+        batch_tensor_networks = []
+
+        for batch_idx, batch in enumerate(batches):
+            batch_input_seqs, batch_network_id_range = batch
+            inst_ids = list(range(batch_network_id_range[0], batch_network_id_range[1]))
+
+            batch_unlabel_networks = [self.compiler.compile(i, self.all_instances_test[i], self.fm) for i in inst_ids]
+
+            batch_tensor_unlabel_networks = BatchTensorNetwork(self.fm, batch_idx, batch_unlabel_networks, batch_network_id_range)
+
+            batch_tensor_networks.append((batch_tensor_unlabel_networks))
+
+        # self.touch_batch(self.all_instances_test, batch_tensor_networks, batch_size, is_train=False)
+
+        self.eval()
+        instances_output = []
+
+        for batch_idx, batch in enumerate(batches):
+            batch_input_seqs, batch_network_id_range = batch
+            batch_tensor_network = batch_tensor_networks[batch_idx]
+            batch_tensor_network.touch(is_train = False)
+            batch_tensor_network.nn_batch_output = self.fm.build_nn_graph_batch(batch_input_seqs)
+            batch_tensor_network.max()
+
+            for nid, network in enumerate(batch_tensor_network.batch_networks):
+                network.max_paths = batch_tensor_network.max_paths[nid]
+                instance_output = self.compiler.decompile(network)
+                instances_output.append(instance_output)
+
+        return instances_output
+
+
+        # for k in range(len(instances)):
+        #     instance = instances[k]
+        #
+        #     #network = self.compiler.compile(k, instance, self.fm)
+        #     network.touch(is_train = False)
+        #     network.nn_output = self.fm.build_nn_graph(instance)
+        #     network.max()
+        #     instance_output = self.compiler.decompile(network)
+        #     instances_output.append(instance_output)
+
+        # return instances_output
 
 
     # def get_network_test(self, network_id):

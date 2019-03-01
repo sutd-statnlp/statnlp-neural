@@ -24,6 +24,11 @@ class TensorGlobalNetworkParam(nn.Module):
         self.network2nodeid2nn = [None] * size
         self.network2stagenodes2nodeid2nn = [None] * size
 
+
+    def set_network2nodeid2nn_batch_size(self, num_batch):
+        self.network2nodeid2nn = [None] * num_batch * 2
+        self.network2stagenodes2nodeid2nn = [None] * num_batch * 2
+
     def is_locked(self):
         return self.locked
 
@@ -56,9 +61,13 @@ class TensorGlobalNetworkParam(nn.Module):
 
             return self.tuple2id[t]
 
-
-
-
+    def print_transition(self, id2labels):
+        try:
+            for tuple in self.tuple2id:
+                labels = [id2labels[l] for l in tuple]
+                print(labels, self.transition_mat[self.tuple2id[tuple]].data)
+        except:
+            pass
 
 
 

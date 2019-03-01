@@ -55,6 +55,20 @@ def logSumExp(vec):
     # merged_final_vec = (vec - F.log_softmax(vec, dim=1)).mean(1) # batch_size * label_size
     # return merged_final_vec
 
+def logSumExp_batch(vec):
+    """
+
+    :param vec: [max_number * max_hyperedge]
+    :return: [max_number]
+    """
+    ## In this Design, we will need to handle nodes with no hyperedges
+    vec[vec == -float("inf")] = -1e10
+    maxScores, _ = torch.max(vec, 2)
+    #maxScores[maxScores == -float("inf")] = 0
+
+    maxScoresExpanded = maxScores.view(vec.shape[0], vec.shape[1], 1).expand(vec.shape[0], vec.shape[1], vec.shape[2])
+    return maxScores + torch.log(torch.sum(torch.exp(vec - maxScoresExpanded), 2))
+
 
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
@@ -68,7 +82,7 @@ def print_insts(insts):
 
 
 
-def load_emb_glove(path, word2idx, random_embedding_dim = 100, UNK = 'unk'):
+def load_emb_glove(path, word2idx, random_embedding_dim = 100, UNK = 'unk', sep = ' '):
     embedding_dim = -1
     embedding = dict()
 
@@ -82,7 +96,7 @@ def load_emb_glove(path, word2idx, random_embedding_dim = 100, UNK = 'unk'):
                 line = line.strip()
                 if len(line) == 0:
                     continue
-                tokens = line.split()
+                tokens = line.split(sep)
 
                 if len(tokens) == 2:
                     continue
@@ -92,11 +106,18 @@ def load_emb_glove(path, word2idx, random_embedding_dim = 100, UNK = 'unk'):
                 else:
                     # print(tokens)
                     # print(embedding_dim)
-                    assert (embedding_dim + 1 == len(tokens))
+                    try:
+                        assert (embedding_dim + 1 == len(tokens))
+                    except:
+                        print()
                 embedd = np.empty([1, embedding_dim])
                 embedd[:] = tokens[1:]
                 first_col = tokens[0]
                 embedding[first_col] = embedd
+
+            if UNK not in embedding:
+                scale = np.sqrt(3.0 / embedding_dim)
+                embedding[UNK] = np.random.uniform(-scale, scale, [1, embedding_dim])
 
 
     if len(embedding) > 0:
