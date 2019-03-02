@@ -219,8 +219,9 @@ class TagNeuralBuilder(NeuralBuilder):
         #word_vec = self.word_embed(instance.word_seq) #.unsqueeze(0)
         #linear_output = self.linear(word_vec)#.squeeze(0)
         # return linear_output   ##sent_len x num_label
-        zero_col = torch.zeros(1, self.label_size).to(NetworkConfig.DEVICE)
-        return torch.cat([linear_output, zero_col], 0)
+        return linear_output
+        # zero_col = torch.zeros(1, self.label_size).to(NetworkConfig.DEVICE)
+        # return torch.cat([linear_output, zero_col], 0)
 
     def generate_batches(self, train_insts, batch_size):
         '''
@@ -327,7 +328,8 @@ class TagNeuralBuilder(NeuralBuilder):
             node_type = parent_arr[2]
 
             if node_type == 0 or node_type == 2:  # Start, End
-                idx = sent_len * self.label_size
+                # idx = sent_len * self.label_size
+                idx = 0 ## useless index
             else:
                 idx = pos * self.label_size  + label_id
             nodeid2nn[k] = idx
@@ -366,7 +368,7 @@ class TagReader():
     label2id_map = {}
     label2id_map["<START>"] = 0
 
-    Stats = {'MAX_WORD_LENGTH':0}
+    # Stats = {'MAX_WORD_LENGTH':0}
 
     @staticmethod
     def read_insts(file, is_labeled, number):
@@ -397,11 +399,8 @@ class TagReader():
                 input = re.sub('\d', '0', input)
                 output = fields[-1]
 
-                TagReader.Stats['MAX_WORD_LENGTH'] = max(TagReader.Stats['MAX_WORD_LENGTH'], len(input))
-                # if output.endswith("NP"):
-                #     output = "NP"
-                # else:
-                #     output = "O"
+                # TagReader.Stats['MAX_WORD_LENGTH'] = max(TagReader.Stats['MAX_WORD_LENGTH'], len(input))
+
 
                 if not output in TagReader.label2id_map:
                     output_id = len(TagReader.label2id_map)
@@ -416,6 +415,18 @@ class TagReader():
 
         return insts
 
+
+def insert_singletons(self, words, p=0.5):
+    """
+    Replace singletons by the unknown word with a probability p.
+    """
+    new_words = []
+    for word in words:
+        if word in self.singleton and np.random.uniform() < p:
+            new_words.append(self.unk_id)
+        else:
+            new_words.append(word)
+    return new_words
 
 START = "<START>"
 STOP = "<STOP>"
@@ -444,18 +455,21 @@ if __name__ == "__main__":
     trial_file = "data/conll/trial.txt.bieos"
 
 
-    TRIAL = True
+    TRIAL = False
     num_train = -1
     num_dev = -1
     num_test = -1
-    num_iter = 200
+    num_iter = 40
     batch_size = 1
-    device = "cpu"
-    optimizer_str = "sgd"
+    device = "gpu"
+    optimizer_str = "adam"
     NetworkConfig.NEURAL_LEARNING_RATE = 0.1
     num_thread = 1
     # dev_file = train_file
     # test_file = train_file
+    emb_file = "data/glove.6B.100d.txt"
+    model_path = "models/linear_ner.pt"
+    emb_file = None
 
     char_emb_size= 25
     charlstm_hidden_dim = 50
@@ -494,6 +508,7 @@ if __name__ == "__main__":
         labels[TagReader.label2id_map[key]] = key
 
     for inst in train_insts + dev_insts + test_insts:
+        words = inst.input
         max_size = max(len(inst.input), max_size)
         for word in inst.input:
             if word not in vocab2id:
@@ -503,6 +518,20 @@ if __name__ == "__main__":
                     if ch not in char2id:
                         char2id[ch] = len(char2id)
 
+    ###Find singleeton
+    count_word = {}
+    for inst in train_insts:
+        words = inst.input
+        for word in inst.input:
+            if word not in count_word:
+                count_word[word] = 1
+            else:
+                count_word[word] += 1
+    singleton = set()
+    for word in count_word:
+        if count_word[word] == 1:
+            singleton.add(word)
+
 
     print(colored('vocab_2id:', 'red'), len(vocab2id))
 
@@ -510,34 +539,32 @@ if __name__ == "__main__":
     for key in char2id:
         chars[char2id[key]] = key
 
-    max_word_length = TagReader.Stats['MAX_WORD_LENGTH']
-    print(colored('MAX_WORD_LENGTH:', 'blue'), TagReader.Stats['MAX_WORD_LENGTH'])
+    # max_word_length = TagReader.Stats['MAX_WORD_LENGTH']
+    # print(colored('MAX_WORD_LENGTH:', 'blue'), TagReader.Stats['MAX_WORD_LENGTH'])
 
 
     for inst in train_insts + dev_insts + test_insts:
-        inst.word_seq = torch.tensor([vocab2id[word] for word in inst.input]).to(NetworkConfig.DEVICE)
-        char_seq_list = [[char2id[ch] for ch in word] + [char2id[PAD]] * (max_word_length - len(word)) for word in inst.input]
+        max_word_len = max([len(word) for word in inst.input])
+        inst.word_seq = torch.LongTensor([vocab2id[word] for word in inst.input]).to(NetworkConfig.DEVICE)
+        char_seq_list = [[char2id[ch] for ch in word] + [char2id[PAD]] * (max_word_len - len(word)) for word in inst.input]
         # char_seq_list = [torch.tensor([char2id[ch] for ch in word]).to(NetworkConfig.DEVICE)  for word in inst.input]
         # inst.char_seqs = char_seq_list
-        inst.char_seq_tensor = torch.tensor(char_seq_list).to(NetworkConfig.DEVICE)
+        inst.char_seq_tensor = torch.LongTensor(char_seq_list).to(NetworkConfig.DEVICE)
         # char_seq_tensor: (1, sent_len, word_length)
-        inst.char_seq_len = torch.tensor([len(word) for word in inst.input]).to(NetworkConfig.DEVICE)
-
-
+        inst.char_seq_len = torch.LongTensor([len(word) for word in inst.input]).to(NetworkConfig.DEVICE)
 
     gnp = TensorGlobalNetworkParam()
     fm = TagNeuralBuilder(gnp, len(vocab2id), len(TagReader.label2id_map), char2id, chars, char_emb_size, charlstm_hidden_dim,)
     fm.labels = labels
-    if not TRIAL:
-        fm.load_pretrain('data/glove.6B.100d.txt', vocab2id)
-    fm.load_pretrain(None, vocab2id)
+
+    fm.load_pretrain(emb_file, vocab2id)
     print(list(TagReader.label2id_map.keys()))
     compiler = TagNetworkCompiler(TagReader.label2id_map, max_size)
 
 
     evaluator = nereval()
-    model = NetworkModel(fm, compiler, evaluator)
-    model.check_every = 2000
+    model = NetworkModel(fm, compiler, evaluator, model_path=model_path)
+    # model.check_every = 2000
 
 
 
@@ -548,7 +575,7 @@ if __name__ == "__main__":
         model.learn_batch(train_insts, num_iter, dev_insts, test_insts, optimizer_str, batch_size)
 
 
-    model.load_state_dict(torch.load('best_model.pt'))
+    model.load_state_dict(torch.load(model_path))
 
     if batch_size == 1:
         results = model.test(test_insts)
