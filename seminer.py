@@ -358,7 +358,7 @@ class TagNeuralBuilder(NeuralBuilder):
             left = right - length + 1  ## right is inclusive
 
             if node_type != 1: ### not label node.
-                idx = (size - 1) * size  ## a index with 0
+                idx = (size - 1) * size * self.label_size ## a index with 0
             else:
                 row = left * size + right
                 idx = row * self.label_size + label_id
@@ -548,13 +548,14 @@ if __name__ == "__main__":
 
     TRIAL = False
     visualization = False
-    num_train = 1
-    num_dev = 1
-    num_test = 1
+    num_train = 20
+    num_dev = 20
+    num_test = 20
     num_iter = 100
     batch_size = 1
     device = "cpu"
-    optimizer_str = "adam"
+    optimizer_str = "sgd"
+    NetworkConfig.NEURAL_LEARNING_RATE = 0.1
     num_thread = 1
     # train_file = trial_file
     dev_file = train_file
