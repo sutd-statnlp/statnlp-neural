@@ -11,7 +11,7 @@ from common.eval import nereval
 import re
 from termcolor import colored
 import random
-import torch
+from hypergraph.BatchTensorNetwork import BatchTensorNetwork
 
 class TagNetworkCompiler(NetworkCompiler):
 
@@ -162,20 +162,24 @@ class TagNeuralBuilder(NeuralBuilder):
 
 
         self.char_emb_size = char_emb_size
+
+        lstm_input_size = self.token_embed
+
         if char_emb_size > 0:
             from features.char_lstm import CharBiLSTM
             self.char_bilstm = CharBiLSTM(char2id, chars, char_emb_size, charlstm_hidden_dim).to(NetworkConfig.DEVICE)
+
+            lstm_input_size += charlstm_hidden_dim
+
             # self.char_embeddings = nn.Embedding(len(char2id), self.char_emb_size).to(NetworkConfig.DEVICE)
             # self.char_rnn = nn.LSTM(self.char_emb_size, charlstm_hidden_dim//2, batch_first=True, bidirectional=True).to(NetworkConfig.DEVICE)
         self.word_drop = nn.Dropout(dropout).to(NetworkConfig.DEVICE)
 
 
-        lstm_input_size = self.token_embed + charlstm_hidden_dim
+
 
         self.rnn = nn.LSTM(lstm_input_size, lstm_hidden_size, batch_first=True,bidirectional=True).to(NetworkConfig.DEVICE)
-
-        self.linear_after_lstm = nn.Linear(lstm_hidden_size * 2, lstm_hidden_size).to(NetworkConfig.DEVICE)
-        self.linear = nn.Linear(lstm_hidden_size, label_size).to(NetworkConfig.DEVICE)
+        self.linear = nn.Linear(lstm_hidden_size * 2, label_size).to(NetworkConfig.DEVICE)
 
 
     def load_pretrain(self, path, word2idx):
@@ -197,18 +201,24 @@ class TagNeuralBuilder(NeuralBuilder):
             char_features = self.char_bilstm.get_last_hiddens(char_seq_tensor, char_seq_len)  # batch_size, sent_len, char_hidden_dim
             word_rep.append(char_features)
 
+        # if self.char_emb_size > 0:
+        #     chars = []
+        #     for char_seq in instance.char_seqs:  ## 1 x word_len
+        #         char_vec = self.char_embeddings(char_seq).unsqueeze(0) ## 1 x word_len x embedding size
+        #         _, last_char = self.char_rnn(char_vec, None)  ##last char, (2, 1, hiddensize)
+        #         chars.append(last_char[0].transpose(1,0).contiguous().view(1, 1, -1))
+        #     char_features = torch.cat(chars, 1)
+        #     word_rep.append(char_features)
 
         word_rep = torch.cat(word_rep, 2)
         word_rep = self.word_drop(word_rep)
         #
         lstm_out, _ = self.rnn(word_rep, None)
-        lstm_out = torch.tanh(self.linear_after_lstm(lstm_out))
         # lstm_out = self.lstm_drop(lstm_out)
         linear_output = self.linear(lstm_out).squeeze(0)
         #word_vec = self.word_embed(instance.word_seq) #.unsqueeze(0)
         #linear_output = self.linear(word_vec)#.squeeze(0)
         # return linear_output   ##sent_len x num_label
-
         zero_col = torch.zeros(1, self.label_size).to(NetworkConfig.DEVICE)
         return torch.cat([linear_output, zero_col], 0)
 
@@ -219,25 +229,44 @@ class TagNeuralBuilder(NeuralBuilder):
         :return: A list of tuple (input_seqs, network_id_range)
         '''
 
-        max_size = 0
-        for inst in train_insts:
-            size = inst.word_seq.shape[0]
-            if max_size < size:
-                max_size = size
-
         batches = []
+
         for i in range(0, len(train_insts), batch_size):
 
-            batch_input_seqs = []
+            max_size = 0
+
+            for b in range(i, i + batch_size):
+                if b >= len(train_insts):
+                    break
+                size = train_insts[b].word_seq.shape[0]
+                if max_size < size:
+                    max_size = size
+
+            batch_word_seqs = []
+            batch_char_input_seqs = []
+            batch_char_seqlens = []
             for b in range(i, i + batch_size):
                 if b >= len(train_insts):
                     break
                 padding_seq = [0] * (max_size - len(train_insts[b].input))
                 word_seq = [vocab2id[word] for word in train_insts[b].input] + padding_seq
                 word_seq = torch.tensor(word_seq).to(NetworkConfig.DEVICE)
-                batch_input_seqs.append(word_seq)
 
-            batch_input_seqs = torch.stack(batch_input_seqs, 0)
+                char_seq_list = [[char2id[ch] for ch in word] + [char2id[PAD]] * (max_word_length - len(word)) for word in inst.input]
+                char_seq_tensor = torch.tensor(char_seq_list).to(NetworkConfig.DEVICE)
+                char_seq_len = torch.tensor([len(word) for word in inst.input]).to(NetworkConfig.DEVICE)
+
+                batch_char_seqlens.append(char_seq_len)
+
+                batch_char_input_seqs.append(char_seq_tensor)
+
+                batch_word_seqs.append(word_seq)
+
+            batch_word_seqs = torch.stack(batch_word_seqs, 0)
+            batch_char_input_seqs = torch.stack(batch_char_input_seqs, 0)
+            batch_char_seqlens = torch.stack(batch_char_seqlens, 0)
+
+            batch_input_seqs = (batch_word_seqs, batch_char_input_seqs, batch_char_seqlens)
 
             network_id_range = (i, min(i + batch_size, len(train_insts)))
 
@@ -248,10 +277,26 @@ class TagNeuralBuilder(NeuralBuilder):
 
     def build_nn_graph_batch(self, batch_input_seqs):
 
-        word_vec = self.word_embed(batch_input_seqs)
-        lstm_out, _ = self.rnn(word_vec, None)
+        batch_word_seqs, batch_char_input_seqs, batch_char_seqlens = batch_input_seqs
+        word_vec = self.word_embed(batch_word_seqs)
+        word_rep = [word_vec]
+
+        if self.char_emb_size > 0:
+            # char_seq_tensor = instance.char_seq_tensor.unsqueeze(0)
+            # char_seq_len = instance.char_seq_len.unsqueeze(0)
+            char_features = self.char_bilstm.get_last_hiddens(batch_char_input_seqs, batch_char_seqlens)  # batch_size, sent_len, char_hidden_dim
+            word_rep.append(char_features)
+
+        word_rep = torch.cat(word_rep, 2)
+        word_rep = self.word_drop(word_rep)
+
+        lstm_out, _ = self.rnn(word_rep, None)
         linear_output = self.linear(lstm_out)  #batch_size, seq_len, hidden_size
-        return linear_output
+        batch_size = linear_output.size(0)
+        zero_col = torch.zeros(batch_size, 1, self.label_size).to(NetworkConfig.DEVICE)
+        output = torch.cat([linear_output, zero_col], 1)
+
+        return output
 
 
     def get_nn_score(self, network, parent_k):
@@ -286,6 +331,33 @@ class TagNeuralBuilder(NeuralBuilder):
             else:
                 idx = pos * self.label_size  + label_id
             nodeid2nn[k] = idx
+        return nodeid2nn
+
+
+    def build_node2nn_output_batch(self, batch_tensor_network : BatchTensorNetwork):
+        batch_size = batch_tensor_network.batch_size
+        max_size = batch_tensor_network.max_size
+        sizes = batch_tensor_network.sizes
+
+        #sent_len = network.get_instance().size()
+        max_sent_len = max([network.get_instance().size() for network in batch_tensor_network.batch_networks])
+
+        nodeid2nn = np.full((batch_size, max_size), 0)#[0] * size
+        offset = (max_sent_len + 1) * self.label_size
+        for batch_id in range(batch_size):
+            network = batch_tensor_network.batch_networks[batch_id]
+            for k in range(sizes[batch_id]):
+                parent_arr = network.get_node_array(k)  # pos, label_id, node_type
+                pos = parent_arr[0]
+                label_id = parent_arr[1]
+                node_type = parent_arr[2]
+
+                if node_type == 0 or node_type == 2:  # Start, End
+                    idx = max_sent_len * self.label_size + offset * batch_id
+                else:
+                    # idx = max_sent_len * self.label_size + offset * batch_id
+                    idx = pos * self.label_size  + label_id + offset * batch_id
+                nodeid2nn[batch_id][k] = idx
         return nodeid2nn
 
 
@@ -358,7 +430,7 @@ if __name__ == "__main__":
     # NetworkConfig.ECHO_TRAINING_PROGRESS = -1
     # NetworkConfig.LOSS_TYPE = LossType.SSVM
     NetworkConfig.NEUTRAL_BUILDER_ENABLE_NODE_TO_NN_OUTPUT_MAPPING = True
-    seed = 42
+    seed = 1234
     torch.manual_seed(seed)
     torch.set_num_threads(40)
     np.random.seed(seed)
@@ -372,18 +444,16 @@ if __name__ == "__main__":
     trial_file = "data/conll/trial.txt.bieos"
 
 
-    TRIAL = False
+    TRIAL = True
     num_train = -1
     num_dev = -1
     num_test = -1
-    num_iter = 20
+    num_iter = 200
     batch_size = 1
-    device = "cuda:0"
-    optimizer_str = "adam"
+    device = "cpu"
+    optimizer_str = "sgd"
+    NetworkConfig.NEURAL_LEARNING_RATE = 0.1
     num_thread = 1
-    emb_file = 'data/glove.6B.100d.txt'
-    model_path = "models/best_linearner_model.pt"
-    # emb_file = None
     # dev_file = train_file
     # test_file = train_file
 
@@ -397,16 +467,16 @@ if __name__ == "__main__":
         dev_file = trial_file
         test_file = trial_file
 
-
-    NetworkConfig.DEVICE = torch.device("cuda:0")
-    torch.cuda.manual_seed(seed)
+    if device == "gpu":
+        NetworkConfig.DEVICE = torch.device("cuda:0")
+        torch.cuda.manual_seed(seed)
 
     if num_thread > 1:
         NetworkConfig.NUM_THREADS = num_thread
         print('Set NUM_THREADS = ', num_thread)
 
     train_insts = TagReader.read_insts(train_file, True, num_train)
-    random.shuffle(train_insts)
+    #random.shuffle(train_insts)
     dev_insts = TagReader.read_insts(dev_file, False, num_dev)
     test_insts = TagReader.read_insts(test_file, False, num_test)
 
@@ -419,6 +489,10 @@ if __name__ == "__main__":
     vocab2id = {}
     char2id = {PAD: 0, UNK: 1}
 
+    labels = ["x"] *len(TagReader.label2id_map)
+    for key in TagReader.label2id_map:
+        labels[TagReader.label2id_map[key]] = key
+
     for inst in train_insts + dev_insts + test_insts:
         max_size = max(len(inst.input), max_size)
         for word in inst.input:
@@ -429,7 +503,7 @@ if __name__ == "__main__":
                     if ch not in char2id:
                         char2id[ch] = len(char2id)
 
-    print("num characters: {}".format(len(char2id)))
+
     print(colored('vocab_2id:', 'red'), len(vocab2id))
 
     chars = [None] * len(char2id)
@@ -453,14 +527,16 @@ if __name__ == "__main__":
 
     gnp = TensorGlobalNetworkParam()
     fm = TagNeuralBuilder(gnp, len(vocab2id), len(TagReader.label2id_map), char2id, chars, char_emb_size, charlstm_hidden_dim,)
-    fm.load_pretrain(emb_file, vocab2id)
-    # fm.load_pretrain(None, vocab2id)
+    fm.labels = labels
+    if not TRIAL:
+        fm.load_pretrain('data/glove.6B.100d.txt', vocab2id)
+    fm.load_pretrain(None, vocab2id)
     print(list(TagReader.label2id_map.keys()))
     compiler = TagNetworkCompiler(TagReader.label2id_map, max_size)
 
 
     evaluator = nereval()
-    model = NetworkModel(fm, compiler, evaluator, model_path)
+    model = NetworkModel(fm, compiler, evaluator)
     model.check_every = 2000
 
 
@@ -469,13 +545,16 @@ if __name__ == "__main__":
     if batch_size == 1:
         model.learn(train_insts, num_iter, dev_insts, test_insts, optimizer_str, batch_size)
     else:
-        model.learn_batch(train_insts, num_iter, dev_insts, batch_size)
+        model.learn_batch(train_insts, num_iter, dev_insts, test_insts, optimizer_str, batch_size)
+
 
     model.load_state_dict(torch.load('best_model.pt'))
 
+    if batch_size == 1:
+        results = model.test(test_insts)
+    else:
+        results = model.test_batch(test_insts,batch_size)
 
-
-    results = model.test(test_insts)
     for inst in results:
         print(inst.get_input())
         print(inst.get_output())
