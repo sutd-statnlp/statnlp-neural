@@ -532,7 +532,7 @@ if __name__ == "__main__":
     # NetworkConfig.ECHO_TRAINING_PROGRESS = -1
     # NetworkConfig.LOSS_TYPE = LossType.SSVM
     NetworkConfig.NEUTRAL_BUILDER_ENABLE_NODE_TO_NN_OUTPUT_MAPPING = True
-    seed = 1234
+    seed = 42
     torch.manual_seed(seed)
     torch.set_num_threads(40)
     np.random.seed(seed)
@@ -540,10 +540,10 @@ if __name__ == "__main__":
 
 
 
-    train_file = "data/conll/train.txt.bieos"
-    dev_file = "data/conll/dev.txt.bieos"
-    test_file = "data/conll/test.txt.bieos"
-    trial_file = "data/conll/trial.txt.bieos"
+    train_file = "data/conll2000/train.txt.bieos"
+    dev_file = "data/conll2000/test.txt.bieos"
+    test_file = "data/conll2000/test.txt.bieos"
+    trial_file = "data/conll2000/trial.txt.bieos"
 
 
     TRIAL = False
@@ -554,12 +554,12 @@ if __name__ == "__main__":
     num_iter = 100
     batch_size = 1
     device = "cpu"
-    optimizer_str = "sgd"
+    optimizer_str = "adam"
     NetworkConfig.NEURAL_LEARNING_RATE = 0.1
     num_thread = 1
     # train_file = trial_file
-    dev_file = train_file
-    test_file = train_file
+    # dev_file = train_file
+    # test_file = train_file
     mode = "train"
 
     char_emb_size= 25
@@ -623,11 +623,12 @@ if __name__ == "__main__":
     for key in char2id:
         chars[char2id[key]] = key
 
-    max_word_length = TagReader.Stats['MAX_WORD_LENGTH']
-    print(colored('MAX_WORD_LENGTH:', 'blue'), TagReader.Stats['MAX_WORD_LENGTH'])
+    # max_word_length = TagReader.Stats['MAX_WORD_LENGTH']
+    # print(colored('MAX_WORD_LENGTH:', 'blue'), TagReader.Stats['MAX_WORD_LENGTH'])
 
 
     for inst in train_insts + dev_insts + test_insts:
+        max_word_length = max([len(word) for word in inst.input])
         inst.word_seq = torch.tensor([vocab2id[START]] + [vocab2id[word] for word in inst.input] + [vocab2id[STOP]]).to(NetworkConfig.DEVICE)
         # inst.word_seq = torch.tensor([vocab2id[word] for word in inst.input]).to(NetworkConfig.DEVICE)
         char_seq_list = [[char2id[ch] for ch in word] + [char2id[PAD]] * (max_word_length - len(word)) for word in inst.input]
@@ -720,7 +721,7 @@ if __name__ == "__main__":
         model.learn_batch(train_insts, num_iter, dev_insts, batch_size)
 
     model.load_state_dict(torch.load('best_model.pt'))
-    gnp.print_transition(labels)
+    # gnp.print_transition(labels)
 
 
     results = model.test(test_insts)
