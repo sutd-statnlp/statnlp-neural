@@ -94,6 +94,7 @@ class TagNetworkCompiler(NetworkCompiler):
 
     def compile_unlabeled(self, network_id, inst, param):
         builder = TensorBaseNetwork.NetworkBuilder.builder()
+        # print(inst.get_input())
         root_node = self.to_root(inst.size())
         all_nodes = self._all_nodes
         root_idx = np.argwhere(all_nodes == root_node)[0][0]
@@ -174,7 +175,7 @@ class TagNeuralBuilder(NeuralBuilder):
             # self.char_embeddings = nn.Embedding(len(char2id), self.char_emb_size).to(NetworkConfig.DEVICE)
             # self.char_rnn = nn.LSTM(self.char_emb_size, charlstm_hidden_dim//2, batch_first=True, bidirectional=True).to(NetworkConfig.DEVICE)
         self.word_drop = nn.Dropout(dropout).to(NetworkConfig.DEVICE)
-
+        # self.lstm_drop = nn.Dropout(dropout).to(NetworkConfig.DEVICE)
 
 
 
@@ -416,17 +417,7 @@ class TagReader():
         return insts
 
 
-def insert_singletons(self, words, p=0.5):
-    """
-    Replace singletons by the unknown word with a probability p.
-    """
-    new_words = []
-    for word in words:
-        if word in self.singleton and np.random.uniform() < p:
-            new_words.append(self.unk_id)
-        else:
-            new_words.append(word)
-    return new_words
+
 
 START = "<START>"
 STOP = "<STOP>"
@@ -441,7 +432,7 @@ if __name__ == "__main__":
     # NetworkConfig.ECHO_TRAINING_PROGRESS = -1
     # NetworkConfig.LOSS_TYPE = LossType.SSVM
     NetworkConfig.NEUTRAL_BUILDER_ENABLE_NODE_TO_NN_OUTPUT_MAPPING = True
-    seed = 1234
+    seed = 42
     torch.manual_seed(seed)
     torch.set_num_threads(40)
     np.random.seed(seed)
@@ -459,7 +450,7 @@ if __name__ == "__main__":
     num_train = -1
     num_dev = -1
     num_test = -1
-    num_iter = 40
+    num_iter = 20
     batch_size = 1
     device = "gpu"
     optimizer_str = "adam"
@@ -469,7 +460,7 @@ if __name__ == "__main__":
     # test_file = train_file
     emb_file = "data/glove.6B.100d.txt"
     model_path = "models/linear_ner.pt"
-    emb_file = None
+    # emb_file = None
 
     char_emb_size= 25
     charlstm_hidden_dim = 50
@@ -482,7 +473,7 @@ if __name__ == "__main__":
         test_file = trial_file
 
     if device == "gpu":
-        NetworkConfig.DEVICE = torch.device("cuda:0")
+        NetworkConfig.DEVICE = torch.device("cuda:1")
         torch.cuda.manual_seed(seed)
 
     if num_thread > 1:
@@ -500,23 +491,51 @@ if __name__ == "__main__":
     print("map:", TagReader.label2id_map)
     #vocab2id = {'<PAD>':0}
     max_size = -1
-    vocab2id = {}
-    char2id = {PAD: 0, UNK: 1}
+    vocab2id = {UNK: 0}
+    char2id = {PAD: 0}
 
     labels = ["x"] *len(TagReader.label2id_map)
     for key in TagReader.label2id_map:
         labels[TagReader.label2id_map[key]] = key
 
-    for inst in train_insts + dev_insts + test_insts:
+    # for inst in train_insts + dev_insts + test_insts:
+    for inst in train_insts:
         words = inst.input
         max_size = max(len(inst.input), max_size)
         for word in inst.input:
             if word not in vocab2id:
                 vocab2id[word] = len(vocab2id)
 
-                for ch in word:
-                    if ch not in char2id:
-                        char2id[ch] = len(char2id)
+    for inst in train_insts + dev_insts + test_insts:
+        words = inst.input
+        max_size = max(len(inst.input), max_size)
+        for word in inst.input:
+            for ch in word:
+                if ch not in char2id:
+                    char2id[ch] = len(char2id)
+
+
+
+
+    print(colored('vocab_2id:', 'red'), len(vocab2id))
+
+    chars = [None] * len(char2id)
+    for key in char2id:
+        chars[char2id[key]] = key
+
+    # max_word_length = TagReader.Stats['MAX_WORD_LENGTH']
+    # print(colored('MAX_WORD_LENGTH:', 'blue'), TagReader.Stats['MAX_WORD_LENGTH'])
+
+
+    # for inst in train_insts + dev_insts + test_insts:
+    for inst in train_insts:
+        max_word_len = max([len(word) for word in inst.input])
+        inst.word_list = [vocab2id[word] for word in inst.input]
+        # inst.word_seq = torch.LongTensor().to(NetworkConfig.DEVICE)
+        char_seq_list = [[char2id[ch] for ch in word] + [char2id[PAD]] * (max_word_len - len(word)) for word in
+                         inst.input]
+        inst.char_seq_tensor = torch.LongTensor(char_seq_list).to(NetworkConfig.DEVICE)
+        inst.char_seq_len = torch.LongTensor([len(word) for word in inst.input]).to(NetworkConfig.DEVICE)
 
     ###Find singleeton
     count_word = {}
@@ -530,28 +549,16 @@ if __name__ == "__main__":
     singleton = set()
     for word in count_word:
         if count_word[word] == 1:
-            singleton.add(word)
+            singleton.add(vocab2id[word])
+    # print(singleton)
 
-
-    print(colored('vocab_2id:', 'red'), len(vocab2id))
-
-    chars = [None] * len(char2id)
-    for key in char2id:
-        chars[char2id[key]] = key
-
-    # max_word_length = TagReader.Stats['MAX_WORD_LENGTH']
-    # print(colored('MAX_WORD_LENGTH:', 'blue'), TagReader.Stats['MAX_WORD_LENGTH'])
-
-
-    for inst in train_insts + dev_insts + test_insts:
+    for inst in dev_insts + test_insts:
         max_word_len = max([len(word) for word in inst.input])
-        inst.word_seq = torch.LongTensor([vocab2id[word] for word in inst.input]).to(NetworkConfig.DEVICE)
+        inst.word_seq = torch.LongTensor([vocab2id[word] if word in vocab2id else vocab2id[UNK] for word in inst.input]).to(NetworkConfig.DEVICE)
         char_seq_list = [[char2id[ch] for ch in word] + [char2id[PAD]] * (max_word_len - len(word)) for word in inst.input]
-        # char_seq_list = [torch.tensor([char2id[ch] for ch in word]).to(NetworkConfig.DEVICE)  for word in inst.input]
-        # inst.char_seqs = char_seq_list
         inst.char_seq_tensor = torch.LongTensor(char_seq_list).to(NetworkConfig.DEVICE)
-        # char_seq_tensor: (1, sent_len, word_length)
         inst.char_seq_len = torch.LongTensor([len(word) for word in inst.input]).to(NetworkConfig.DEVICE)
+
 
     gnp = TensorGlobalNetworkParam()
     fm = TagNeuralBuilder(gnp, len(vocab2id), len(TagReader.label2id_map), char2id, chars, char_emb_size, charlstm_hidden_dim,)
@@ -564,6 +571,7 @@ if __name__ == "__main__":
 
     evaluator = nereval()
     model = NetworkModel(fm, compiler, evaluator, model_path=model_path)
+    model.set_unk_singleton(vocab2id[UNK], singleton=singleton)
     # model.check_every = 2000
 
 

@@ -203,6 +203,22 @@ class NetworkModel(nn.Module):
         print('learning rate is set to: ', lr)
         return trainer
 
+    def set_unk_singleton(self, UNK_ID, singleton):
+        self.unk_id = UNK_ID
+        self.singleton = singleton
+
+    def insert_singletons(self, word_ids, p=0.5):
+        """
+        Replace singletons by the unknown word with a probability p.
+        """
+        new_words = []
+        for word_id in word_ids:
+            if word_id in self.singleton and np.random.uniform() < p:
+                new_words.append(self.unk_id)
+            else:
+                new_words.append(word_id)
+        return new_words
+
     def learn(self, train_insts, max_iterations, dev_insts, test_insts, optimizer_str = 'adam', batch_size=1):
 
         if optimizer_str == "lbfgs":
@@ -248,6 +264,7 @@ class NetworkModel(nn.Module):
                 self.train()
                 inst = self.all_instances[i]
                 if inst.get_instance_id() > 0:
+                    inst.word_seq = torch.LongTensor(self.insert_singletons(inst.word_list)).to(NetworkConfig.DEVICE)
                     if k == 0:
                         optimizer.zero_grad()
                         self.zero_grad()

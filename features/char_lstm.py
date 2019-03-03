@@ -25,15 +25,6 @@ class CharBiLSTM(nn.Module):
 
         self.char_lstm = nn.LSTM(self.char_emb_size, self.hidden // 2, num_layers=1, batch_first=True, bidirectional=True).to(self.device)
 
-
-    def random_embedding(self, vocab_size, embedding_dim):
-        print("Randomly initialize character embedding with scale")
-        pretrain_emb = np.empty([vocab_size, embedding_dim])
-        scale = np.sqrt(3.0 / embedding_dim)
-        for index in range(vocab_size):
-            pretrain_emb[index, :] = np.random.uniform(-scale, scale, [1, embedding_dim])
-        return pretrain_emb
-
     def get_last_hiddens(self, char_seq_tensor, char_seq_len):
         """
             input:
