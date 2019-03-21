@@ -741,8 +741,8 @@ class TSSELFATTNeuralBuilder(TSNeuralBuilder):
 
 
         if self.use_discrete_features:
-            self.linear_dim = self.lstm_dim * 2 + 2 #self.postag_embed_dim + self.SENT_embed_dim + self.THER_SENT_embed_dim + self.browncluster5_embed_dim + self.browncluster3_embed_dim + 2
-            self.attention_output_dim = self.word_embed_dim + self.char_emb_size  #+ self.SENT_embed_dim + self.THER_SENT_embed_dim # + self.postag_embed_dim
+            self.linear_dim = self.lstm_dim * 2 + self.postag_embed_dim + self.SENT_embed_dim + self.THER_SENT_embed_dim + self.browncluster5_embed_dim + self.browncluster3_embed_dim + 2
+            self.attention_output_dim = self.word_embed_dim + self.char_emb_size + self.SENT_embed_dim + self.THER_SENT_embed_dim # + self.postag_embed_dim
         else:
             self.linear_dim = self.lstm_dim * 2 #+ self.postag_embed_dim + self.SENT_embed_dim + self.THER_SENT_embed_dim + self.browncluster5_embed_dim + self.browncluster3_embed_dim
             self.attention_output_dim = self.word_embed_dim + self.char_emb_size #+ self.SENT_embed_dim + self.THER_SENT_embed_dim
@@ -810,11 +810,11 @@ class TSSELFATTNeuralBuilder(TSNeuralBuilder):
 
         if self.use_discrete_features:
             create_discrete_feature(instance.first_upper_seq, 2)
-            # create_discrete_feature(instance.postag_seq, self.postag_embed_dim)
-            # create_discrete_feature(instance.browncluster5_seq, self.browncluster5_embed_dim)
-            # create_discrete_feature(instance.browncluster3_seq, self.browncluster3_embed_dim)
-            # create_discrete_feature(instance.SENT_seq, self.SENT_embed_dim)
-            # create_discrete_feature(instance.THER_SENT_seq, self.THER_SENT_embed_dim)
+            create_discrete_feature(instance.postag_seq, self.postag_embed_dim)
+            create_discrete_feature(instance.browncluster5_seq, self.browncluster5_embed_dim)
+            create_discrete_feature(instance.browncluster3_seq, self.browncluster3_embed_dim)
+            create_discrete_feature(instance.SENT_seq, self.SENT_embed_dim)
+            create_discrete_feature(instance.THER_SENT_seq, self.THER_SENT_embed_dim)
 
         feature_output = [lstm_outputs] + discrete_feature
         feature_output = torch.cat(feature_output, 1)
@@ -829,8 +829,8 @@ class TSSELFATTNeuralBuilder(TSNeuralBuilder):
                 discrete_feature_for_attention.append(discrete_embs)
 
         if self.use_discrete_features:
-            # create_discrete_feature_for_attention(instance.SENT_seq, self.SENT_embed_dim)
-            # create_discrete_feature_for_attention(instance.THER_SENT_seq, self.THER_SENT_embed_dim)
+            create_discrete_feature_for_attention(instance.SENT_seq, self.SENT_embed_dim)
+            create_discrete_feature_for_attention(instance.THER_SENT_seq, self.THER_SENT_embed_dim)
             pass
 
 
