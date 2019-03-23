@@ -1,0 +1,33 @@
+@HabibaAlshanti	B-PERSON	NONE	MENTION	NONE	_	_	positive	NNS 	B-positive
+..	O	00110	..	001	_	_	_	. 	O
+Yes	O	110	NONE	110	_	THER_SENT_3:positive	_	UH 	O
+I	O	1110	NONE	111	_	_	_	PRP 	O
+want	O	10111	NONE	101	SENT_MED:negative	THER_SENT_3:positive	_	VB 	O
+that	O	00110	NONE	001	_	_	_	IN 	O
+:p	O	000	WEST_EMOTICON	000	_	_	_	NN 	O
+
+Steve	B-PERSON	00100	NONE	001	_	_	neutral	NNP 	B-neutral
+Maviglio/	I-PERSON	NONE	NONE	NONE	_	_	neutral	: 	I-neutral
+California	B-PLACE	00101	NONE	001	_	_	_	NNP 	O
+Majority	I-PLACE	NONE	NONE	NONE	_	_	_	NNP 	O
+Report	I-PLACE	01111	NONE	011	_	_	_	NNP 	O
+:	O	000	NONE	000	_	_	_	: 	O
+Another	O	110	NONE	110	_	_	_	DT 	O
+Meg	B-PERSON	01111	NONE	011	_	_	negative	NNP 	B-negative
+Whitman	I-PERSON	0110	NONE	011	_	_	negative	NNP 	I-negative
+Pinocchio	B-PERSON	NONE	NONE	NONE	_	_	neutral	NNP 	B-neutral
+Moment	O	01111	NONE	011	_	_	_	NN 	O
+-	O	00110	NONE	001	_	_	_	: 	O
+http://bit.ly/duCr5G	B-URL	NONE	URL	NONE	_	_	_	NN 	O
+
+Luke	B-PERSON	00100	NONE	001	_	_	neutral	NNP 	B-neutral
+Donald	I-PERSON	00110	NONE	001	_	_	neutral	NNP 	I-neutral
+lays	O	10111	NONE	101	_	_	_	VBZ 	O
+down	O	00101	NONE	001	SENT_MED:negative	_	_	RB 	O
+marker	O	0110	NONE	011	_	_	_	NN 	O
+for	O	00111	NONE	001	_	_	_	IN 	O
+Scottish	O	0101	NONE	010	_	_	_	JJ 	O
+Open	O	01111	NONE	011	SENT_MED:negative	_	_	VB 	O
+defence	O	01110	NONE	011	SENT_MED:negative	_	_	NN 	O
+http://t.co/W6g2PRTN	B-URL	NONE	URL	NONE	_	_	_	NN 	O
+

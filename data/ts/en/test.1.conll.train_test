@@ -1,0 +1,4395 @@
+## Tweet 102
+Bourne	B-ORGANIZATION	01111	NONE	011	_	_	positive
+&	I-ORGANIZATION	00110	NONE	001	_	_	positive
+O	I-ORGANIZATION	110	NONE	110	_	_	positive
+â	I-ORGANIZATION	11111	NONE	111	_	_	positive
+Neil	I-ORGANIZATION	000	NONE	000	_	_	positive
+Treasure	I-ORGANIZATION	110	NONE	110	_	THER_SENT_3:positive	positive
+Oak	O	00101	NONE	001	_	_	_
+Humidor	O	00101	NONE	001	_	_	_
+:	O	000	NONE	000	_	_	_
+Many	O	110	NONE	110	_	_	_
+have	O	10111	NONE	101	SENT_MED:negative	_	_
+a	O	0100	NONE	010	_	_	_
+humidor	O	01110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+some	O	0100	NONE	010	SENT:positive	_	_
+also	O	11111	NONE	111	_	_	_
+own	O	01110	NONE	011	_	_	_
+a	O	0100	NONE	010	_	_	_
+polished	O	01110	NONE	011	_	_	_
+oak	O	01110	NONE	011	_	_	_
+piece	O	01110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+but	O	00110	NONE	001	_	_	_
+no	O	00101	NONE	001	SENT:positive	_	_
+one	O	01110	NONE	011	SENT_MED:positive	_	_
+has	O	00111	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/GWEBkRbG	B-URL	00110	URL	001	_	_	_
+
+## Tweet 1063
+It	O	110	NONE	110	_	_	_
+is	O	00111	NONE	001	_	_	_
+from	O	00111	NONE	001	_	_	_
+among	O	00111	NONE	001	_	_	_
+such	O	00101	NONE	001	_	_	_
+individuals	O	00100	NONE	001	_	_	_
+that	O	00110	NONE	001	_	_	_
+all	O	00101	NONE	001	_	_	_
+human	O	01110	NONE	011	_	_	_
+failures	O	01111	NONE	011	_	_	_
+spring"//	O	0100	NONE	010	_	_	_
+Alfred	B-PERSON	01110	NONE	011	_	_	neutral
+Adler	I-PERSON	00111	NONE	001	_	_	neutral
+
+## Tweet 1143
+Tommorrow	B-TIME	110	NONE	110	_	_	_
+is	O	00111	NONE	001	_	_	_
+my	O	0101	NONE	010	_	_	_
+final	O	01110	NONE	011	SENT_MED:negative	_	_
+day	O	0110	NONE	011	_	_	_
+at	O	00111	NONE	001	_	_	_
+ITP	B-ORGANIZATION	00101	NONE	001	_	_	negative
+.	O	000	NONE	000	_	_	_
+i'm	O	00111	NONE	001	_	_	_
+just	O	11111	NONE	111	SENT:positive	THER_SENT_3:positive	_
+so	O	00101	NONE	001	_	_	_
+happy	O	01110	NONE	011	SENT:positive	THER_SENT_3:positive	_
+this	O	01111	NONE	011	_	_	_
+demanding	O	01110	NONE	011	_	_	_
+course	O	0110	NONE	011	_	_	_
+will	O	11111	NONE	111	_	THER_SENT_3:positive	_
+end	O	01110	NONE	011	_	_	_
+
+## Tweet 1171
+In	O	110	NONE	110	_	_	_
+defense	O	0110	NONE	011	SENT_MED:negative	_	_
+of	O	00111	NONE	001	_	_	_
+RSS	O	NONE	NONE	NONE	_	_	_
+via	O	00111	NONE	001	_	_	_
+Seth	B-PERSON	00100	NONE	001	_	_	neutral
+Godin	I-PERSON	NONE	NONE	NONE	_	_	neutral
+http://is.gd/k9Wvy	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 1185
+is	O	00111	NONE	001	_	_	_
+still	O	11111	NONE	111	SENT:negative	_	_
+half	B-PERCENT	01110	NONE	011	_	_	_
+clueless	O	01110	NONE	011	SENT:negative	_	_
+about	O	00101	NONE	001	SENT:positive	_	_
+twitter	B-ORGANIZATION	01110	NONE	011	_	_	neutral
+haha	O	01111	haha	011	_	_	_
+
+## Tweet 1257
+New	O	01111	NONE	011	SENT_MED:negative	_	_
+Blog	O	0110	NONE	011	_	_	_
+Post	O	01111	NONE	011	_	_	_
+:	O	000	NONE	000	_	_	_
+iZigg	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+Agent	O	01111	NONE	011	_	_	_
+Jennifer	B-PERSON	00100	NONE	001	_	_	neutral
+Varenka	I-PERSON	NONE	NONE	NONE	_	_	neutral
+on	O	00111	NONE	001	_	_	_
+CRUSH	O	NONE	NONE	NONE	_	_	_
+IT	O	01111	NONE	011	_	_	_
+!	O	000	NONE	000	_	_	_
+and	O	00110	NONE	001	_	_	_
+winning	O	01110	NONE	011	SENT:negative	_	_
+a	O	0100	NONE	010	_	_	_
+coaching	O	00111	NONE	001	_	_	_
+session	O	00101	NONE	001	_	_	_
+with	O	00111	NONE	001	_	_	_
+â¦	O	00101	NONE	001	_	_	_
+http://t.co/SO8VXPc9	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 1290
+Whitney	B-PERSON	01111	NONE	011	_	_	neutral
+Houston	I-PERSON	00101	NONE	001	_	_	neutral
+is	O	00111	NONE	001	_	_	_
+not	O	00101	NONE	001	SENT:negative	_	_
+yet	O	01111	NONE	011	SENT_MED:negative	_	_
+buried	O	00101	NONE	001	_	_	_
+and	O	00110	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+money	O	0110	NONE	011	_	_	_
+vultures	O	01111	NONE	011	_	_	_
+are	O	00111	NONE	001	_	_	_
+already	O	11111	NONE	111	_	_	_
+out	O	00101	NONE	001	SENT:negative	_	_
+http://t.co/fuvM5TWo	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 1292
+More	O	110	NONE	110	_	_	_
+period	O	01110	NONE	011	_	_	_
+work	O	01110	NONE	011	SENT_MED:positive	_	_
+for	O	00111	NONE	001	_	_	_
+Downton	B-PLACE	NONE	NONE	NONE	_	_	_
+star	O	0110	NONE	011	_	THER_SENT_3:positive	_
+:	O	000	NONE	000	_	_	_
+Based	O	110	NONE	110	_	_	_
+on	O	00111	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+true	O	01110	NONE	011	SENT:positive	THER_SENT_3:positive	_
+story	O	0110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+Stevens'	B-PERSON	NONE	NONE	NONE	_	_	neutral
+character	O	0110	NONE	011	SENT_MED:positive	_	_
+is	O	00111	NONE	001	_	_	_
+Gilbert	B-PERSON	00100	NONE	001	_	_	neutral
+Evans	I-PERSON	NONE	NONE	NONE	_	_	neutral
+,	O	00110	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+land	O	0110	NONE	011	_	_	_
+agent	O	0110	NONE	011	_	_	_
+for	O	00111	NONE	001	_	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/2FgMaGJX	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 1298
+My	B-PERSON	110	NONE	110	_	_	positive
+daughter	I-PERSON	0110	NONE	011	_	_	positive
+upon	O	00111	NONE	001	_	_	_
+turning	O	00101	NONE	001	_	_	_
+8	O	01111	NONE	011	_	_	_
+said	O	00101	NONE	001	_	_	_
+,	O	00110	NONE	001	_	_	_
+"Hey	O	NONE	NONE	NONE	_	_	_
+,	O	00110	NONE	001	_	_	_
+Dad	O	0110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+now	O	01111	NONE	011	_	_	_
+I'm	O	00111	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+Tween"	O	NONE	NONE	NONE	_	_	_
+,	O	00110	NONE	001	_	_	_
+to	O	11110	NONE	111	_	_	_
+which	O	00110	NONE	001	_	_	_
+I	O	1110	NONE	111	_	_	_
+responded	O	10111	NONE	101	_	_	_
+,	O	00110	NONE	001	_	_	_
+"Sorry	O	NONE	NONE	NONE	_	_	_
+,	O	00110	NONE	001	_	_	_
+honey	O	0110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+you're	O	00111	NONE	001	_	_	_
+still	O	11111	NONE	111	SENT:negative	_	_
+a	O	0100	NONE	010	_	_	_
+Twirp"	O	NONE	NONE	NONE	_	_	_
+.	O	000	NONE	000	_	_	_
+
+## Tweet 13
+It	O	110	NONE	110	_	_	_
+was	O	10111	NONE	101	_	_	_
+nice	O	01110	NONE	011	SENT:positive	THER_SENT_3:positive	_
+taking	O	00101	NONE	001	SENT:positive	_	_
+the	O	0101	NONE	010	_	_	_
+time	O	0110	NONE	011	SENT_MED:positive	_	_
+off	O	00101	NONE	001	SENT:negative	_	_
+and	O	00110	NONE	001	_	_	_
+being	O	00101	NONE	001	_	_	_
+with	O	00111	NONE	001	_	_	_
+fellow	O	01110	NONE	011	_	_	_
+animators	O	NONE	NONE	NONE	_	_	_
+from	O	00111	NONE	001	_	_	_
+other	O	0110	NONE	011	SENT:negative	_	_
+places	O	0110	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+Awazu	B-PERSON	NONE	NONE	NONE	_	_	positive
+kanto's	I-PERSON	NONE	NONE	NONE	_	_	positive
+texturing	O	NONE	NONE	NONE	_	_	_
+skills	O	0110	NONE	011	_	_	_
+are	O	00111	NONE	001	_	_	_
+frikken	O	00101	NONE	001	_	_	_
+amazing	O	01110	NONE	011	SENT:positive	THER_SENT_3:positive	_
+
+## Tweet 141
+An	O	110	NONE	110	_	_	_
+ideal	O	01110	NONE	011	SENT:positive	THER_SENT_3:positive	_
+city	O	0110	NONE	011	_	_	_
+is	O	00111	NONE	001	_	_	_
+not	O	00101	NONE	001	SENT:negative	_	_
+likely	O	00100	NONE	001	SENT_MED:negative	_	_
+to	O	11110	NONE	111	_	_	_
+be	O	1000	NONE	100	_	_	_
+the	O	0101	NONE	010	_	_	_
+mold	O	1001	NONE	100	_	_	_
+of	O	00111	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+real	O	01110	NONE	011	SENT_MED:negative	_	_
+city	O	0110	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+Harvey	B-PERSON	01111	NONE	011	_	_	neutral
+Zorbaugh	I-PERSON	1110	NONE	111	_	_	neutral
+
+## Tweet 1473
+I	O	1110	NONE	111	_	_	_
+imagine	O	10101	NONE	101	_	_	_
+that	O	00110	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+pain	O	0110	NONE	011	SENT:negative	THER_SENT_3:negative	_
+from	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+explosion	O	01110	NONE	011	_	_	_
+of	O	00111	NONE	001	_	_	_
+instant	O	01110	NONE	011	SENT_MED:negative	_	_
+mashed	O	01110	NONE	011	_	_	_
+potatoes	O	01111	NONE	011	_	_	_
+is	O	00111	NONE	001	_	_	_
+what	O	00110	NONE	001	_	_	_
+hot	O	01110	NONE	011	SENT_MED:positive	_	_
+lava	O	01110	NONE	011	_	_	_
+feels	O	00111	NONE	001	_	_	_
+like	O	00101	NONE	001	SENT_MED:positive	THER_SENT_3:positive	_
+.	O	000	NONE	000	_	_	_
+Send	O	110	NONE	110	_	_	_
+FEMA	B-ORGANIZATION	0101	NONE	010	_	_	neutral
+mobile	O	01110	NONE	011	_	_	_
+burn	O	1001	NONE	100	SENT:negative	THER_SENT_3:negative	_
+unit	O	0110	NONE	011	_	_	_
+now	O	01111	NONE	011	_	_	_
+please	O	00100	NONE	001	SENT:positive	THER_SENT_3:positive	_
+!	O	000	NONE	000	_	_	_
+
+## Tweet 1542
+#NowPlaying	O	NONE	HASHTAG	NONE	_	_	_
+'Dance	O	NONE	NONE	NONE	_	_	_
+With	O	110	NONE	110	_	_	_
+Me'	O	NONE	NONE	NONE	_	_	_
+by	O	00111	NONE	001	_	_	_
+@AARONCARTER7	O	NONE	MENTION	NONE	_	_	_
+featuring	O	NONE	NONE	NONE	_	_	_
+Flo	B-PERSON	NONE	NONE	NONE	_	_	neutral
+Rida	I-PERSON	NONE	NONE	NONE	_	_	neutral
+-	O	00110	NONE	001	_	_	_
+Download	O	01111	NONE	011	_	_	_
+it	O	00100	NONE	001	_	_	_
+on	O	00111	NONE	001	_	_	_
+iTunes	O	0110	NONE	011	_	_	_
+!	O	000	NONE	000	_	_	_
+http://bit.ly/8cFidZ	B-URL	NONE	URL	NONE	_	_	_
+#AaronCarter	B-PERSON	NONE	HASHTAG	NONE	_	_	positive
+#AC2010	O	NONE	HASHTAG	NONE	_	_	_
+
+## Tweet 1600
+Ã¢ÂÂ	O	000	NONE	000	_	_	_
+@	O	01111	NONE	011	_	_	_
+BarackObama	B-PERSON	NONE	NONE	NONE	_	_	neutral
+:	O	000	NONE	000	_	_	_
+International	O	01111	NONE	011	_	_	_
+community	O	01110	NONE	011	_	_	_
+soft	O	01110	NONE	011	SENT_MED:negative	_	_
+words	O	0110	NONE	011	_	_	_
+MUST	O	11111	NONE	111	SENT:positive	_	_
+end	O	01110	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+Assad	B-PLACE	00101	NONE	001	_	_	_
+is	O	00111	NONE	001	_	_	_
+not	O	00101	NONE	001	SENT:negative	_	_
+a	O	0100	NONE	010	_	_	_
+reformer	O	NONE	NONE	NONE	_	_	_
+he	O	00100	NONE	001	_	_	_
+is	O	00111	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+Dictator	O	NONE	NONE	NONE	_	_	_
+and	O	00110	NONE	001	_	_	_
+your	O	0101	NONE	010	_	_	_
+silence	O	0110	NONE	011	_	_	_
+makes	O	10111	NONE	101	_	_	_
+it	O	00100	NONE	001	_	_	_
+worst	O	01110	NONE	011	SENT:negative	THER_SENT_3:negative	_
+.	O	000	NONE	000	_	_	_
+#Syria	B-PLACE	01110	HASHTAG	011	_	_	_
+
+## Tweet 1626
+Michael	B-PERSON	00100	NONE	001	_	_	neutral
+Anderson	I-PERSON	00100	NONE	001	_	_	neutral
+,	O	00110	NONE	001	_	_	_
+Co-founder	O	NONE	NONE	NONE	_	_	_
+Aboriginal	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+Tent	I-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+Embassy	I-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+says	O	00111	NONE	001	_	_	_
+they	O	00100	NONE	001	_	_	_
+dont	O	11111	NONE	111	_	_	_
+want	O	10111	NONE	101	SENT_MED:negative	THER_SENT_3:positive	_
+to	O	11110	NONE	111	_	_	_
+be	O	1000	NONE	100	_	_	_
+part	O	01110	NONE	011	_	_	_
+of	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+Aust	B-ORGANIZATION	NONE	NONE	NONE	_	_	negative
+Constitution	I-ORGANIZATION	0110	NONE	011	_	_	negative
+coz	O	00110	NONE	001	_	_	_
+Aust	B-ORGANIZATION	NONE	NONE	NONE	_	_	negative
+is	O	00111	NONE	001	_	_	_
+racist	O	01110	NONE	011	_	THER_SENT_3:negative	_
+&	O	00110	NONE	001	_	_	_
+liars	O	01111	NONE	011	_	THER_SENT_3:negative	_
+#RA	O	NONE	HASHTAG	NONE	_	_	_
+
+## Tweet 1694
+Google	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+Triples	O	01111	NONE	011	_	_	_
+the	O	0101	NONE	010	_	_	_
+speed	O	0110	NONE	011	_	_	_
+of	O	00111	NONE	001	_	_	_
++1	O	00101	NONE	001	_	_	_
+button	O	00101	NONE	001	_	_	_
+http://ow.ly/5ODxE	B-URL	11110	URL	111	_	_	_
+
+## Tweet 1710
+The	O	110	NONE	110	_	_	_
+whole	O	01110	NONE	011	SENT_MED:positive	_	_
+media	O	0110	NONE	011	_	_	_
+is	O	00111	NONE	001	_	_	_
+corrupt	O	01110	NONE	011	SENT:negative	THER_SENT_3:negative	_
+,	O	00110	NONE	001	_	_	_
+follow	O	1001	NONE	100	_	_	_
+ppl	O	00100	NONE	001	_	_	_
+you	O	00100	NONE	001	_	_	_
+trust	O	1001	NONE	100	SENT_MED:positive	THER_SENT_3:positive	_
+!!	O	000	!!	000	_	_	_
+@laurenflax	O	110	MENTION	110	_	_	_
+@CNN	B-ORGANIZATION	01111	MENTION	011	_	_	neutral
+#londonroits	O	000	HASHTAG	000	_	_	_
+
+## Tweet 1719
+He	O	110	NONE	110	_	_	_
+who	O	00110	NONE	001	_	_	_
+opens	O	00111	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+school	O	00101	NONE	001	_	_	_
+door	O	0110	NONE	011	_	_	_
+closes	O	00111	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+prison	O	00101	NONE	001	_	_	_
+.	O	000	NONE	000	_	_	_
+Victor	B-PERSON	110	NONE	110	_	_	neutral
+Hugo	I-PERSON	00100	NONE	001	_	_	neutral
+
+## Tweet 175
+Sun	B-ORGANIZATION	0110	NONE	011	_	_	positive
+Softwares	I-ORGANIZATION	00110	NONE	001	_	_	positive
+is	O	00111	NONE	001	_	_	_
+one	O	01110	NONE	011	SENT_MED:positive	_	_
+of	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+leading	O	00101	NONE	001	SENT_MED:positive	_	_
+outsourcing	O	0101	NONE	010	_	_	_
+companies	O	0110	NONE	011	_	_	_
+in	O	00111	NONE	001	_	_	_
+India	B-URL	00101	NONE	001	_	_	_
+.	O	000	NONE	000	_	_	_
+Here	O	110	NONE	110	_	_	_
+we	O	00100	NONE	001	_	_	_
+provide	O	1001	NONE	100	_	_	_
+you	O	00100	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+exact	O	01110	NONE	011	_	_	_
+results	O	0110	NONE	011	_	_	_
+as	O	00110	NONE	001	_	_	_
+you	O	00100	NONE	001	_	_	_
+want	O	10111	NONE	101	SENT_MED:negative	THER_SENT_3:positive	_
+in	O	00111	NONE	001	_	_	_
+Web	O	00101	NONE	001	_	_	_
+designing	O	01110	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+
+## Tweet 1806
+I	O	1110	NONE	111	_	_	_
+posted	O	10111	NONE	101	_	_	_
+21	O	01110	NONE	011	_	_	_
+photos	O	0110	NONE	011	_	_	_
+on	O	00111	NONE	001	_	_	_
+Facebook	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+in	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+album	O	0110	NONE	011	_	_	_
+"Success	O	NONE	NONE	NONE	_	_	_
+with	O	00111	NONE	001	_	_	_
+Technology"	O	NONE	NONE	NONE	_	_	_
+http://t.co/eHX7wite	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 1941
+Lindsey	B-PERSON	00100	NONE	001	_	_	positive
+,	O	00110	NONE	001	_	_	_
+I	O	1110	NONE	111	_	_	_
+look	O	1001	NONE	100	_	_	_
+forward	O	00101	NONE	001	_	_	_
+to	O	11110	NONE	111	_	_	_
+your	O	0101	NONE	010	_	_	_
+October	B-DATE	00101	NONE	001	_	_	_
+17	I-DATE	01110	NONE	011	_	_	_
+show	O	1001	NONE	100	_	_	_
+in	O	00111	NONE	001	_	_	_
+Anaheim	B-PLACE	00101	NONE	001	_	_	_
+!	O	000	NONE	000	_	_	_
+
+## Tweet 1968
+Missing	O	00111	NONE	001	SENT_MED:negative	_	_
+energy	O	0110	NONE	011	SENT_MED:positive	_	_
+exec	O	0110	NONE	011	_	_	_
+found	O	10111	NONE	101	_	_	_
+dead	O	01110	NONE	011	SENT:negative	_	_
+in	O	00111	NONE	001	_	_	_
+New	B-PLACE	01111	NONE	011	SENT_MED:negative	_	_
+Orlean	I-PLACE	NONE	NONE	NONE	_	_	_
+s:	I-PLACE	000	WEST_EMOTICON	000	_	_	_
+HOUSTON	B-PLACE	00101	NONE	001	_	_	_
+(	O	01111	NONE	011	_	_	_
+Reuters	B-ORGANIZATION	00110	NONE	001	_	_	neutral
+)	O	01111	NONE	011	_	_	_
+-	O	00110	NONE	001	_	_	_
+A	O	110	NONE	110	_	_	_
+senior	O	01110	NONE	011	_	_	_
+executive	O	01110	NONE	011	_	_	_
+with	O	00111	NONE	001	_	_	_
+an	O	0100	NONE	010	_	_	_
+Atlanta-based	B-PLACE	NONE	NONE	NONE	_	_	_
+energy	O	0110	NONE	011	SENT_MED:positive	_	_
+...	O	00110	..	001	_	_	_
+http://bit.ly/cZ3gDe	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 1983
+Mint	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+Announces	O	01111	NONE	011	_	_	_
+Third	O	110	NONE	110	_	_	_
+Quarterly	O	NONE	NONE	NONE	_	_	_
+Results	O	00110	NONE	001	_	_	_
+and	O	00110	NONE	001	_	_	_
+Market	O	00111	NONE	001	_	_	_
+Guidance	O	NONE	NONE	NONE	_	_	_
+...	O	00110	..	001	_	_	_
+http	B-URL	01111	NONE	011	_	_	_
+:	I-URL	000	NONE	000	_	_	_
+//p.gs/1vvo6	B-URL	NONE	NONE	NONE	_	_	_
+
+## Tweet 2086
+Oil	O	00101	NONE	001	_	_	_
+and	O	00110	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+economy	O	0110	NONE	011	_	_	_
+:	O	000	NONE	000	_	_	_
+The	O	110	NONE	110	_	_	_
+2011	B-DATE	0110	NONE	011	_	_	_
+oil	O	0110	NONE	011	_	_	_
+shock	O	0110	NONE	011	SENT:negative	THER_SENT_3:negative	_
+|	O	000	NONE	000	_	_	_
+The	B-ORGANIZATION	110	NONE	110	_	_	neutral
+Economist	I-ORGANIZATION	01111	NONE	011	_	_	neutral
+-	O	00110	NONE	001	_	_	_
+http://econ.st/edJDel	B-URL	00110	URL	001	_	_	_
+via	O	00111	NONE	001	_	_	_
+@TheEconomist	O	00101	MENTION	001	_	_	_
+
+## Tweet 2119
+SA	O	00101	NONE	001	_	_	_
+made	O	10111	NONE	101	_	_	_
+G	B-PERSON	01110	NONE	011	_	_	negative
+Kristen	I-PERSON	00100	NONE	001	_	_	negative
+as	O	00110	NONE	001	_	_	_
+coach	O	0110	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+They	O	110	NONE	110	_	_	_
+actually	O	11111	NONE	111	_	_	_
+misread	O	NONE	NONE	NONE	_	THER_SENT_3:negative	_
+Ind	O	NONE	NONE	NONE	_	_	_
+WC	O	NONE	NONE	NONE	_	_	_
+victory	O	00101	NONE	001	_	_	_
+.	O	000	NONE	000	_	_	_
+Can	O	110	NONE	110	_	_	_
+some	O	0100	NONE	010	SENT:positive	_	_
+one	O	01110	NONE	011	SENT_MED:positive	_	_
+pls	O	00110	NONE	001	_	_	_
+tell	O	1001	NONE	100	SENT_MED:negative	_	_
+them	O	00101	NONE	001	_	_	_
+they	O	00100	NONE	001	_	_	_
+need	O	10111	NONE	101	SENT_MED:positive	_	_
+MSD	O	NONE	NONE	NONE	_	_	_
+to	O	11110	NONE	111	_	_	_
+win	O	1001	NONE	100	_	_	_
+?	O	000	NONE	000	_	_	_
+#MSD	O	NONE	HASHTAG	NONE	_	_	_
+#kristen	O	NONE	HASHTAG	NONE	_	_	_
+
+## Tweet 2285
+@shafiqhamdam	O	NONE	MENTION	NONE	_	_	_
+-	O	00110	NONE	001	_	_	_
+I	O	1110	NONE	111	_	_	_
+thought	O	10101	NONE	101	SENT_MED:negative	_	_
+I	O	1110	NONE	111	_	_	_
+wrote	O	10111	NONE	101	_	_	_
+to	O	11110	NONE	111	_	_	_
+AACN	B-ORGANIZATION	NONE	NONE	NONE	_	_	negative
+a	O	0100	NONE	010	_	_	_
+month	O	0110	NONE	011	_	_	_
+ago	O	01111	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+no	O	00101	NONE	001	SENT:positive	_	_
+reply	O	1001	NONE	100	_	_	_
+man	O	01111	NONE	011	_	_	_
+?	O	000	NONE	000	_	_	_
+You	O	1110	NONE	111	_	_	_
+involved	O	00101	NONE	001	_	_	_
+?	O	000	NONE	000	_	_	_
+
+## Tweet 2310
+Abraham	B-PERSON	NONE	NONE	NONE	_	_	neutral
+Lincoln's	I-PERSON	NONE	NONE	NONE	_	_	neutral
+mother	O	0110	NONE	011	_	_	_
+died	O	00101	NONE	001	_	_	_
+when	O	00110	NONE	001	_	_	_
+she	O	00100	NONE	001	_	_	_
+drank	O	10111	NONE	101	_	_	_
+the	O	0101	NONE	010	_	_	_
+milk	O	0110	NONE	011	_	_	_
+of	O	00111	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+cow	O	01110	NONE	011	_	_	_
+that	O	00110	NONE	001	_	_	_
+grazed	O	NONE	NONE	NONE	_	_	_
+on	O	00111	NONE	001	_	_	_
+poisonous	O	01110	NONE	011	SENT:negative	_	_
+snakeroot	O	NONE	NONE	NONE	_	_	_
+.	O	000	NONE	000	_	_	_
+
+## Tweet 2316
+I	O	1110	NONE	111	_	_	_
+posted	O	10111	NONE	101	_	_	_
+a	O	0100	NONE	010	_	_	_
+new	O	01110	NONE	011	SENT_MED:negative	_	_
+photo	O	0110	NONE	011	_	_	_
+to	O	11110	NONE	111	_	_	_
+Facebook	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+http://t.co/1ZuCr6cb	B-URL	00110	URL	001	_	_	_
+
+## Tweet 233
+felling	O	00101	NONE	001	_	_	_
+vaery	O	00101	NONE	001	_	_	_
+sad	O	01110	NONE	011	SENT:negative	THER_SENT_3:negative	_
+bcz	O	01110	NONE	011	_	_	_
+of	O	00111	NONE	001	_	_	_
+Steve	B-PERSON	00100	NONE	001	_	_	positive
+Jobs's	I-PERSON	00111	NONE	001	_	_	positive
+death	O	0110	NONE	011	SENT_MED:negative	_	_
+...........	O	01111	....	011	_	_	_
+
+## Tweet 2338
+Prince	O	00101	NONE	001	_	_	_
+offers	O	00110	NONE	001	_	_	_
+$	B-MONEY	01111	NONE	011	_	_	_
+1m	I-MONEY	NONE	NONE	NONE	_	_	_
+to	O	11110	NONE	111	_	_	_
+seize	O	00101	NONE	001	_	_	_
+Israelis	O	NONE	NONE	NONE	_	_	_
+-	O	00110	NONE	001	_	_	_
+The	B-ORGANIZATION	110	NONE	110	_	_	neutral
+Independent	I-ORGANIZATION	01111	NONE	011	SENT_MED:negative	_	neutral
+http://t.co/LbhiTBAQ	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 2376
+THAKSIN	B-PERSON	NONE	NONE	NONE	_	_	neutral
+do	O	10100	NONE	101	_	_	_
+not	O	00101	NONE	001	SENT:negative	_	_
+want	O	10111	NONE	101	SENT_MED:negative	THER_SENT_3:positive	_
+2B	O	NONE	NONE	NONE	_	_	_
+come	O	1001	NONE	100	_	_	_
+PM	B-PERSON	0110	NONE	011	_	_	neutral
+.	O	000	NONE	000	_	_	_
+But	O	110	NONE	110	_	_	_
+he	O	00100	NONE	001	_	_	_
+wants	O	10111	NONE	101	_	THER_SENT_3:positive	_
+2B	O	NONE	NONE	NONE	_	_	_
+the	O	0101	NONE	010	_	_	_
+PRESIDENT	B-PERSON	NONE	NONE	NONE	_	_	neutral
+of	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+REPUBLIC	B-PLACE	NONE	NONE	NONE	_	_	_
+of	I-PLACE	00111	NONE	001	_	_	_
+THAILAND	I-PLACE	NONE	NONE	NONE	_	_	_
+.	O	000	NONE	000	_	_	_
+
+## Tweet 2423
+they	O	00100	NONE	001	_	_	_
+are	O	00111	NONE	001	_	_	_
+not	O	00101	NONE	001	SENT:negative	_	_
+worried	O	00101	NONE	001	SENT:negative	THER_SENT_3:negative	_
+on	O	00111	NONE	001	_	_	_
+Anna's	B-PERSON	NONE	NONE	NONE	_	_	neutral
+health	O	01110	NONE	011	SENT:positive	_	_
+
+## Tweet 2445
+Today's	O	01111	NONE	011	_	_	_
+Mantra	O	01111	NONE	011	_	_	_
+:	O	000	NONE	000	_	_	_
+Yes	O	110	NONE	110	_	THER_SENT_3:positive	_
+,	O	00110	NONE	001	_	_	_
+I'm	O	00111	NONE	001	_	_	_
+realistic	O	01110	NONE	011	SENT_MED:negative	THER_SENT_3:positive	_
+...	O	00110	..	001	_	_	_
+My	O	110	NONE	110	_	_	_
+dreams	O	0110	NONE	011	_	_	_
+are	O	00111	NONE	001	_	_	_
+huge	O	01110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+bold	O	01110	NONE	011	SENT:positive	THER_SENT_3:positive	_
+and	O	00110	NONE	001	_	_	_
+imaginative	O	01110	NONE	011	_	THER_SENT_3:positive	_
+.	O	000	NONE	000	_	_	_
+-Mike	B-PERSON	1110	NONE	111	_	_	positive
+
+## Tweet 2523
+Sergio	B-PERSON	NONE	NONE	NONE	_	_	positive
+Aguero	I-PERSON	NONE	NONE	NONE	_	_	positive
+greets	O	10111	NONE	101	_	THER_SENT_3:positive	_
+Man	B-ORGANIZATION	110	NONE	110	_	_	neutral
+City	I-ORGANIZATION	0110	NONE	011	_	_	neutral
+fans	O	0110	NONE	011	_	_	_
+at	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+Etihad	B-PLACE	NONE	NONE	NONE	_	_	_
+Stadium	I-PLACE	0110	NONE	011	_	_	_
+http://t.co/XqQUro4	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 2531
+When	O	110	NONE	110	_	_	_
+it	O	00100	NONE	001	_	_	_
+comes	O	00111	NONE	001	_	_	_
+to	O	11110	NONE	111	_	_	_
+presentation	O	0110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+Mark	B-PERSON	00100	NONE	001	_	_	negative
+Zuckerberg	I-PERSON	NONE	NONE	NONE	_	_	negative
+is	O	00111	NONE	001	_	_	_
+no	O	00101	NONE	001	SENT:positive	_	_
+Steve	B-PERSON	00100	NONE	001	_	_	positive
+Jobs	I-PERSON	00111	NONE	001	_	_	positive
+;P	O	00110	WEST_EMOTICON	001	_	_	_
+http://t.co/3ORETf2	B-URL	NONE	URL	NONE	_	_	_
+facebook	B-ORGANIZATION	01111	NONE	011	_	_	negative
+announcement	O	0110	NONE	011	_	_	_
+
+## Tweet 254
+feminist	O	01110	NONE	011	_	_	_
+author	O	0110	NONE	011	_	_	_
+Barbara	B-PERSON	01111	NONE	011	_	_	neutral
+Novak	I-PERSON	00100	NONE	001	_	_	neutral
+(	O	01111	NONE	011	_	_	_
+Renee	B-PERSON	00110	NONE	001	_	_	neutral
+Zellweger	I-PERSON	NONE	NONE	NONE	_	_	neutral
+)	O	01111	NONE	011	_	_	_
+finds	O	10111	NONE	101	_	_	_
+herself	O	00101	NONE	001	_	_	_
+head-over-heels.....http://www.acmemoviereviews.bravehost.com/downwithlove.htm	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 256
+I	O	1110	NONE	111	_	_	_
+liked	O	10111	NONE	101	_	THER_SENT_3:positive	_
+a	O	0100	NONE	010	_	_	_
+@YouTube	O	01110	MENTION	011	_	_	_
+video	O	01110	NONE	011	_	_	_
+http://t.co/TTDr9TNr	B-URL	NONE	URL	NONE	_	_	_
+One	B-ORGANIZATION	110	NONE	110	SENT_MED:positive	_	positive
+Direction	I-ORGANIZATION	NONE	NONE	NONE	_	_	positive
+-	O	00110	NONE	001	_	_	_
+What	O	110	NONE	110	_	_	_
+Makes	O	110	NONE	110	_	_	_
+You	O	1110	NONE	111	_	_	_
+Beautiful	O	01111	NONE	011	SENT:positive	THER_SENT_3:positive	_
+
+## Tweet 2600
+american	O	01110	NONE	011	_	_	_
+Whole	B-ORGANIZATION	01111	NONE	011	SENT_MED:positive	_	positive
+Foods	I-ORGANIZATION	01111	NONE	011	_	_	positive
+Market	I-ORGANIZATION	00111	NONE	001	_	_	positive
+is	O	00111	NONE	001	_	_	_
+like	O	00101	NONE	001	SENT_MED:positive	THER_SENT_3:positive	_
+a	O	0100	NONE	010	_	_	_
+temple	O	00101	NONE	001	_	_	_
+of	O	00111	NONE	001	_	_	_
+food	O	0110	NONE	011	_	_	_
+
+## Tweet 2717
+@Douglaslas	O	NONE	MENTION	NONE	_	_	_
+are	O	00111	NONE	001	_	_	_
+you	O	00100	NONE	001	_	_	_
+familiar	O	01110	NONE	011	_	_	_
+with	O	00111	NONE	001	_	_	_
+ASCE	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+(	I-ORGANIZATION	01111	NONE	011	_	_	neutral
+American	B-ORGANIZATION	01110	NONE	011	_	_	neutral
+Society	I-ORGANIZATION	110	NONE	110	_	_	neutral
+of	I-ORGANIZATION	00111	NONE	001	_	_	neutral
+Civil	I-ORGANIZATION	01110	NONE	011	_	_	neutral
+Engineers	I-ORGANIZATION	0101	NONE	010	_	_	neutral
+)	O	01111	NONE	011	_	_	_
+?	O	000	NONE	000	_	_	_
+
+## Tweet 2734
+CERN	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+turns	O	10111	NONE	101	_	_	_
+up	O	00101	NONE	001	SENT_MED:positive	_	_
+power	O	0110	NONE	011	SENT_MED:negative	_	_
+to	O	11110	NONE	111	_	_	_
+answer	O	1001	NONE	100	_	_	_
+Higgs	B-PERSON	NONE	NONE	NONE	_	_	neutral
+riddle	O	0110	NONE	011	SENT:negative	_	_
+in	O	00111	NONE	001	_	_	_
+2012	B-DATE	01111	NONE	011	_	_	_
+|	O	000	NONE	000	_	_	_
+Sci-tech	O	NONE	NONE	NONE	_	_	_
+|	O	000	NONE	000	_	_	_
+http://t.co/E1HhGAeO	B-URL	NONE	URL	NONE	_	_	_
+http://t.co/jRlF2mIm	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 2739
+ppl	O	00100	NONE	001	_	_	_
+:	O	000	NONE	000	_	_	_
+abot	O	00110	NONE	001	_	_	_
+Onion	O	01110	NONE	011	_	_	_
+price	O	0110	NONE	011	SENT_MED:positive	_	_
+hike	O	0110	NONE	011	_	_	_
+?	O	000	NONE	000	_	_	_
+'	O	11111	NONE	111	_	_	_
+-	O	00110	NONE	001	_	_	_
+CM	O	01111	NONE	011	_	_	_
+Karunanidhi	B-PERSON	NONE	NONE	NONE	_	_	neutral
+:	O	000	NONE	000	_	_	_
+''Go	O	NONE	NONE	NONE	_	_	_
+and	O	00110	NONE	001	_	_	_
+ask	O	1001	NONE	100	_	_	_
+PERIYAR''	B-PERSON	NONE	NONE	NONE	_	_	neutral
+MK	O	NONE	NONE	NONE	_	_	_
+:	O	000	NONE	000	_	_	_
+abot	O	00110	NONE	001	_	_	_
+our	O	0101	NONE	010	_	_	_
+alliance	O	01111	NONE	011	_	_	_
+?	O	000	NONE	000	_	_	_
+''	O	01111	NONE	011	_	_	_
+--	O	00110	NONE	001	_	_	_
+-	O	00110	NONE	001	_	_	_
+Sonia	B-PERSON	00101	NONE	001	_	_	neutral
+:	O	000	NONE	000	_	_	_
+''ASK	O	NONE	NONE	NONE	_	_	_
+RAJIV	B-PERSON	NONE	NONE	NONE	_	_	neutral
+GANDHI''-	I-PERSON	NONE	NONE	NONE	_	_	neutral
+ha	O	01111	NONE	011	_	_	_
+ha	O	01111	NONE	011	_	_	_
+:	O	000	NONE	000	_	_	_
+-	O	00110	NONE	001	_	_	_
+)	O	01111	NONE	011	_	_	_
+
+## Tweet 2749
+Shania	B-PERSON	00101	NONE	001	_	_	neutral
+Twain	I-PERSON	00101	NONE	001	_	_	neutral
+-	O	00110	NONE	001	_	_	_
+Dance	O	01111	NONE	011	_	_	_
+With	O	110	NONE	110	_	_	_
+The	O	110	NONE	110	_	_	_
+One	O	110	NONE	110	SENT_MED:positive	_	_
+That	O	110	NONE	110	_	_	_
+Brought	O	00110	NONE	001	_	_	_
+You	O	1110	NONE	111	_	_	_
+http://t.co/uVWcAtJN	B-URL	10110	URL	101	_	_	_
+
+## Tweet 2767
+Next	O	110	NONE	110	_	_	_
+Cineworks	B-ORGANIZATION	00110	NONE	001	_	_	neutral
+and	O	00110	NONE	001	_	_	_
+Raindance	B-ORGANIZATION	00110	NONE	001	_	_	neutral
+"Booze	O	00100	NONE	001	_	_	_
+and	O	00110	NONE	001	_	_	_
+Schmooze"	O	00100	NONE	001	_	_	_
+is	O	00111	NONE	001	_	_	_
+March	B-DATE	01111	NONE	011	_	_	_
+5th	I-DATE	01110	NONE	011	_	_	_
+http://t.co/WIr5hLqd	B-URL	01111	URL	011	_	_	_
+
+## Tweet 2802
+OneBode	B-ORGANIZATION	110	NONE	110	_	_	positive
+Blend	I-ORGANIZATION	00100	NONE	001	_	_	positive
+obtains	O	00111	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+complete	O	01110	NONE	011	SENT_MED:positive	_	_
+blend	O	1001	NONE	100	_	_	_
+of	O	00111	NONE	001	_	_	_
+antioxidants	O	00101	NONE	001	_	_	_
+including	O	00110	NONE	001	_	_	_
+grape	O	01110	NONE	011	_	_	_
+seed	O	01110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+grape	O	01110	NONE	011	_	_	_
+skin	O	0110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+pine	O	00110	NONE	001	SENT:negative	THER_SENT_3:negative	_
+bark	O	0110	NONE	011	_	_	_
+and	O	00110	NONE	001	_	_	_
+SOD	O	00100	NONE	001	_	_	_
+precursors	O	000	NONE	000	_	_	_
+
+## Tweet 2868
+Now	O	110	NONE	110	_	_	_
+Mr	B-PERSON	01111	NONE	011	_	_	positive
+.	I-PERSON	000	NONE	000	_	_	positive
+Bhusan	I-PERSON	NONE	NONE	NONE	_	_	positive
+Dahal	I-PERSON	NONE	NONE	NONE	_	_	positive
+iz	O	NONE	NONE	NONE	_	_	_
+in	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+fire	O	0110	NONE	011	SENT_MED:positive	_	_
+........	O	00110	...	001	_	_	_
+and	O	00110	NONE	001	_	_	_
+Kumar	B-PERSON	NONE	NONE	NONE	_	_	positive
+phudung	I-PERSON	NONE	NONE	NONE	_	_	positive
+at	O	00111	NONE	001	_	_	_
+side	O	0110	NONE	011	_	_	_
+.....	O	00110	...	001	_	_	_
+great	O	01110	NONE	011	SENT_MED:positive	THER_SENT_3:positive	_
+conversationn	O	NONE	NONE	NONE	_	_	_
+iz	O	NONE	NONE	NONE	_	_	_
+still	O	11111	NONE	111	SENT:negative	_	_
+on	O	00111	NONE	001	_	_	_
+air	O	0110	NONE	011	_	_	_
+......	O	01111	...	011	_	_	_
+
+## Tweet 2880
+5	O	01111	NONE	011	_	_	_
+Tips	O	0110	NONE	011	_	_	_
+for	O	00111	NONE	001	_	_	_
+Using	O	110	NONE	110	_	_	_
+the	O	0101	NONE	010	_	_	_
+New	O	01111	NONE	011	SENT_MED:negative	_	_
+LinkedIn	B-ORGANIZATION	01110	NONE	011	_	_	neutral
+Company	O	00101	NONE	001	_	_	_
+Pages	O	000	NONE	000	_	_	_
+http://t.co/8LpLeEsF	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 2913
+ABE	B-ORGANIZATION	01111	NONE	011	_	_	positive
+staff	O	0110	NONE	011	_	_	_
+won	O	10111	NONE	101	SENT:negative	_	_
+3rd	O	01110	NONE	011	_	_	_
+place	O	0110	NONE	011	_	_	_
+in	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+Poly50	O	01110	NONE	011	_	_	_
+staff	O	0110	NONE	011	_	_	_
+catergory	O	01111	NONE	011	_	_	_
+!	O	000	NONE	000	_	_	_
+Congratulations	O	110	NONE	110	SENT:positive	THER_SENT_3:positive	_
+!	O	000	NONE	000	_	_	_
+
+## Tweet 2931
+Sometimes	O	110	NONE	110	_	_	_
+the	O	0101	NONE	010	_	_	_
+questions	O	0110	NONE	011	_	_	_
+are	O	00111	NONE	001	_	_	_
+complicated	O	01110	NONE	011	SENT:negative	_	_
+and	O	00110	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+answers	O	0110	NONE	011	_	_	_
+are	O	00111	NONE	001	_	_	_
+simple-	O	NONE	NONE	NONE	_	_	_
+Dr	B-PERSON	01111	NONE	011	_	_	neutral
+Suess	I-PERSON	NONE	NONE	NONE	_	_	neutral
+
+## Tweet 298
+Tony	B-PERSON	00100	NONE	001	_	_	neutral
+Romo	I-PERSON	00111	NONE	001	_	_	neutral
+among	O	00111	NONE	001	_	_	_
+DFW	B-PLACE	01110	NONE	011	_	_	_
+celebrity	O	01110	NONE	011	_	_	_
+golfers	O	0110	NONE	011	_	_	_
+at	O	00111	NONE	001	_	_	_
+AT	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+&	I-ORGANIZATION	00110	NONE	001	_	_	neutral
+T	I-ORGANIZATION	01111	NONE	011	_	_	neutral
+Pro-Am	O	01111	NONE	011	_	_	_
+:	O	000	NONE	000	_	_	_
+When	O	110	NONE	110	_	_	_
+Dallas	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+Cowboys	I-ORGANIZATION	0110	NONE	011	_	_	neutral
+quarterback	O	0110	NONE	011	_	_	_
+Tony	B-PERSON	00100	NONE	001	_	_	neutral
+Romo	I-PERSON	00111	NONE	001	_	_	neutral
+tees	O	00101	NONE	001	_	_	_
+off	O	00101	NONE	001	SENT:negative	_	_
+today	O	01111	NONE	011	_	_	_
+w	O	01111	NONE	011	_	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/sCgb3nwJ	B-URL	00110	URL	001	_	_	_
+
+## Tweet 2994
+Lol	O	110	NONE	110	_	_	_
+lol	O	01111	NONE	011	_	_	_
+RT	O	01111	NONE	011	_	_	_
+@allkpop	O	NONE	MENTION	NONE	_	_	_
+:	O	000	NONE	000	_	_	_
+[	O	01111	NONE	011	_	_	_
+Spoiler	O	NONE	NONE	NONE	SENT_MED:positive	_	_
+:	O	000	NONE	000	_	_	_
+Running	O	110	NONE	110	_	_	_
+Man	O	110	NONE	110	_	_	_
+]	O	01111	NONE	011	_	_	_
+Kim	B-PERSON	00100	NONE	001	_	_	neutral
+Jong	I-PERSON	00111	NONE	001	_	_	neutral
+Kook	I-PERSON	NONE	NONE	NONE	_	THER_SENT_3:negative	neutral
+is	O	00111	NONE	001	_	_	_
+betrayed	O	01110	NONE	011	_	THER_SENT_3:negative	_
+by	O	00111	NONE	001	_	_	_
+Haha	B-ORGANIZATION	110	haha	110	_	_	negative
+http://t.co/U1FHxYLw	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 3139
+Houston	B-PLACE	00101	NONE	001	_	_	_
+billionaires	O	01111	NONE	011	_	_	_
+make	O	1001	NONE	100	SENT_MED:positive	_	_
+Forbes	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+Richest	O	000	NONE	000	_	_	_
+People	O	110	NONE	110	_	_	_
+in	O	00111	NONE	001	_	_	_
+America	B-PLACE	00101	NONE	001	_	_	_
+list	O	0110	NONE	011	_	_	_
+http://t.co/yM8tvfID	B-URL	00110	URL	001	_	_	_
+
+## Tweet 3171
+@Moyade1	B-PERSON	NONE	MENTION	NONE	_	_	neutral
+cause	O	00110	NONE	001	_	_	_
+i	O	1110	NONE	111	_	_	_
+was	O	10111	NONE	101	_	_	_
+outside	O	00101	NONE	001	_	_	_
+.	O	000	NONE	000	_	_	_
+Sorry	O	110	NONE	110	SENT:negative	THER_SENT_3:negative	_
+dude	O	01111	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+
+## Tweet 3173
+Afghans	O	00101	NONE	001	_	_	_
+Unconvinced	O	00101	NONE	001	SENT:negative	_	_
+by	O	00111	NONE	001	_	_	_
+Karzai	B-PERSON	0101	NONE	010	_	_	neutral
+Presidency	O	0110	NONE	011	_	_	_
+:	O	000	NONE	000	_	_	_
+http://bit.ly/fQFXOD	B-URL	01111	URL	011	_	_	_
+
+## Tweet 3235
+I	O	1110	NONE	111	_	_	_
+posted	O	10111	NONE	101	_	_	_
+a	O	0100	NONE	010	_	_	_
+new	O	01110	NONE	011	SENT_MED:negative	_	_
+photo	O	0110	NONE	011	_	_	_
+to	O	11110	NONE	111	_	_	_
+Facebook	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+http://t.co/DPKRnlx3	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 3257
+Key	O	0101	NONE	010	_	_	_
+Dems	O	01110	NONE	011	_	_	_
+criticize	O	10111	NONE	101	_	THER_SENT_3:negative	_
+HHS	B-ORGANIZATION	01110	NONE	011	_	_	neutral
+reshuffling	O	01110	NONE	011	_	_	_
+of	O	00111	NONE	001	_	_	_
+public	O	01110	NONE	011	_	_	_
+health	O	01110	NONE	011	SENT:positive	_	_
+fund	O	00101	NONE	001	_	_	_
+(	O	01111	NONE	011	_	_	_
+6/17/10	B-DATE	00110	NUMBER	001	_	_	_
+â¦	O	00101	NONE	001	_	_	_
+http://bit.ly/9urynn	B-URL	01110	URL	011	_	_	_
+
+## Tweet 3277
+I	O	1110	NONE	111	_	_	_
+posted	O	10111	NONE	101	_	_	_
+a	O	0100	NONE	010	_	_	_
+new	O	01110	NONE	011	SENT_MED:negative	_	_
+photo	O	0110	NONE	011	_	_	_
+to	O	11110	NONE	111	_	_	_
+Facebook	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+http://fb.me/tlyRE78d	B-URL	000	URL	000	_	_	_
+
+## Tweet 3311
+Twitter	B-ORGANIZATION	01111	NONE	011	_	_	negative
+Help	O	110	NONE	110	_	_	_
+Center	O	0110	NONE	011	_	_	_
+|	O	000	NONE	000	_	_	_
+It	O	110	NONE	110	_	_	_
+looks	O	00111	NONE	001	_	_	_
+like	O	00101	NONE	001	SENT_MED:positive	THER_SENT_3:positive	_
+I	O	1110	NONE	111	_	_	_
+â	O	11111	NONE	111	_	_	_
+m	O	10110	NONE	101	_	_	_
+not	O	00101	NONE	001	SENT:negative	_	_
+following	O	01110	NONE	011	_	_	_
+someone	O	00100	NONE	001	_	_	_
+I	O	1110	NONE	111	_	_	_
+know	O	10101	NONE	101	SENT:positive	_	_
+I	O	1110	NONE	111	_	_	_
+â	O	11111	NONE	111	_	_	_
+ve	O	10110	NONE	101	_	_	_
+followed	O	00101	NONE	001	_	_	_
+!	O	000	NONE	000	_	_	_
+http://t.co/Onk1xSQ7	B-URL	110	URL	110	_	_	_
+via	O	00111	NONE	001	_	_	_
+@support	O	00101	MENTION	001	_	_	_
+
+## Tweet 3332
+Are	O	110	NONE	110	_	_	_
+you	O	00100	NONE	001	_	_	_
+guys	O	00100	NONE	001	_	_	_
+as	O	00110	NONE	001	_	_	_
+stoked	O	01110	NONE	011	_	_	_
+as	O	00110	NONE	001	_	_	_
+we	O	00100	NONE	001	_	_	_
+are	O	00111	NONE	001	_	_	_
+to	O	11110	NONE	111	_	_	_
+see	O	1001	NONE	100	SENT_MED:positive	_	_
+Jesse	B-PERSON	110	NONE	110	_	_	neutral
+in	O	00111	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+Tu-tu	O	NONE	NONE	NONE	_	_	_
+?	O	000	NONE	000	_	_	_
+http://t.co/Fi0blpSb	B-URL	NONE	URL	NONE	_	_	_
+http://t.co/TKaOzpj9	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 3370
+Trading	O	000	NONE	000	_	_	_
+Facebook	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+Option	O	NONE	NONE	NONE	_	_	_
+s:	O	000	WEST_EMOTICON	000	_	_	_
+In	O	110	NONE	110	_	_	_
+light	O	0110	NONE	011	SENT_MED:positive	_	_
+of	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+upcoming	O	01110	NONE	011	_	_	_
+Facebook	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+IPO	O	NONE	NONE	NONE	_	_	_
+we	O	00100	NONE	001	_	_	_
+add	O	1001	NONE	100	SENT:positive	_	_
+this	O	01111	NONE	011	_	_	_
+discussion	O	01110	NONE	011	_	_	_
+of	O	00111	NONE	001	_	_	_
+trading	O	00110	NONE	001	_	_	_
+Facebook	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+optio	O	NONE	NONE	NONE	_	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/Gx6NbP7R	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 348
+David's	B-ORGANIZATION	0101	NONE	010	_	_	neutral
+Hybrid	O	01110	NONE	011	_	_	_
+Spinach	O	0110	NONE	011	_	_	_
+Spargo	O	01111	NONE	011	_	_	_
+385	O	01111	NONE	011	_	_	_
+Treated	O	01111	NONE	011	_	_	_
+Seeds	O	01110	NONE	011	_	_	_
+per	O	00111	NONE	001	_	_	_
+Packet	O	00101	NONE	001	_	_	_
+by	O	00111	NONE	001	_	_	_
+David's	B-ORGANIZATION	0101	NONE	010	_	_	neutral
+Garden	I-ORGANIZATION	0110	NONE	011	_	_	neutral
+Seeds	I-ORGANIZATION	01110	NONE	011	_	_	neutral
+http://t.co/x9xOjLQB	B-URL	00101	URL	001	_	_	_
+via	O	00111	NONE	001	_	_	_
+@amazon	O	000	MENTION	000	_	_	_
+
+## Tweet 3480
+What	O	110	NONE	110	_	_	_
+Are	O	110	NONE	110	_	_	_
+Universities	O	000	NONE	000	_	_	_
+For	O	110	NONE	110	_	_	_
+?	O	000	NONE	000	_	_	_
+By	O	110	NONE	110	_	_	_
+Stefan	B-PERSON	11111	NONE	111	_	_	neutral
+Collini	I-PERSON	10111	NONE	101	_	_	neutral
+http://t.co/QpqnNmi0	B-URL	00101	URL	001	_	_	_
+
+## Tweet 3525
+Forget	O	110	NONE	110	SENT_MED:negative	THER_SENT_3:negative	_
+the	O	0101	NONE	010	_	_	_
+supermarket	O	01110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+go	O	1001	NONE	100	_	_	_
+artisanal	O	NONE	NONE	NONE	_	_	_
+:	O	000	NONE	000	_	_	_
+By	O	110	NONE	110	_	_	_
+Justine	B-PERSON	00101	NONE	001	_	_	neutral
+Gerardy	I-PERSON	NONE	NONE	NONE	_	_	neutral
+The	B-ORGANIZATION	110	NONE	110	_	_	positive
+Neighbourgoods	I-ORGANIZATION	NONE	NONE	NONE	_	_	positive
+Market	I-ORGANIZATION	00111	NONE	001	_	_	positive
+in	O	00111	NONE	001	_	_	_
+Saltriver	B-PLACE	NONE	NONE	NONE	_	_	_
+,	O	00110	NONE	001	_	_	_
+where	O	00110	NONE	001	_	_	_
+people	O	00100	NONE	001	_	_	_
+co	O	10111	NONE	101	_	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/xDUUJwUK	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 3543
+Will	O	110	NONE	110	_	THER_SENT_3:positive	_
+Uma	B-PERSON	NONE	NONE	NONE	SENT:positive	_	neutral
+Thurman	I-PERSON	NONE	NONE	NONE	_	_	neutral
+Be	O	110	NONE	110	_	_	_
+Shopping	O	01111	NONE	011	_	_	_
+For	O	110	NONE	110	_	_	_
+Pink	O	01111	NONE	011	_	_	_
+Or	O	110	NONE	110	_	_	_
+Blue	O	01111	NONE	011	SENT_MED:negative	_	_
+?	O	000	NONE	000	_	_	_
+:	O	000	NONE	000	_	_	_
+PINK	O	0100	NONE	010	_	_	_
+,	O	00110	NONE	001	_	_	_
+according	O	00101	NONE	001	_	_	_
+to	O	11110	NONE	111	_	_	_
+Life	O	110	NONE	110	_	_	_
+&	O	00110	NONE	001	_	_	_
+Style	O	00111	NONE	001	_	_	_
+!	O	000	NONE	000	_	_	_
+Uma	B-PERSON	NONE	NONE	NONE	SENT:positive	_	positive
+Thurman	I-PERSON	NONE	NONE	NONE	_	_	positive
+is	O	00111	NONE	001	_	_	_
+expecting	O	00101	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+baby	O	0110	NONE	011	SENT:negative	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/Tr6XNRzs	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 3557
+Budco	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+Supports	O	NONE	NONE	NONE	_	THER_SENT_3:positive	_
+Innovative	O	NONE	NONE	NONE	SENT_MED:positive	_	_
+Direct	B-ORGANIZATION	00111	NONE	001	SENT_MED:positive	_	positive
+Marketing	I-ORGANIZATION	01111	NONE	011	_	_	positive
+Media	I-ORGANIZATION	01111	NONE	011	_	_	positive
+Through	O	110	NONE	110	_	_	_
+New	B-ORGANIZATION	01111	NONE	011	SENT_MED:negative	_	neutral
+DiscMail	I-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+Direct	I-ORGANIZATION	00111	NONE	001	SENT_MED:positive	_	neutral
+Coalition	I-ORGANIZATION	0110	NONE	011	_	_	neutral
+http://tinyurl.com/37z5ntd	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 3623
+I	O	1110	NONE	111	_	_	_
+posted	O	10111	NONE	101	_	_	_
+a	O	0100	NONE	010	_	_	_
+new	O	01110	NONE	011	SENT_MED:negative	_	_
+photo	O	0110	NONE	011	_	_	_
+to	O	11110	NONE	111	_	_	_
+Facebook	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+http://fb.me/TFq96YOd	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 3646
+I	O	1110	NONE	111	_	_	_
+liked	O	10111	NONE	101	_	THER_SENT_3:positive	_
+a	O	0100	NONE	010	_	_	_
+YouTube	B-ORGANIZATION	00101	NONE	001	_	_	positive
+video	O	01110	NONE	011	_	_	_
+--	O	00110	NONE	001	_	_	_
+Social	O	01111	NONE	011	_	_	_
+commercial	O	0110	NONE	011	SENT_MED:negative	_	_
+http://youtu.be/4XbiVFME5d4?a	B-URL	01111	URL	011	_	_	_
+
+## Tweet 3668
+I	O	1110	NONE	111	_	_	_
+am	O	10110	NONE	101	_	_	_
+like	O	00101	NONE	001	SENT_MED:positive	THER_SENT_3:positive	_
+a	O	0100	NONE	010	_	_	_
+little	O	01110	NONE	011	SENT_MED:negative	THER_SENT_3:negative	_
+pencil	O	0110	NONE	011	_	_	_
+in	O	00111	NONE	001	_	_	_
+God's	B-PERSON	0101	NONE	010	_	_	positive
+hand	O	0110	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+That	O	110	NONE	110	_	_	_
+is	O	00111	NONE	001	_	_	_
+all	O	00101	NONE	001	_	_	_
+.	O	000	NONE	000	_	_	_
+-	O	00110	NONE	001	_	_	_
+Mother	B-PERSON	01111	NONE	011	_	_	neutral
+Teresa	I-PERSON	00100	NONE	001	_	_	neutral
+#RT	O	NONE	HASHTAG	NONE	_	_	_
+via	O	00111	NONE	001	_	_	_
+@Dr	B-PERSON	NONE	MENTION	NONE	_	_	neutral
+Wayne	I-PERSON	0110	NONE	011	_	_	neutral
+W	I-PERSON	110	NONE	110	_	_	neutral
+Dyer	I-PERSON	NONE	NONE	NONE	_	_	neutral
+
+## Tweet 3691
+News	O	01111	NONE	011	SENT_MED:positive	_	_
+Update	O	01111	NONE	011	_	_	_
+Recovering	O	0101	NONE	010	SENT:positive	_	_
+From	O	110	NONE	110	_	_	_
+Eating	O	110	NONE	110	_	_	_
+Disorders	O	NONE	NONE	NONE	_	_	_
+Focus	O	01111	NONE	011	_	_	_
+Events	O	01110	NONE	011	_	_	_
+-	O	00110	NONE	001	_	_	_
+The	O	110	NONE	110	_	_	_
+presenter	O	NONE	NONE	NONE	_	_	_
+will	O	11111	NONE	111	_	THER_SENT_3:positive	_
+be	O	1000	NONE	100	_	_	_
+Christina	B-PERSON	00100	NONE	001	_	_	neutral
+Sweetland	I-PERSON	NONE	NONE	NONE	_	_	neutral
+,	O	00110	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+licensed	O	01110	NONE	011	_	_	_
+cl	O	NONE	NONE	NONE	_	_	_
+...	O	00110	..	001	_	_	_
+http://ow.ly/1bjdfL	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 3695
+@Mo0stafa	O	NONE	MENTION	NONE	_	_	_
+Yes	O	110	NONE	110	_	THER_SENT_3:positive	_
+,	O	00110	NONE	001	_	_	_
+I	O	1110	NONE	111	_	_	_
+should	O	11111	NONE	111	_	_	_
+do	O	10100	NONE	101	_	_	_
+that	O	00110	NONE	001	_	_	_
+,	O	00110	NONE	001	_	_	_
+Mostafa	B-PERSON	NONE	NONE	NONE	_	_	positive
+.	O	000	NONE	000	_	_	_
+It	O	110	NONE	110	_	_	_
+is	O	00111	NONE	001	_	_	_
+my	O	0101	NONE	010	_	_	_
+pleasure	O	0110	NONE	011	_	THER_SENT_3:positive	_
+following	O	01110	NONE	011	_	_	_
+you	O	00100	NONE	001	_	_	_
+,	O	00110	NONE	001	_	_	_
+man	O	01111	NONE	011	_	_	_
+:)	O	01111	WEST_EMOTICON	011	_	_	_
+
+## Tweet 3731
+Ahhhh	O	110	haha	110	_	_	_
+gosh	O	01111	NONE	011	_	_	_
+why	O	00110	NONE	001	_	_	_
+did	O	10100	NONE	101	_	_	_
+I	O	1110	NONE	111	_	_	_
+have	O	10111	NONE	101	SENT_MED:negative	_	_
+to	O	11110	NONE	111	_	_	_
+go	O	1001	NONE	100	_	_	_
+check	O	1001	NONE	100	_	_	_
+Facebook	B-ORGANIZATION	00101	NONE	001	_	_	negative
+.	O	000	NONE	000	_	_	_
+Ended	O	110	NONE	110	_	_	_
+up	O	00101	NONE	001	SENT_MED:positive	_	_
+wasting	O	00101	NONE	001	_	_	_
+so	O	00101	NONE	001	_	_	_
+much	O	01110	NONE	011	_	_	_
+time	O	0110	NONE	011	SENT_MED:positive	_	_
+...	O	00110	..	001	_	_	_
+):	O	01111	WEST_EMOTICON	011	_	_	_
+
+## Tweet 3752
+De	B-ORGANIZATION	01111	NONE	011	_	_	negative
+Briefcase	I-ORGANIZATION	NONE	NONE	NONE	_	_	negative
+Arsenal's	I-ORGANIZATION	NONE	NONE	NONE	_	_	negative
+Cesc	B-PERSON	NONE	NONE	NONE	_	_	neutral
+Fabregas	I-PERSON	NONE	NONE	NONE	_	_	neutral
+fears	O	0110	NONE	011	_	THER_SENT_3:negative	_
+he	O	00100	NONE	001	_	_	_
+may	O	11111	NONE	111	_	_	_
+have	O	10111	NONE	101	SENT_MED:negative	_	_
+a	O	0100	NONE	010	_	_	_
+broken	O	01110	NONE	011	_	_	_
+leg	O	0110	NONE	011	_	_	_
+:	O	000	NONE	000	_	_	_
+http://debriefcase.com/1511	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 3756
+Senior	O	01110	NONE	011	_	_	_
+Obama	B-PERSON	00100	NONE	001	_	_	neutral
+Campaign	O	01111	NONE	011	_	_	_
+Staffer	O	NONE	NONE	NONE	_	_	_
+Tweets	O	NONE	NONE	NONE	_	_	_
+Subtle	O	NONE	NONE	NONE	SENT:positive	_	_
+Attack	O	NONE	NONE	NONE	SENT_MED:negative	_	_
+on	O	00111	NONE	001	_	_	_
+Romney	B-PERSON	01110	NONE	011	_	_	neutral
+:	O	000	NONE	000	_	_	_
+President	B-PERSON	0110	NONE	011	_	_	neutral
+Obama's	I-PERSON	0101	NONE	010	_	_	neutral
+senior	I-PERSON	01110	NONE	011	_	_	neutral
+campaign	I-PERSON	0110	NONE	011	_	_	neutral
+strategist	I-PERSON	NONE	NONE	NONE	_	_	neutral
+took	O	10111	NONE	101	_	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/DzilfcyU	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 3792
+Cute	O	110	NONE	110	SENT_MED:positive	THER_SENT_3:positive	_
+Females	O	110	NONE	110	_	_	_
+to	O	11110	NONE	111	_	_	_
+have	O	10111	NONE	101	SENT_MED:negative	_	_
+sex	O	01110	NONE	011	SENT:positive	_	_
+in	O	00111	NONE	001	_	_	_
+Bangalore	B-PLACE	NONE	NONE	NONE	_	_	_
+8722971642	B-TELEPHONE	NONE	NONE	NONE	_	_	_
+:	O	000	NONE	000	_	_	_
+Call	O	110	NONE	110	SENT_MED:negative	_	_
+Kiran	B-PERSON	NONE	NONE	NONE	_	_	neutral
+8722971642	B-TELEPHONE	NONE	NONE	NONE	_	_	_
+Charming	O	NONE	NONE	NONE	SENT:positive	THER_SENT_3:positive	_
+and	O	00110	NONE	001	_	_	_
+sexy	O	01110	NONE	011	SENT:positive	THER_SENT_3:positive	_
+girls	O	0110	NONE	011	_	_	_
+to	O	11110	NONE	111	_	_	_
+be	O	1000	NONE	100	_	_	_
+your	O	0101	NONE	010	_	_	_
+tem	O	00101	NONE	001	_	_	_
+...	O	00110	..	001	_	_	_
+http://twurl.nl/4zt676	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 3834
+Quasimidi	B-PERSON	NONE	NONE	NONE	_	_	neutral
+Sirius	I-PERSON	NONE	NONE	NONE	_	_	neutral
+Demoed	O	NONE	NONE	NONE	_	_	_
+by	O	00111	NONE	001	_	_	_
+Polish	B-PERSON	110	NONE	110	SENT_MED:positive	_	neutral
+Master	I-PERSON	0110	NONE	011	SENT:positive	THER_SENT_3:positive	neutral
+on	O	00111	NONE	001	_	_	_
+I	O	1110	NONE	111	_	_	_
+Have	O	110	NONE	110	SENT_MED:negative	_	_
+Synth	O	NONE	NONE	NONE	_	_	_
+http://tinyurl.com/y9rcfsf	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 3853
+Twitter	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+Help	O	110	NONE	110	_	_	_
+Center	O	0110	NONE	011	_	_	_
+|	O	000	NONE	000	_	_	_
+How	O	110	NONE	110	_	_	_
+To	O	110	NONE	110	_	_	_
+Change	O	110	NONE	110	SENT_MED:positive	_	_
+Language	O	0110	NONE	011	_	_	_
+Settings	O	NONE	NONE	NONE	_	_	_
+http://t.co/61USVOr	B-URL	NONE	URL	NONE	_	_	_
+via	O	00111	NONE	001	_	_	_
+@support	O	00101	MENTION	001	_	_	_
+
+## Tweet 3904
+Wiz	B-PERSON	01111	NONE	011	_	_	neutral
+Khalifa	I-PERSON	NONE	NONE	NONE	_	_	neutral
+Announces	O	01111	NONE	011	_	_	_
+Engagement	O	NONE	NONE	NONE	_	_	_
+on	O	00111	NONE	001	_	_	_
+Twitter	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+[	O	01111	NONE	011	_	_	_
+VIDEO	O	01111	NONE	011	_	_	_
+]	O	01111	NONE	011	_	_	_
+http://t.co/ryu1SLUz	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 3923
+The	O	110	NONE	110	_	_	_
+Supranatural	O	NONE	NONE	NONE	_	_	_
+Secrets	O	110	NONE	110	_	_	_
+of	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+Freemasons	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+http://ow.ly/5kf81	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 3943
+Royal	B-ORGANIZATION	0110	NONE	011	_	_	neutral
+Pirates	I-ORGANIZATION	01110	NONE	011	_	_	neutral
+officially	O	11111	NONE	111	_	_	_
+announce	O	1001	NONE	100	_	_	_
+their	O	0101	NONE	010	_	_	_
+Korean	B-PLACE	01111	NONE	011	_	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/MnOHUcy	B-URL	NONE	URL	NONE	_	_	_
+via	O	00111	NONE	001	_	_	_
+@koreaboo	O	NONE	MENTION	NONE	_	_	_
+
+## Tweet 3956
+William	B-PERSON	00100	NONE	001	_	_	neutral
+Walker	I-PERSON	01111	NONE	011	_	_	neutral
+Joins	O	01111	NONE	011	_	_	_
+Aegis	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+Health	I-ORGANIZATION	01111	NONE	011	SENT:positive	_	neutral
+Group	I-ORGANIZATION	01111	NONE	011	_	_	neutral
+as	O	00110	NONE	001	_	_	_
+Vice	B-PERSON	01111	NONE	011	SENT:positive	THER_SENT_3:negative	neutral
+President	I-PERSON	0110	NONE	011	_	_	neutral
+of	I-PERSON	00111	NONE	001	_	_	neutral
+Information	I-PERSON	0110	NONE	011	_	_	neutral
+...	O	00110	..	001	_	_	_
+-	O	00110	NONE	001	_	_	_
+MarketWatch	O	00110	NONE	001	_	_	_
+(	O	01111	NONE	011	_	_	_
+press	O	1001	NONE	100	_	_	_
+release	O	1001	NONE	100	_	_	_
+):	O	01111	WEST_EMOTICON	011	_	_	_
+Will	O	110	NONE	110	_	THER_SENT_3:positive	_
+...	O	00110	..	001	_	_	_
+http://t.co/wghuk2bg	B-URL	01111	URL	011	_	_	_
+
+## Tweet 3975
+Ford	B-ORGANIZATION	01110	NONE	011	_	_	negative
+/	I-ORGANIZATION	01111	NONE	011	_	_	negative
+Mazda	I-ORGANIZATION	01110	NONE	011	_	_	negative
+Credit	I-ORGANIZATION	01111	NONE	011	SENT:positive	_	negative
+"Total	O	NONE	NONE	NONE	_	_	_
+Loss"	O	NONE	NONE	NONE	_	_	_
+Dept	O	NONE	NONE	NONE	_	_	_
+SUCKS	O	01111	NONE	011	_	_	_
+!	O	000	NONE	000	_	_	_
+Allstate	B-ORGANIZATION	NONE	NONE	NONE	_	_	negative
+paid	O	00101	NONE	001	SENT_MED:positive	_	_
+off	O	00101	NONE	001	SENT:negative	_	_
+the	O	0101	NONE	010	_	_	_
+claim	O	1001	NONE	100	_	_	_
+May	B-DATE	01111	NONE	011	_	_	_
+20th	I-DATE	01110	NONE	011	_	_	_
+and	O	00110	NONE	001	_	_	_
+they	O	00100	NONE	001	_	_	_
+still	O	11111	NONE	111	SENT:negative	_	_
+have	O	10111	NONE	101	SENT_MED:negative	_	_
+NOT	O	00101	NONE	001	SENT:negative	_	_
+paid	O	00101	NONE	001	SENT_MED:positive	_	_
+me	O	00101	NONE	001	_	_	_
+my	O	0101	NONE	010	_	_	_
+balance	O	1001	NONE	100	_	_	_
+due	O	00101	NONE	001	SENT_MED:positive	_	_
+!	O	000	NONE	000	_	_	_
+They	O	110	NONE	110	_	_	_
+SUCK	O	01111	NONE	011	SENT_MED:negative	_	_
+!	O	000	NONE	000	_	_	_
+
+## Tweet 3994
+I	O	1110	NONE	111	_	_	_
+know	O	10101	NONE	101	SENT:positive	_	_
+how	O	00110	NONE	001	_	_	_
+to	O	11110	NONE	111	_	_	_
+get	O	1001	NONE	100	_	_	_
+tons	O	01110	NONE	011	_	_	_
+of	O	00111	NONE	001	_	_	_
+twitter	B-ORGANIZATION	01110	NONE	011	_	_	neutral
+followers	O	0110	NONE	011	_	_	_
+!	O	000	NONE	000	_	_	_
+http://t.co/s9oC91Zf	B-URL	110	URL	110	_	_	_
+
+## Tweet 4016
+Free	O	110	NONE	110	SENT_MED:negative	_	_
+tutorial	O	NONE	NONE	NONE	_	_	_
+on	O	00111	NONE	001	_	_	_
+how	O	00110	NONE	001	_	_	_
+to	O	11110	NONE	111	_	_	_
+earn	O	1001	NONE	100	_	_	_
+money	O	0110	NONE	011	_	_	_
+on	O	00111	NONE	001	_	_	_
+FaceBook	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+-	O	00110	NONE	001	_	_	_
+http://grsnip.com/r/v5I1	B-URL	NONE	URL	NONE	_	_	_
+-	O	00110	NONE	001	_	_	_
+Couldn't	O	NONE	NONE	NONE	_	_	_
+be	O	1000	NONE	100	_	_	_
+easier	O	01110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+read	O	1001	NONE	100	_	_	_
+this	O	01111	NONE	011	_	_	_
+out	O	00101	NONE	001	SENT:negative	_	_
+,	O	00110	NONE	001	_	_	_
+free	O	01110	NONE	011	SENT_MED:negative	_	_
+today	O	01111	NONE	011	_	_	_
+!	O	000	NONE	000	_	_	_
+
+## Tweet 420
+IBN	O	01111	NONE	011	_	_	_
+:	O	000	NONE	000	_	_	_
+Iran	B-PLACE	00100	NONE	001	_	_	_
+vs	O	00111	NONE	001	_	_	_
+EU	B-ORGANIZATION	0110	NONE	011	_	_	neutral
+:	O	000	NONE	000	_	_	_
+Iraq	B-PLACE	01111	NONE	011	_	_	_
+Plays	O	01111	NONE	011	_	_	_
+Go-Between	O	00101	NONE	001	_	_	_
+in	O	00111	NONE	001	_	_	_
+Oil	O	00101	NONE	001	_	_	_
+Export	O	01111	NONE	011	_	_	_
+Crisis	O	01111	NONE	011	SENT:negative	_	_
+http://t.co/nOFOjW6I	B-URL	01111	URL	011	_	_	_
+
+## Tweet 4200
+Do	O	110	NONE	110	_	_	_
+You	O	1110	NONE	111	_	_	_
+Want	O	00101	NONE	001	SENT_MED:negative	THER_SENT_3:positive	_
+To	O	110	NONE	110	_	_	_
+Make	O	110	NONE	110	SENT_MED:positive	_	_
+Money	O	110	NONE	110	_	_	_
+On	O	110	NONE	110	_	_	_
+AutoPilot	O	000	NONE	000	_	_	_
+Using	O	110	NONE	110	_	_	_
+Forex	B-ORGANIZATION	01111	NONE	011	_	_	positive
+?	O	000	NONE	000	_	_	_
+http://tinyurl.com/yeuc2oo	B-URL	01111	URL	011	_	_	_
+
+## Tweet 4211
+#iranelection	O	01111	HASHTAG	011	_	_	_
+Iran's	B-PLACE	01111	NONE	011	_	_	_
+War	O	0110	NONE	011	_	_	_
+on	O	00111	NONE	001	_	_	_
+its	O	00111	NONE	001	_	_	_
+People	O	110	NONE	110	_	_	_
+.	O	000	NONE	000	_	_	_
+NYT	B-ORGANIZATION	110	NONE	110	_	_	neutral
+Editorial	I-ORGANIZATION	00110	NONE	001	_	_	neutral
+Dec	B-DATE	01111	NONE	011	_	_	_
+28	I-DATE	01110	NONE	011	_	_	_
+http://bit.ly/4XMNNU	B-URL	00110	URL	001	_	_	_
+
+## Tweet 4243
+Do	O	110	NONE	110	_	_	_
+the	O	0101	NONE	010	_	_	_
+right	O	01110	NONE	011	SENT_MED:positive	_	_
+thing	O	0110	NONE	011	SENT_MED:negative	_	_
+and	O	00110	NONE	001	_	_	_
+give	O	1001	NONE	100	SENT_MED:positive	_	_
+to	O	11110	NONE	111	_	_	_
+Haiti	B-PLACE	00101	NONE	001	_	_	_
+now	O	01111	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+MSF	B-ORGANIZATION	NONE	NONE	NONE	_	_	positive
+is	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+most	O	01110	NONE	011	_	_	_
+needed	O	10111	NONE	101	_	_	_
+NGO	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+:	O	000	NONE	000	_	_	_
+https://donate.doctorswithoutborders.org/	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 4250
+@MazenFarah	O	00101	MENTION	001	_	_	_
+hi	O	00101	NONE	001	_	_	_
+mazen	B-PERSON	000	NONE	000	_	_	positive
+i	O	1110	NONE	111	_	_	_
+am	O	10110	NONE	101	_	_	_
+going	O	00101	NONE	001	_	_	_
+through	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+#Mowgli	O	01110	HASHTAG	011	_	_	_
+experience	O	0110	NONE	011	_	_	_
+now	O	01111	NONE	011	_	_	_
+and	O	00110	NONE	001	_	_	_
+it	O	00100	NONE	001	_	_	_
+is	O	00111	NONE	001	_	_	_
+amazing	O	01110	NONE	011	SENT:positive	THER_SENT_3:positive	_
+!	O	000	NONE	000	_	_	_
+
+## Tweet 4276
+V2	B-ORGANIZATION	110	NONE	110	_	_	neutral
+Cigs	I-ORGANIZATION	00100	NONE	001	_	_	neutral
+is	O	00111	NONE	001	_	_	_
+Fastest	O	000	NONE	000	_	_	_
+Growing	O	110	NONE	110	_	_	_
+E-Cigarette	O	01111	NONE	011	_	_	_
+Brand	O	01111	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+Expert	O	00110	NONE	001	SENT:positive	_	_
+Reports	O	01111	NONE	011	_	_	_
+-	O	00110	NONE	001	_	_	_
+Online	O	01111	NONE	011	_	_	_
+PR	O	01110	NONE	011	_	_	_
+News	O	01111	NONE	011	SENT_MED:positive	_	_
+(	O	01111	NONE	011	_	_	_
+press	O	1001	NONE	100	_	_	_
+release	O	1001	NONE	100	_	_	_
+)	O	01111	NONE	011	_	_	_
+http://ow.ly/1bzBYf	B-URL	01111	URL	011	_	_	_
+
+## Tweet 4321
+Wilmington	B-ORGANIZATION	01111	NONE	011	_	_	positive
+New	I-ORGANIZATION	01111	NONE	011	SENT_MED:negative	_	positive
+Media	I-ORGANIZATION	01111	NONE	011	_	_	positive
+Makes	O	110	NONE	110	_	_	_
+Your	O	01111	NONE	011	_	_	_
+Site	O	0110	NONE	011	_	_	_
+Confident	O	000	NONE	000	SENT_MED:negative	THER_SENT_3:positive	_
+http://p.ost.im/p/edQWkU	B-URL	110	URL	110	_	_	_
+
+## Tweet 4322
+In	O	110	NONE	110	_	_	_
+the	O	0101	NONE	010	_	_	_
+meantime	O	0110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+if	O	00110	NONE	001	_	_	_
+you	O	00100	NONE	001	_	_	_
+follow	O	1001	NONE	100	_	_	_
+us	O	00101	NONE	001	_	_	_
+on	O	00111	NONE	001	_	_	_
+Twitter	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+or	O	00110	NONE	001	_	_	_
+like	O	00101	NONE	001	SENT_MED:positive	THER_SENT_3:positive	_
+us	O	00101	NONE	001	_	_	_
+on	O	00111	NONE	001	_	_	_
+Facebook	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+to	O	11110	NONE	111	_	_	_
+show	O	1001	NONE	100	_	_	_
+you're	O	00111	NONE	001	_	_	_
+serious	O	01110	NONE	011	SENT_MED:negative	THER_SENT_3:negative	_
+,	O	00110	NONE	001	_	_	_
+maybe	O	00110	NONE	001	_	_	_
+we'll	O	00100	NONE	001	_	_	_
+let	O	1001	NONE	100	_	_	_
+you	O	00100	NONE	001	_	_	_
+in	O	00111	NONE	001	_	_	_
+first	O	01110	NONE	011	SENT_MED:positive	_	_
+in	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+queue	O	0110	NONE	011	_	_	_
+;-)	O	00110	WEST_EMOTICON	001	_	_	_
+
+## Tweet 4391
+@khadijahafeji	O	NONE	MENTION	NONE	_	_	_
+All	O	110	NONE	110	_	_	_
+r	O	10111	NONE	101	_	_	_
+doing	O	00101	NONE	001	_	_	_
+well	O	01111	NONE	011	SENT:positive	_	_
+..	O	00110	..	001	_	_	_
+But	O	110	NONE	110	_	_	_
+i	O	1110	NONE	111	_	_	_
+like	O	00101	NONE	001	SENT_MED:positive	THER_SENT_3:positive	_
+Ishant	B-PERSON	NONE	NONE	NONE	_	_	positive
+..	O	00110	..	001	_	_	_
+The	O	110	NONE	110	_	_	_
+way	O	0110	NONE	011	_	_	_
+his	O	0101	NONE	010	_	_	_
+bowl	O	01110	NONE	011	_	_	_
+and	O	00110	NONE	001	_	_	_
+he	O	00100	NONE	001	_	_	_
+crossed	O	00101	NONE	001	_	_	_
+150	O	01110	NONE	011	_	_	_
+kmph	O	NONE	NONE	NONE	_	_	_
+..	O	00110	..	001	_	_	_
+
+## Tweet 4414
+what	O	00110	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+joke	O	01110	NONE	011	SENT_MED:negative	THER_SENT_3:positive	_
+-	O	00110	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+gom	O	NONE	NONE	NONE	_	_	_
+for	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+jan	O	10111	NONE	101	_	_	_
+lok	O	00110	NONE	001	_	_	_
+pal	O	01110	NONE	011	_	_	_
+bill	O	0110	NONE	011	_	_	_
+-	O	00110	NONE	001	_	_	_
+sharad	B-PERSON	NONE	NONE	NONE	_	_	neutral
+pawar	I-PERSON	NONE	NONE	NONE	_	_	neutral
+,	O	00110	NONE	001	_	_	_
+moily	B-PERSON	NONE	NONE	NONE	_	_	negative
+and	O	00110	NONE	001	_	_	_
+kapil	B-PERSON	NONE	NONE	NONE	_	_	negative
+sibal.this	O	NONE	NONE	NONE	_	_	_
+govt	B-ORGANIZATION	00101	NONE	001	_	_	negative
+thinks	O	00101	NONE	001	_	_	_
+we	O	00100	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+people	O	00100	NONE	001	_	_	_
+are	O	00111	NONE	001	_	_	_
+stupid	O	01110	NONE	011	SENT:negative	THER_SENT_3:negative	_
+and	O	00110	NONE	001	_	_	_
+gullible	O	01110	NONE	011	SENT:positive	THER_SENT_3:negative	_
+.	O	000	NONE	000	_	_	_
+
+## Tweet 446
+NASA	B-ORGANIZATION	110	NONE	110	_	_	neutral
+unveils	O	00111	NONE	001	_	_	_
+sweeping	O	10111	NONE	101	_	THER_SENT_3:positive	_
+new	O	01110	NONE	011	SENT_MED:negative	_	_
+program	O	0110	NONE	011	_	_	_
+s:	O	000	WEST_EMOTICON	000	_	_	_
+A	O	110	NONE	110	_	_	_
+week	O	0110	NONE	011	_	_	_
+before	O	01111	NONE	011	_	_	_
+President	B-PERSON	0110	NONE	011	_	_	neutral
+Obama	B-PERSON	00100	NONE	001	_	_	neutral
+attends	O	10111	NONE	101	_	_	_
+a	O	0100	NONE	010	_	_	_
+"space	O	NONE	NONE	NONE	_	_	_
+summit"	O	NONE	NONE	NONE	_	_	_
+in	O	00111	NONE	001	_	_	_
+Florida	B-PLACE	00101	NONE	001	_	_	_
+,	O	00110	NONE	001	_	_	_
+NASA	B-ORGANIZATION	110	NONE	110	_	_	neutral
+unveil	O	NONE	NONE	NONE	_	_	_
+...	O	00110	..	001	_	_	_
+http://bit.ly/cwA9DE	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 4483
+Hi	O	110	NONE	110	_	_	_
+friends	O	0110	NONE	011	_	_	_
+!!	O	000	!!	000	_	_	_
+We	O	1110	NONE	111	_	_	_
+now	O	01111	NONE	011	_	_	_
+have	O	10111	NONE	101	SENT_MED:negative	_	_
+a	O	0100	NONE	010	_	_	_
+new	O	01110	NONE	011	SENT_MED:negative	_	_
+twitter	B-ORGANIZATION	01110	NONE	011	_	_	neutral
+account	O	0110	NONE	011	SENT_MED:positive	_	_
+,	O	00110	NONE	001	_	_	_
+follow	O	1001	NONE	100	_	_	_
+us	O	00101	NONE	001	_	_	_
+at	O	00111	NONE	001	_	_	_
+@Dgbillboard	O	NONE	MENTION	NONE	_	_	_
+
+## Tweet 4534
+Today	O	110	NONE	110	_	_	_
+had	O	10111	NONE	101	_	_	_
+the	O	0101	NONE	010	_	_	_
+pleasure	O	0110	NONE	011	_	THER_SENT_3:positive	_
+&	O	00110	NONE	001	_	_	_
+honor	O	01110	NONE	011	SENT_MED:positive	THER_SENT_3:positive	_
+to	O	11110	NONE	111	_	_	_
+meet	O	1001	NONE	100	SENT:positive	_	_
+Philip	B-PERSON	00101	NONE	001	_	_	positive
+Kotler	I-PERSON	NONE	NONE	NONE	_	_	positive
+,	O	00110	NONE	001	_	_	_
+to	O	11110	NONE	111	_	_	_
+attend	O	1001	NONE	100	_	_	_
+the	O	0101	NONE	010	_	_	_
+conference-forum	O	NONE	NONE	NONE	_	_	_
+"Marketing	O	NONE	NONE	NONE	_	_	_
+3.0"	O	NONE	NONE	NONE	_	_	_
+by	O	00111	NONE	001	_	_	_
+him	O	00101	NONE	001	_	_	_
+!!	O	000	!!	000	_	_	_
+
+## Tweet 4584
+UN	B-ORGANIZATION	01110	NONE	011	_	_	neutral
+agency	O	0110	NONE	011	_	_	_
+calls	O	10111	NONE	101	_	_	_
+for	O	00111	NONE	001	_	_	_
+regional	O	0101	NONE	010	_	_	_
+food	O	0110	NONE	011	_	_	_
+body	O	0110	NONE	011	_	_	_
+http://t.co/d0u7FVfJ	B-URL	01111	URL	011	_	_	_
+#UAE	O	01111	HASHTAG	011	_	_	_
+#Follow	O	01111	HASHTAG	011	_	_	_
+
+## Tweet 4590
+I	O	1110	NONE	111	_	_	_
+love	O	10111	NONE	101	SENT:positive	THER_SENT_3:positive	_
+the	O	0101	NONE	010	_	_	_
+Street	B-ORGANIZATION	0110	NONE	011	_	_	positive
+Style	I-ORGANIZATION	00111	NONE	001	_	_	positive
+Blogs	I-ORGANIZATION	NONE	NONE	NONE	_	_	positive
+,	O	00110	NONE	001	_	_	_
+showing	O	00101	NONE	001	_	_	_
+individuals	O	00100	NONE	001	_	_	_
+styles	O	0110	NONE	011	_	_	_
+in	O	00111	NONE	001	_	_	_
+public	O	01110	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+http://t.co/XdK6zD3C	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 4615
+@VincentChenPH	O	01111	MENTION	011	_	_	_
+@teresakok	O	000	MENTION	000	_	_	_
+I	O	1110	NONE	111	_	_	_
+read	O	1001	NONE	100	_	_	_
+the	O	0101	NONE	010	_	_	_
+newspaper	O	0110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+why	O	00110	NONE	001	_	_	_
+sel	O	00100	NONE	001	_	_	_
+gov	O	00111	NONE	001	_	_	_
+approve	O	00101	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+land	O	0110	NONE	011	_	_	_
+for	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+schools	O	00100	NONE	001	_	_	_
+which	O	00110	NONE	001	_	_	_
+have	O	10111	NONE	101	SENT_MED:negative	_	_
+yet	O	01111	NONE	011	SENT_MED:negative	_	_
+to	O	11110	NONE	111	_	_	_
+get	O	1001	NONE	100	_	_	_
+the	O	0101	NONE	010	_	_	_
+approval	O	0110	NONE	011	SENT_MED:positive	_	_
+from	O	00111	NONE	001	_	_	_
+MOE	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+?	O	000	NONE	000	_	_	_
+
+## Tweet 4653
+RACK's	O	01111	NONE	011	_	_	_
+(	O	01111	NONE	011	_	_	_
+Rackwise	B-ORGANIZATION	00110	NONE	001	_	_	positive
+Inc.	I-ORGANIZATION	01111	NONE	011	_	_	positive
+)	O	01111	NONE	011	_	_	_
+recent	O	01110	NONE	011	_	_	_
+partnership	O	0110	NONE	011	_	_	_
+with	O	00111	NONE	001	_	_	_
+Intel	B-ORGANIZATION	00100	NONE	001	_	_	positive
+makes	O	10111	NONE	101	_	_	_
+this	O	01111	NONE	011	_	_	_
+company	O	0110	NONE	011	_	_	_
+even	O	11111	NONE	111	_	_	_
+more	O	01110	NONE	011	_	_	_
+attractive	O	01110	NONE	011	SENT:positive	THER_SENT_3:positive	_
+in	O	00111	NONE	001	_	_	_
+our	O	0101	NONE	010	_	_	_
+eyes	O	0110	NONE	011	SENT:positive	_	_
+!!	O	000	!!	000	_	_	_
+
+## Tweet 4657
+it's	O	00111	NONE	001	_	_	_
+official	O	01110	NONE	011	_	_	_
+!	O	000	NONE	000	_	_	_
+Social	B-ORGANIZATION	01111	NONE	011	_	_	negative
+security	I-ORGANIZATION	0110	NONE	011	SENT:positive	_	negative
+now	O	01111	NONE	011	_	_	_
+pays	O	10111	NONE	101	_	_	_
+out	O	00101	NONE	001	SENT:negative	_	_
+more	O	01110	NONE	011	_	_	_
+than	O	00110	NONE	001	_	_	_
+it	O	00100	NONE	001	_	_	_
+brings	O	10111	NONE	101	_	_	_
+in	O	00111	NONE	001	_	_	_
+!	O	000	NONE	000	_	_	_
+Word	O	01111	NONE	011	_	_	_
+of	O	00111	NONE	001	_	_	_
+advice	O	0110	NONE	011	_	_	_
+:	O	000	NONE	000	_	_	_
+don't	O	11111	NONE	111	_	_	_
+depend	O	1001	NONE	100	_	_	_
+on	O	00111	NONE	001	_	_	_
+social	B-ORGANIZATION	01110	NONE	011	_	_	negative
+security	I-ORGANIZATION	0110	NONE	011	SENT:positive	_	negative
+in	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+future	O	0110	NONE	011	_	_	_
+!	O	000	NONE	000	_	_	_
+
+## Tweet 4658
+@GhadahAlghunaim	B-PERSON	110	MENTION	110	_	_	positive
+..	O	00110	..	001	_	_	_
+Offer	O	00100	NONE	001	_	_	_
+is	O	00111	NONE	001	_	_	_
+ready	O	00101	NONE	001	_	_	_
+from	O	00111	NONE	001	_	_	_
+now	O	01111	NONE	011	_	_	_
+..	O	00110	..	001	_	_	_
+Good	O	110	NONE	110	SENT:positive	THER_SENT_3:positive	_
+luck	O	0110	NONE	011	_	THER_SENT_3:positive	_
+in	O	00111	NONE	001	_	_	_
+your	O	0101	NONE	010	_	_	_
+PHD	O	01110	NONE	011	_	_	_
+challenge	O	01110	NONE	011	SENT:positive	_	_
+..	O	00110	..	001	_	_	_
+Please	O	110	NONE	110	SENT:positive	THER_SENT_3:positive	_
+enjoy	O	1001	NONE	100	SENT_MED:positive	_	_
+it	O	00100	NONE	001	_	_	_
+as	O	00110	NONE	001	_	_	_
+much	O	01110	NONE	011	_	_	_
+as	O	00110	NONE	001	_	_	_
+you	O	00100	NONE	001	_	_	_
+can	O	11111	NONE	111	_	_	_
+..	O	00110	..	001	_	_	_
+î	O	01111	NONE	011	_	_	_
+
+## Tweet 4684
+Thank	O	110	NONE	110	_	THER_SENT_3:positive	_
+you	O	00100	NONE	001	_	_	_
+to	O	11110	NONE	111	_	_	_
+all	O	00101	NONE	001	_	_	_
+who	O	00110	NONE	001	_	_	_
+sponsored	O	00101	NONE	001	_	_	_
+Helen	B-PERSON	00100	NONE	001	_	_	neutral
+at	O	00111	NONE	001	_	_	_
+Wwhd	B-PLACE	NONE	NONE	NONE	_	_	_
+for	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+charity	O	01110	NONE	011	_	_	_
+cycle	O	0110	NONE	011	_	_	_
+ride	O	1001	NONE	100	_	_	_
+-	O	00110	NONE	001	_	_	_
+we	O	00100	NONE	001	_	_	_
+raised	O	00101	NONE	001	_	_	_
+over	O	00101	NONE	001	_	_	_
+Â£8	B-URL	NONE	NONE	NONE	_	_	_
+,	I-URL	00110	NONE	001	_	_	_
+000	B-MONEY	00110	NONE	001	_	_	_
+
+## Tweet 4707
+coin	O	01111	NONE	011	_	_	_
+mint	O	0101	NONE	010	_	_	_
+1	O	01111	NONE	011	_	_	_
+OZ	O	NONE	NONE	NONE	_	_	_
+Gold	O	01111	NONE	011	_	_	_
+Coins	O	NONE	NONE	NONE	_	_	_
+From	O	110	NONE	110	_	_	_
+The	B-ORGANIZATION	110	NONE	110	_	_	neutral
+US	I-ORGANIZATION	01110	NONE	011	_	_	neutral
+Mint	I-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+;P	O	00110	WEST_EMOTICON	001	_	_	_
+http://t.co/CGJEwxUo	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 4708
+Google	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+X	I-ORGANIZATION	01111	NONE	011	_	_	neutral
+to	O	11110	NONE	111	_	_	_
+launch	O	10111	NONE	101	_	_	_
+essentially	O	11111	NONE	111	_	_	_
+Android	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+vision	O	0110	NONE	011	_	_	_
+(	O	01111	NONE	011	_	_	_
+augmented	O	01110	NONE	011	_	_	_
+reality	O	00101	NONE	001	_	_	_
+glasses	O	0110	NONE	011	_	_	_
+)	O	01111	NONE	011	_	_	_
+by	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+end	O	01110	NONE	011	_	_	_
+of	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+year	O	0110	NONE	011	_	_	_
+:	O	000	NONE	000	_	_	_
+http://t.co/DfHtQSGN	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 4726
+Subway	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+Franchise	O	NONE	NONE	NONE	_	_	_
+for	O	00111	NONE	001	_	_	_
+Sale	O	00111	NONE	001	_	_	_
+:	O	000	NONE	000	_	_	_
+How	O	110	NONE	110	_	_	_
+Much	O	110	NONE	110	_	_	_
+Does	O	110	NONE	110	_	_	_
+a	O	0100	NONE	010	_	_	_
+Subway	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+Franchise	O	NONE	NONE	NONE	_	_	_
+Cost	O	NONE	NONE	NONE	_	_	_
+?	O	000	NONE	000	_	_	_
+http://budurl.com/wm4k	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 4755
+Meat	B-PERSON	01111	NONE	011	_	_	neutral
+Ball	I-PERSON	01111	NONE	011	_	_	neutral
+del	I-PERSON	00101	NONE	001	_	_	neutral
+Dawson's	I-PERSON	NONE	NONE	NONE	_	_	neutral
+http://t.co/BEe4DcQO	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 4786
+The	O	110	NONE	110	_	_	_
+Interior	O	0101	NONE	010	_	_	_
+Design	O	01110	NONE	011	_	_	_
+Department	O	01110	NONE	011	_	_	_
+Presents	O	00111	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+Lecture	O	0110	NONE	011	SENT_MED:negative	_	_
+by	O	00111	NONE	001	_	_	_
+Ali	B-PERSON	00100	NONE	001	_	_	neutral
+Alraouf	I-PERSON	000	NONE	000	_	_	neutral
+â	O	110	NONE	110	_	_	_
+Pearls	O	01111	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+Harrods	O	01111	NONE	011	_	_	_
+and	O	00110	NONE	001	_	_	_
+FIFA	O	00100	NONE	001	_	_	_
+:	O	000	NONE	000	_	_	_
+(	O	01111	NONE	011	_	_	_
+De	O	01111	NONE	011	_	_	_
+)	O	01111	NONE	011	_	_	_
+-Constructing	O	01111	NONE	011	_	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/KwoWbpOA	B-URL	00110	URL	001	_	_	_
+
+## Tweet 4787
+Dollar	B-MONEY	NONE	NONE	NONE	_	_	_
+rallies	O	NONE	NONE	NONE	_	THER_SENT_3:positive	_
+broadly	O	11111	NONE	111	_	_	_
+,	O	00110	NONE	001	_	_	_
+up	O	00101	NONE	001	SENT_MED:positive	_	_
+over	O	00101	NONE	001	_	_	_
+1	B-PERCENT	01111	NONE	011	_	_	_
+pct	I-PERCENT	NONE	NONE	NONE	_	_	_
+vs	O	00111	NONE	001	_	_	_
+.	O	000	NONE	000	_	_	_
+euro	B-MONEY	00111	NONE	001	_	_	_
+-	O	00110	NONE	001	_	_	_
+Reuters	B-ORGANIZATION	00110	NONE	001	_	_	neutral
+http://t.co/ZCkVShoO	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 4794
+Journalist	O	NONE	NONE	NONE	_	_	_
+Marie	B-PERSON	01110	NONE	011	_	_	neutral
+Colvin	I-PERSON	NONE	NONE	NONE	_	_	neutral
+to	O	11110	NONE	111	_	_	_
+be	O	1000	NONE	100	_	_	_
+buried	O	00101	NONE	001	_	_	_
+in	O	00111	NONE	001	_	_	_
+Syria	B-PLACE	000	NONE	000	_	_	_
+,	O	00110	NONE	001	_	_	_
+mother	O	0110	NONE	011	_	_	_
+says	O	00111	NONE	001	_	_	_
+http://t.co/QfSubQ3X	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 4872
+Twitter	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+Setting	O	110	NONE	110	_	_	_
+Up	O	01111	NONE	011	SENT_MED:positive	_	_
+to	O	11110	NONE	111	_	_	_
+Dominate	O	1001	NONE	100	_	_	_
+Local	O	01111	NONE	011	_	_	_
+Search	O	01111	NONE	011	_	_	_
+:	O	000	NONE	000	_	_	_
+This	O	110	NONE	110	_	_	_
+last	O	01110	NONE	011	SENT_MED:negative	_	_
+week	O	0110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+at	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+Chirp	O	01110	NONE	011	_	_	_
+Conference	O	0110	NONE	011	_	_	_
+(	O	01111	NONE	011	_	_	_
+Official	O	01111	NONE	011	_	_	_
+Twitter	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+Developer	O	01111	NONE	011	_	_	_
+C	O	0110	NONE	011	_	_	_
+...	O	00110	..	001	_	_	_
+http://bit.ly/cnLboy	B-URL	00110	URL	001	_	_	_
+
+## Tweet 4877
+morehead	B-ORGANIZATION	0100	NONE	010	_	_	neutral
+state	I-ORGANIZATION	01110	NONE	011	_	_	neutral
+:	O	000	NONE	000	_	_	_
+O	O	110	NONE	110	_	_	_
+http://bit.ly/fv2kOm	B-URL	000	URL	000	_	_	_
+Where	O	110	NONE	110	_	_	_
+do	O	10100	NONE	101	_	_	_
+I	O	1110	NONE	111	_	_	_
+go	O	1001	NONE	100	_	_	_
+from	O	00111	NONE	001	_	_	_
+here	O	01111	NONE	011	_	_	_
+with	O	00111	NONE	001	_	_	_
+my	O	0101	NONE	010	_	_	_
+Associates	O	0110	NONE	011	_	_	_
+in	O	00111	NONE	001	_	_	_
+Science	O	01111	NONE	011	_	_	_
+degree	O	0110	NONE	011	_	_	_
+?	O	000	NONE	000	_	_	_
+
+## Tweet 4891
+Israel	B-PLACE	00101	NONE	001	_	_	_
+seems	O	00111	NONE	001	_	_	_
+to	O	11110	NONE	111	_	_	_
+be	O	1000	NONE	100	_	_	_
+relying	O	00101	NONE	001	_	_	_
+on	O	00111	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+strategy	O	0110	NONE	011	_	_	_
+of	O	00111	NONE	001	_	_	_
+being	O	00101	NONE	001	_	_	_
+'too	O	00101	NONE	001	_	_	_
+powerful	O	01110	NONE	011	_	_	_
+to	O	11110	NONE	111	_	_	_
+oppose'	O	1001	NONE	100	_	_	_
+..	O	00110	..	001	_	_	_
+Same	O	110	NONE	110	_	_	_
+strategy	O	0110	NONE	011	_	_	_
+adopted	O	00101	NONE	001	_	_	_
+by	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+former	O	01110	NONE	011	_	_	_
+Egyptian	B-ORGANIZATION	00110	NONE	001	_	_	neutral
+interior	I-ORGANIZATION	01111	NONE	011	_	_	neutral
+ministry	I-ORGANIZATION	0110	NONE	011	_	_	neutral
+
+## Tweet 4908
+Spezza	B-PERSON	NONE	NONE	NONE	_	_	neutral
+anxious	O	01110	NONE	011	SENT_MED:negative	THER_SENT_3:negative	_
+to	O	11110	NONE	111	_	_	_
+shoulder	O	0110	NONE	011	_	_	_
+load	O	01110	NONE	011	SENT_MED:negative	_	_
+with	O	00111	NONE	001	_	_	_
+teammate	O	01111	NONE	011	_	_	_
+s:	O	000	WEST_EMOTICON	000	_	_	_
+Senators	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+centre	O	01111	NONE	011	_	_	_
+Jason	B-PERSON	00100	NONE	001	_	_	neutral
+Spezza	I-PERSON	NONE	NONE	NONE	_	_	neutral
+is	O	00111	NONE	001	_	_	_
+pointing	O	00101	NONE	001	_	_	_
+toward	O	00111	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+return	O	1001	NONE	100	_	_	_
+to	O	11110	NONE	111	_	_	_
+the	O	0101	NONE	010	_	_	_
+...	O	00110	..	001	_	_	_
+http://bit.ly/gUglMu	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 4963
+Saudi	B-PERSON	00101	NONE	001	_	_	neutral
+Prince	B-PERSON	00101	NONE	001	_	_	neutral
+Alwaleed	I-PERSON	NONE	NONE	NONE	_	_	neutral
+buys	O	10111	NONE	101	_	_	_
+TWITTER	B-ORGANIZATION	0110	NONE	011	_	_	neutral
+STAKE	O	NONE	NONE	NONE	_	_	_
+$	B-MONEY	01111	NONE	011	_	_	_
+300	I-MONEY	01111	NONE	011	_	_	_
+MILLION	I-MONEY	NONE	NONE	NONE	_	_	_
+-	O	00110	NONE	001	_	_	_
+DUBAI	B-PLACE	NONE	NONE	NONE	_	_	_
+(	O	01111	NONE	011	_	_	_
+Reuters	B-ORGANIZATION	00110	NONE	001	_	_	neutral
+)	O	01111	NONE	011	_	_	_
+Prince	B-PERSON	00101	NONE	001	_	_	neutral
+Alwaleed	I-PERSON	NONE	NONE	NONE	_	_	neutral
+bin	I-PERSON	00101	NONE	001	_	_	neutral
+Talal	I-PERSON	NONE	NONE	NONE	_	_	neutral
+,	O	00110	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+Saudi	O	00101	NONE	001	_	_	_
+billio	O	NONE	NONE	NONE	_	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/OZcaL2CO	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 4986
+24	O	01111	NONE	011	_	_	_
+hours	O	00101	NONE	001	SENT_MED:negative	_	_
+after	O	00110	NONE	001	_	_	_
+launch	O	10111	NONE	101	_	_	_
+of	O	00111	NONE	001	_	_	_
+"Mass	O	NONE	NONE	NONE	_	_	_
+Traffic	O	110	NONE	110	_	_	_
+without	O	00111	NONE	001	_	_	_
+Google"	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+over	O	00101	NONE	001	_	_	_
+3	O	01110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+000	O	00110	NONE	001	_	_	_
+people	O	00100	NONE	001	_	_	_
+jumped	O	10111	NONE	101	_	_	_
+at	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+opportunity	O	0110	NONE	011	_	THER_SENT_3:positive	_
+-	O	00110	NONE	001	_	_	_
+view	O	0110	NONE	011	SENT_MED:negative	_	_
+http://bit.ly/jamtraffic	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 5075
+Murray	B-PERSON	00100	NONE	001	_	_	neutral
+,	O	00110	NONE	001	_	_	_
+Federer	B-PERSON	NONE	NONE	NONE	_	_	positive
+to	O	11110	NONE	111	_	_	_
+Dubai	B-PLACE	00101	NONE	001	_	_	_
+semis	O	0110	NONE	011	_	_	_
+in	O	00111	NONE	001	_	_	_
+straight	O	00101	NONE	001	SENT_MED:positive	_	_
+set	O	1001	NONE	100	_	_	_
+s:	O	000	WEST_EMOTICON	000	_	_	_
+Roger	B-PERSON	10100	NONE	101	_	_	neutral
+Federer	I-PERSON	NONE	NONE	NONE	_	_	neutral
+and	O	00110	NONE	001	_	_	_
+Andy	B-PERSON	00100	NONE	001	_	_	positive
+Murray	I-PERSON	00100	NONE	001	_	_	positive
+advanced	O	01110	NONE	011	_	_	_
+to	O	11110	NONE	111	_	_	_
+the	O	0101	NONE	010	_	_	_
+semifinals	O	NONE	NONE	NONE	_	_	_
+of	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/bfT7rzmZ	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 511
+who	O	00110	NONE	001	_	_	_
+pays	O	10111	NONE	101	_	_	_
+the	O	0101	NONE	010	_	_	_
+cost	O	1001	NONE	100	_	_	_
+of	O	00111	NONE	001	_	_	_
+rahul	B-PERSON	NONE	NONE	NONE	_	_	negative
+gandhi'S	I-PERSON	NONE	NONE	NONE	_	_	negative
+security	O	0110	NONE	011	SENT:positive	_	_
+?	O	000	NONE	000	_	_	_
+
+## Tweet 5136
+J	B-PERSON	01111	NONE	011	_	_	neutral
+.	I-PERSON	000	NONE	000	_	_	neutral
+W	I-PERSON	110	NONE	110	_	_	neutral
+.	I-PERSON	000	NONE	000	_	_	neutral
+Schopf~	I-PERSON	110	NONE	110	_	_	neutral
+For	O	110	NONE	110	_	_	_
+four-fifths	O	01110	NONE	011	_	_	_
+of	O	00111	NONE	001	_	_	_
+our	O	0101	NONE	010	_	_	_
+history	O	0110	NONE	011	_	_	_
+our	O	0101	NONE	010	_	_	_
+planet	O	0110	NONE	011	_	_	_
+was	O	10111	NONE	101	_	_	_
+populated	O	01110	NONE	011	_	_	_
+by	O	00111	NONE	001	_	_	_
+pond	O	0110	NONE	011	_	_	_
+scum	O	01111	NONE	011	_	THER_SENT_3:negative	_
+.	O	000	NONE	000	_	_	_
+
+## Tweet 5195
+Spend	O	1001	NONE	100	_	_	_
+$	B-MONEY	01111	NONE	011	_	_	_
+25k	I-MONEY	NONE	NONE	NONE	_	_	_
+to	O	11110	NONE	111	_	_	_
+buy	O	1001	NONE	100	_	_	_
+ugly	O	01110	NONE	011	SENT_MED:negative	THER_SENT_3:negative	_
+rocker	O	01111	NONE	011	_	_	_
+JFK	B-PERSON	NONE	NONE	NONE	_	_	neutral
+sat	O	10111	NONE	101	_	_	_
+in	O	00111	NONE	001	_	_	_
+night	O	01111	NONE	011	_	_	_
+B4	O	NONE	NONE	NONE	_	_	_
+he	O	00100	NONE	001	_	_	_
+died	O	00101	NONE	001	_	_	_
+http://t.co/VdyScUNS,	B-URL	NONE	URL	NONE	_	_	_
+or	O	00110	NONE	001	_	_	_
+$	B-MONEY	01111	NONE	011	_	_	_
+329	I-MONEY	01111	NONE	011	_	_	_
+for	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+style	O	0110	NONE	011	_	_	_
+he	O	00100	NONE	001	_	_	_
+actually	O	11111	NONE	111	_	_	_
+owned	O	10111	NONE	101	_	_	_
+http://t.co/2opj9eMi	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 523
+@iansomerhalder	O	110	MENTION	110	_	_	_
+Ian	B-PERSON	00100	NONE	001	_	_	positive
+,	O	00110	NONE	001	_	_	_
+How	O	110	NONE	110	_	_	_
+do	O	10100	NONE	101	_	_	_
+you	O	00100	NONE	001	_	_	_
+feeling	O	00101	NONE	001	_	_	_
+now	O	01111	NONE	011	_	_	_
+?	O	000	NONE	000	_	_	_
+
+## Tweet 5239
+Your	O	01111	NONE	011	_	_	_
+life	O	0110	NONE	011	_	_	_
+changes	O	0110	NONE	011	_	_	_
+the	O	0101	NONE	010	_	_	_
+moment	O	0110	NONE	011	_	_	_
+you	O	00100	NONE	001	_	_	_
+make	O	1001	NONE	100	SENT_MED:positive	_	_
+a	O	0100	NONE	010	_	_	_
+new	O	01110	NONE	011	SENT_MED:negative	_	_
+,	O	00110	NONE	001	_	_	_
+congruent	O	01111	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+and	O	00110	NONE	001	_	_	_
+committed	O	01110	NONE	011	_	_	_
+decision	O	0110	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+Anthony	B-PERSON	00100	NONE	001	_	_	neutral
+Robbins	I-PERSON	00110	NONE	001	_	_	neutral
+
+## Tweet 5291
+Behind	O	110	NONE	110	_	_	_
+every	O	0101	NONE	010	_	_	_
+man	O	01111	NONE	011	_	_	_
+now	O	01111	NONE	011	_	_	_
+alive	O	01110	NONE	011	SENT_MED:positive	_	_
+stand	O	1001	NONE	100	_	_	_
+30	O	01111	NONE	011	_	_	_
+ghosts	O	00101	NONE	001	_	_	_
+,	O	00110	NONE	001	_	_	_
+for	O	00111	NONE	001	_	_	_
+that	O	00110	NONE	001	_	_	_
+is	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+ratio	O	01110	NONE	011	_	_	_
+by	O	00111	NONE	001	_	_	_
+which	O	00110	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+dead	O	01110	NONE	011	SENT:negative	_	_
+outnumber	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+living.Arthur	B-PERSON	01110	NONE	011	_	_	neutral
+C	I-PERSON	0110	NONE	011	_	_	neutral
+.	I-PERSON	000	NONE	000	_	_	neutral
+Clarke	I-PERSON	110	NONE	110	_	_	neutral
+
+## Tweet 53
+We	O	1110	NONE	111	_	_	_
+started	O	00101	NONE	001	_	_	_
+testing	O	01110	NONE	011	_	_	_
+Twitter	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+on	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+PG	O	01110	NONE	011	_	_	_
+website	O	0110	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+
+## Tweet 534
+Movie	O	01111	NONE	011	_	_	_
+Review	O	01110	NONE	011	_	_	_
+:	O	000	NONE	000	_	_	_
+'Jack	B-PERSON	NONE	NONE	NONE	_	_	neutral
+and	O	00110	NONE	001	_	_	_
+Jill'	B-PERSON	NONE	NONE	NONE	_	_	neutral
+-	O	00110	NONE	001	_	_	_
+Conway	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+Daily	I-ORGANIZATION	01110	NONE	011	_	_	neutral
+Sun	I-ORGANIZATION	0110	NONE	011	_	_	neutral
+:	O	000	NONE	000	_	_	_
+Patriot-NewsMovie	O	NONE	NONE	NONE	_	_	_
+Review	O	01110	NONE	011	_	_	_
+:	O	000	NONE	000	_	_	_
+'Jack	O	NONE	NONE	NONE	_	_	_
+and	O	00110	NONE	001	_	_	_
+Jill'Conway	O	NONE	NONE	NONE	_	_	_
+Daily	O	01110	NONE	011	_	_	_
+SunÃ¢ÂÂJa	O	NONE	NONE	NONE	_	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/N7xEGdHb	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 5363
+Time	O	110	NONE	110	SENT_MED:positive	_	_
+ticking	O	01110	NONE	011	_	_	_
+for	O	00111	NONE	001	_	_	_
+Assad	B-PERSON	00101	NONE	001	_	_	negative
+in	O	00111	NONE	001	_	_	_
+Syria	B-PLACE	000	NONE	000	_	_	_
+-	O	00110	NONE	001	_	_	_
+Turkey's	B-PLACE	NONE	NONE	NONE	_	_	_
+Erdogan	B-PERSON	NONE	NONE	NONE	_	_	neutral
+:	O	000	NONE	000	_	_	_
+http://t.co/PbgZydxk	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 5374
+$	B-MONEY	01111	NONE	011	_	_	_
+150	I-MONEY	01110	NONE	011	_	_	_
+for	O	00111	NONE	001	_	_	_
+dye/highlight	O	00101	NONE	001	_	_	_
+,	O	00110	NONE	001	_	_	_
+cut	O	1001	NONE	100	SENT_MED:positive	_	_
+plus	O	00110	NONE	001	SENT:positive	_	_
+treatment	O	0110	NONE	011	_	_	_
+...	O	00110	..	001	_	_	_
+Cheap	O	01111	NONE	011	SENT_MED:negative	THER_SENT_3:negative	_
+!	O	000	NONE	000	_	_	_
+i	O	1110	NONE	111	_	_	_
+like	O	00101	NONE	001	SENT_MED:positive	THER_SENT_3:positive	_
+uncle	B-PERSON	0110	NONE	011	_	_	positive
+gan	I-PERSON	11111	NONE	111	_	_	positive
+and	O	00110	NONE	001	_	_	_
+aunti	B-PERSON	01111	NONE	011	_	_	positive
+robelle	I-PERSON	01111	NONE	011	_	_	positive
+:)	O	01111	WEST_EMOTICON	011	_	_	_
+http://t.co/823mO26C	B-URL	01111	URL	011	_	_	_
+
+## Tweet 5376
+Look	O	110	NONE	110	_	_	_
+On	O	110	NONE	110	_	_	_
+Facebook	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+@	O	01111	NONE	011	_	_	_
+Alpha	O	01111	NONE	011	_	_	_
+Rain	O	110	NONE	110	_	_	_
+Roofing	O	10111	NONE	101	_	_	_
+for	O	00111	NONE	001	_	_	_
+pictures	O	0110	NONE	011	_	_	_
+of	O	00111	NONE	001	_	_	_
+30	B-PERCENT	01111	NONE	011	_	_	_
+%	I-PERCENT	01110	NONE	011	_	_	_
+energy	O	0110	NONE	011	SENT_MED:positive	_	_
+Savings	O	000	NONE	000	_	_	_
+metal	O	01110	NONE	011	_	_	_
+roof	O	0110	NONE	011	_	_	_
+installation	O	01111	NONE	011	_	_	_
+!	O	000	NONE	000	_	_	_
+http://bit.ly/ahNraj	B-URL	110	URL	110	_	_	_
+
+## Tweet 5391
+Relaxing	O	01111	NONE	011	_	_	_
+under	O	00111	NONE	001	_	_	_
+all	O	00101	NONE	001	_	_	_
+conditions	O	0110	NONE	011	_	_	_
+|	O	000	NONE	000	_	_	_
+The	O	110	NONE	110	_	_	_
+Bowen	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+Health	I-ORGANIZATION	01111	NONE	011	SENT:positive	_	neutral
+Blog	O	0110	NONE	011	_	_	_
+http://t.co/4oowAwF	B-URL	00101	URL	001	_	_	_
+via	O	00111	NONE	001	_	_	_
+@bowencollege	O	0101	MENTION	010	_	_	_
+
+## Tweet 5442
+Free	O	110	NONE	110	SENT_MED:negative	_	_
+Shaklee	B-ORGANIZATION	00111	NONE	001	_	_	neutral
+Membership	O	01110	NONE	011	_	_	_
+when	O	00110	NONE	001	_	_	_
+you	O	00100	NONE	001	_	_	_
+buy	O	1001	NONE	100	_	_	_
+the	O	0101	NONE	010	_	_	_
+Earth	B-DATE	01110	NONE	011	SENT_MED:negative	_	_
+Day	I-DATE	01110	NONE	011	_	_	_
+Healthy	O	110	NONE	110	SENT:positive	_	_
+Home	O	01111	NONE	011	_	_	_
+Pack	O	01111	NONE	011	_	_	_
+for	O	00111	NONE	001	_	_	_
+$	B-MONEY	01111	NONE	011	_	_	_
+30	I-MONEY	01111	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+http://tiny.ly/gjNT	B-URL	110	URL	110	_	_	_
+
+## Tweet 5488
+Boston	B-PLACE	00101	NONE	001	_	_	_
+Professor	I-PLACE	01111	NONE	011	_	_	_
+Hails	O	00110	NONE	001	_	THER_SENT_3:positive	_
+Obama	B-PERSON	00100	NONE	001	_	_	negative
+for	O	00111	NONE	001	_	_	_
+Declaring	O	0101	NONE	010	_	_	_
+War	O	0110	NONE	011	_	_	_
+on	O	00111	NONE	001	_	_	_
+Deficits	O	00101	NONE	001	_	_	_
+.	O	000	NONE	000	_	_	_
+Wait	O	110	NONE	110	_	_	_
+,	O	00110	NONE	001	_	_	_
+What	O	110	NONE	110	_	_	_
+?	O	000	NONE	000	_	_	_
+http://bit.ly/hxymv4	B-URL	110	URL	110	_	_	_
+
+## Tweet 5490
+EID	B-DATE	00110	NONE	001	_	_	_
+Mubarak	B-PERSON	01111	NONE	011	_	_	neutral
+for	O	00111	NONE	001	_	_	_
+every	O	0101	NONE	010	_	_	_
+one	O	01110	NONE	011	SENT_MED:positive	_	_
+,	O	00110	NONE	001	_	_	_
+enjoy	O	1001	NONE	100	SENT_MED:positive	_	_
+the	O	0101	NONE	010	_	_	_
+vacation	O	0110	NONE	011	_	_	_
+....	O	00110	...	001	_	_	_
+
+## Tweet 552
+I	O	1110	NONE	111	_	_	_
+just	O	11111	NONE	111	SENT:positive	THER_SENT_3:positive	_
+voted	O	00101	NONE	001	_	_	_
+for	O	00111	NONE	001	_	_	_
+http://introutsugar.wordpress.com/	B-URL	NONE	URL	NONE	_	_	_
+at	O	00111	NONE	001	_	_	_
+Deutsche	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+Welle	I-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+Blog	O	0110	NONE	011	_	_	_
+Awards	O	01111	NONE	011	_	_	_
+http://thebobs.com	B-URL	NONE	URL	NONE	_	_	_
+#thebobs	O	NONE	HASHTAG	NONE	_	_	_
+
+## Tweet 5546
+News	O	01111	NONE	011	SENT_MED:positive	_	_
+.	O	000	NONE	000	_	_	_
+Here	O	110	NONE	110	_	_	_
+I	O	1110	NONE	111	_	_	_
+earn	O	1001	NONE	100	_	_	_
+on	O	00111	NONE	001	_	_	_
+FOREX	B-ORGANIZATION	NONE	NONE	NONE	_	_	positive
+,	O	00110	NONE	001	_	_	_
+indexes	O	01111	NONE	011	_	_	_
+and	O	00110	NONE	001	_	_	_
+raw	O	01110	NONE	011	SENT_MED:negative	_	_
+actives	O	0110	NONE	011	_	_	_
+...	O	00110	..	001	_	_	_
+I	O	1110	NONE	111	_	_	_
+stake	O	00101	NONE	001	_	_	_
+on	O	00111	NONE	001	_	_	_
+Bettings	B-ORGANIZATION	NONE	NONE	NONE	_	_	positive
+,	O	00110	NONE	001	_	_	_
+I	O	1110	NONE	111	_	_	_
+recommend	O	10111	NONE	101	_	THER_SENT_3:positive	_
+,	O	00110	NONE	001	_	_	_
+high	O	10111	NONE	101	_	_	_
+profit\\\///	O	NONE	NONE	NONE	_	_	_
+...	O	00110	..	001	_	_	_
+http	B-URL	01111	NONE	011	_	_	_
+:	I-URL	000	NONE	000	_	_	_
+//t.co/4PuSDxw	I-URL	NONE	NONE	NONE	_	_	_
+
+## Tweet 5565
+Fomny	O	NONE	NONE	NONE	_	_	_
+Watch	O	110	NONE	110	_	_	_
+cnn	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+English	O	01110	NONE	011	_	_	_
+News	O	01111	NONE	011	SENT_MED:positive	_	_
+international	O	01110	NONE	011	_	_	_
+live	O	1001	NONE	100	SENT_MED:positive	_	_
+online	O	00101	NONE	001	_	_	_
+world	O	0110	NONE	011	_	_	_
+tv	O	0110	NONE	011	_	_	_
+tv	O	0110	NONE	011	_	_	_
+links	O	00101	NONE	001	_	_	_
+,	O	00110	NONE	001	_	_	_
+cnn	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+breaking	O	00101	NONE	001	_	_	_
+headline	O	000	NONE	000	_	_	_
+news	O	0110	NONE	011	SENT_MED:positive	_	_
+http://t.co/fvifQwm	B-URL	NONE	URL	NONE	_	_	_
+via	O	00111	NONE	001	_	_	_
+@AddThis	O	01111	MENTION	011	_	_	_
+
+## Tweet 5596
+Millennium	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+Tutors	I-ORGANIZATION	10111	NONE	101	_	_	neutral
+Kansas	B-PLACE	00101	NONE	001	_	_	_
+City	I-PLACE	0110	NONE	011	_	_	_
+,	I-PLACE	00110	NONE	001	_	_	_
+MO	I-PLACE	01111	NONE	011	_	_	_
+Use	O	110	NONE	110	_	_	_
+promocode	O	10111	NONE	101	_	_	_
+for	O	00111	NONE	001	_	_	_
+an	O	0100	NONE	010	_	_	_
+additi	O	01111	NONE	011	_	_	_
+http://t.co/ArAIPukr	B-URL	01111	URL	011	_	_	_
+KansasCity	B-PLACE	01111	NONE	011	_	_	_
+Test	O	110	NONE	110	_	_	_
+Preparation	O	00110	NONE	001	_	_	_
+&	O	00110	NONE	001	_	_	_
+Tutoring	O	0101	NONE	010	_	_	_
+Services	O	0110	NONE	011	_	_	_
+#coupon	O	00111	HASHTAG	001	_	_	_
+
+## Tweet 5645
+See	O	110	NONE	110	SENT_MED:positive	_	_
+you	O	00100	NONE	001	_	_	_
+all	O	00101	NONE	001	_	_	_
+tonight	O	01111	NONE	011	_	_	_
+at	O	00111	NONE	001	_	_	_
+7	B-TIME	01111	NONE	011	_	_	_
+:	I-TIME	000	NONE	000	_	_	_
+30	I-TIME	01111	NONE	011	_	_	_
+PM	I-TIME	0110	NONE	011	_	_	_
+at	O	00111	NONE	001	_	_	_
+Cinemagic	B-PLACE	NONE	NONE	NONE	_	_	_
+for	O	00111	NONE	001	_	_	_
+NOV	B-DATE	NONE	NONE	NONE	_	_	_
+17	I-DATE	01110	NONE	011	_	_	_
+|	O	000	NONE	000	_	_	_
+GCFF	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+2011	B-DATE	0110	NONE	011	_	_	_
+Double	O	01111	NONE	011	SENT:positive	_	_
+Screening	O	NONE	NONE	NONE	_	_	_
+:	O	000	NONE	000	_	_	_
+Sun	O	0110	NONE	011	_	_	_
+Come	O	110	NONE	110	_	_	_
+Up	O	01111	NONE	011	SENT_MED:positive	_	_
+(	O	01111	NONE	011	_	_	_
+short	O	01110	NONE	011	SENT:negative	_	_
+film	O	0110	NONE	011	_	_	_
+)	O	01111	NONE	011	_	_	_
+and	O	00110	NONE	001	_	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/Q3i3pIvb	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 5709
+Disobey	O	NONE	NONE	NONE	_	THER_SENT_3:negative	_
+Putin	B-PERSON	00100	NONE	001	_	_	negative
+anti-election	O	NONE	NONE	NONE	_	_	_
+protest	O	00101	NONE	001	_	THER_SENT_3:negative	_
+in	O	00111	NONE	001	_	_	_
+Moscow	B-PLACE	NONE	NONE	NONE	_	_	_
+-	O	00110	NONE	001	_	_	_
+@Demotix	O	NONE	MENTION	NONE	_	_	_
+News	O	01111	NONE	011	SENT_MED:positive	_	_
+http://t.co/M9OjYA5F	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 5711
+Mother	O	01111	NONE	011	_	_	_
+of	O	00111	NONE	001	_	_	_
+lost	O	00101	NONE	001	SENT:negative	_	_
+trawlerman	O	00101	NONE	001	_	_	_
+died	O	00101	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+few	O	01110	NONE	011	_	_	_
+hours	O	00101	NONE	001	SENT_MED:negative	_	_
+before	O	01111	NONE	011	_	_	_
+he	O	00100	NONE	001	_	_	_
+drowned	O	10111	NONE	101	_	_	_
+-	O	00110	NONE	001	_	_	_
+National	B-ORGANIZATION	01110	NONE	011	_	_	neutral
+News	I-ORGANIZATION	01111	NONE	011	SENT_MED:positive	_	neutral
+-	O	00110	NONE	001	_	_	_
+Independent.ie	B-URL	01111	NONE	011	_	_	_
+http://t.co/QgSSSGx7	B-URL	000	URL	000	_	_	_
+
+## Tweet 5720
+Chelsea	B-PERSON	01110	NONE	011	_	_	positive
+Summer	I-PERSON	01111	NONE	011	_	_	positive
+s:	I-PERSON	000	WEST_EMOTICON	000	_	_	positive
+Hot	O	01111	NONE	011	SENT_MED:positive	_	_
+housewife	O	01110	NONE	011	_	_	_
+Chelsey	B-PERSON	NONE	NONE	NONE	_	_	positive
+Summers	I-PERSON	NONE	NONE	NONE	_	_	positive
+can	O	11111	NONE	111	_	_	_
+â	O	11111	NONE	111	_	_	_
+t	O	11111	NONE	111	_	_	_
+think	O	10101	NONE	101	SENT_MED:positive	_	_
+of	O	00111	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+single	O	01110	NONE	011	SENT_MED:negative	_	_
+reason	O	0110	NONE	011	SENT_MED:positive	_	_
+why	O	00110	NONE	001	_	_	_
+being	O	00101	NONE	001	_	_	_
+sexy	O	01110	NONE	011	SENT:positive	THER_SENT_3:positive	_
+is	O	00111	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+bad	O	01110	NONE	011	SENT:negative	THER_SENT_3:negative	_
+thing	O	0110	NONE	011	SENT_MED:negative	_	_
+.	O	000	NONE	000	_	_	_
+The	O	110	NONE	110	_	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/scU1N5l7	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 5728
+Qualcomm	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+ups	O	00101	NONE	001	_	_	_
+dividend	O	NONE	NONE	NONE	_	_	_
+,	O	00110	NONE	001	_	_	_
+approves	O	110	NONE	110	_	_	_
+up	O	00101	NONE	001	SENT_MED:positive	_	_
+to	O	11110	NONE	111	_	_	_
+$	B-MONEY	01111	NONE	011	_	_	_
+4B	I-MONEY	NONE	NONE	NONE	_	_	_
+buyback	O	NONE	NONE	NONE	_	_	_
+:	O	000	NONE	000	_	_	_
+Mobile	O	01111	NONE	011	_	_	_
+phone	O	0110	NONE	011	_	_	_
+chip-maker	O	NONE	NONE	NONE	_	_	_
+Qualcomm	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+Inc	I-ORGANIZATION	01111	NONE	011	_	_	neutral
+.	O	000	NONE	000	_	_	_
+sa	O	01111	NONE	011	_	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/fcPJDhhq	B-URL	NONE	URL	NONE	_	_	_
+http://t.co/FiSmxplN	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 5757
+I	O	1110	NONE	111	_	_	_
+posted	O	10111	NONE	101	_	_	_
+a	O	0100	NONE	010	_	_	_
+new	O	01110	NONE	011	SENT_MED:negative	_	_
+photo	O	0110	NONE	011	_	_	_
+to	O	11110	NONE	111	_	_	_
+Facebook	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+http://t.co/2jaxcraY	B-URL	000	URL	000	_	_	_
+
+## Tweet 5798
+DJ	B-PERSON	01110	NONE	011	_	_	neutral
+Fernando	I-PERSON	0110	NONE	011	_	_	neutral
+Vocal	O	000	NONE	000	_	_	_
+Deep	O	110	NONE	110	SENT_MED:positive	_	_
+,	O	00110	NONE	001	_	_	_
+Tech	O	01111	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+Grooving	O	0101	NONE	010	_	_	_
+House	O	0110	NONE	011	_	_	_
+Mix	O	00110	NONE	001	_	_	_
+2010	B-DATE	01111	NONE	011	_	_	_
+http://t.co/cvmI6Et	B-URL	000	URL	000	_	_	_
+
+## Tweet 5889
+Only	O	110	NONE	110	_	_	_
+1	O	01111	NONE	011	_	_	_
+sleep	O	00101	NONE	001	_	_	_
+to	O	11110	NONE	111	_	_	_
+go	O	1001	NONE	100	_	_	_
+before	O	01111	NONE	011	_	_	_
+Dr	B-PERSON	01111	NONE	011	_	_	neutral
+David	I-PERSON	00100	NONE	001	_	_	neutral
+Hill	I-PERSON	01111	NONE	011	_	_	neutral
+is	O	00111	NONE	001	_	_	_
+here	O	01111	NONE	011	_	_	_
+in	O	00111	NONE	001	_	_	_
+Australia	B-PLACE	01110	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+If	O	110	NONE	110	_	_	_
+you	O	00100	NONE	001	_	_	_
+know	O	10101	NONE	101	SENT:positive	_	_
+anyone	O	00100	NONE	001	_	_	_
+that	O	00110	NONE	001	_	_	_
+has	O	00111	NONE	001	_	_	_
+any	O	0100	NONE	010	_	_	_
+health	O	01110	NONE	011	SENT:positive	_	_
+challenges	O	0110	NONE	011	_	_	_
+or	O	00110	NONE	001	_	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/XXaGtFri	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 5890
+Discount	O	0110	NONE	011	_	_	_
+Wilton	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+Holiday	O	01111	NONE	011	_	_	_
+Red	O	01111	NONE	011	SENT_MED:negative	_	_
+and	O	00110	NONE	001	_	_	_
+White	O	01111	NONE	011	SENT_MED:positive	_	_
+Sprinkles	O	NONE	NONE	NONE	_	_	_
+
+## Tweet 5917
+http://t.co/kb9ZDVXQ	B-URL	NONE	URL	NONE	_	_	_
+-	O	00110	NONE	001	_	_	_
+Biblical	O	NONE	NONE	NONE	_	_	_
+Patriarchs	O	NONE	NONE	NONE	_	_	_
+Abraham	B-PERSON	NONE	NONE	NONE	_	_	neutral
+&	O	00110	NONE	001	_	_	_
+Moses	B-PERSON	00101	NONE	001	_	_	negative
+NEVER	O	11111	NONE	111	SENT:negative	_	_
+EXISTED	O	NONE	NONE	NONE	_	_	_
+As	O	110	NONE	110	_	_	_
+the	O	0101	NONE	010	_	_	_
+Bible	O	0110	NONE	011	_	_	_
+Portrays	O	NONE	NONE	NONE	_	_	_
+http://t.co/wbb8XVwr	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 5923
+Call	O	110	NONE	110	SENT_MED:negative	_	_
+of	O	00111	NONE	001	_	_	_
+Duty	O	110	NONE	110	_	_	_
+:	O	000	NONE	000	_	_	_
+Modern	O	01111	NONE	011	_	_	_
+Warfare	O	NONE	NONE	NONE	_	_	_
+3	O	01110	NONE	011	_	_	_
+-	O	00110	NONE	001	_	_	_
+Piazza	O	NONE	NONE	NONE	_	_	_
+"Teddy	O	NONE	NONE	NONE	_	_	_
+Bear"	O	NONE	NONE	NONE	_	_	_
+Easter	O	01111	NONE	011	_	_	_
+Egg	O	NONE	NONE	NONE	_	_	_
+-	O	00110	NONE	001	_	_	_
+YouTube	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+http://t.co/cW9SVwDw	B-URL	NONE	URL	NONE	_	_	_
+(	O	01111	NONE	011	_	_	_
+via	O	00111	NONE	001	_	_	_
+@ultraryanrules	O	NONE	MENTION	NONE	_	_	_
+)	O	01111	NONE	011	_	_	_
+
+## Tweet 5931
+I	O	1110	NONE	111	_	_	_
+need	O	10111	NONE	101	SENT_MED:positive	_	_
+to	O	11110	NONE	111	_	_	_
+find	O	1001	NONE	100	SENT:positive	_	_
+a	O	0100	NONE	010	_	_	_
+new	O	01110	NONE	011	SENT_MED:negative	_	_
+way	O	0110	NONE	011	_	_	_
+to	O	11110	NONE	111	_	_	_
+interact	O	1001	NONE	100	_	_	_
+with	O	00111	NONE	001	_	_	_
+Twitter	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+;	O	00110	NONE	001	_	_	_
+else	O	00100	NONE	001	_	_	_
+I'll	O	00100	NONE	001	_	_	_
+just	O	11111	NONE	111	SENT:positive	THER_SENT_3:positive	_
+drift	O	1001	NONE	100	_	_	_
+farther	O	00101	NONE	001	_	_	_
+and	O	00110	NONE	001	_	_	_
+farther	O	00101	NONE	001	_	_	_
+apart	O	00101	NONE	001	_	_	_
+from	O	00111	NONE	001	_	_	_
+it	O	00100	NONE	001	_	_	_
+as	O	00110	NONE	001	_	_	_
+my	O	0101	NONE	010	_	_	_
+priorities	O	0110	NONE	011	_	_	_
+shift	O	01111	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+
+## Tweet 5941
+@gigswigs	O	00110	MENTION	001	_	_	_
+yes	O	01111	NONE	011	_	THER_SENT_3:positive	_
+bb	O	01111	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+I'm	O	00111	NONE	001	_	_	_
+listening	O	00101	NONE	001	_	_	_
+Nickelback's	B-ORGANIZATION	000	NONE	000	_	_	positive
+Somebody	O	110	NONE	110	_	_	_
+and	O	00110	NONE	001	_	_	_
+was	O	10111	NONE	101	_	_	_
+just	O	11111	NONE	111	SENT:positive	THER_SENT_3:positive	_
+musing	O	10111	NONE	101	_	_	_
+tt	O	0101	NONE	010	_	_	_
+songs	O	0110	NONE	011	_	_	_
+reminds	O	10111	NONE	101	_	_	_
+us	O	00101	NONE	001	_	_	_
+of	O	00111	NONE	001	_	_	_
+different	O	01110	NONE	011	SENT:positive	_	_
+episodes-	O	00111	NONE	001	_	_	_
+this	O	01111	NONE	011	_	_	_
+one	O	01110	NONE	011	SENT_MED:positive	_	_
+is	O	00111	NONE	001	_	_	_
+of	O	00111	NONE	001	_	_	_
+Canada	B-PLACE	00101	NONE	001	_	_	_
+
+## Tweet 5972
+GM	B-ORGANIZATION	00100	NONE	001	_	_	neutral
+expects	O	10111	NONE	101	_	_	_
+to	O	11110	NONE	111	_	_	_
+repay	O	1001	NONE	100	_	THER_SENT_3:positive	_
+$	B-MONEY	01111	NONE	011	_	_	_
+1	I-MONEY	01111	NONE	011	_	_	_
+billion	I-MONEY	01110	NONE	011	_	_	_
+loan	O	0110	NONE	011	_	_	_
+to	O	11110	NONE	111	_	_	_
+Treasury	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+:	O	000	NONE	000	_	_	_
+report	O	0110	NONE	011	_	_	_
+(	O	01111	NONE	011	_	_	_
+Reuters	B-ORGANIZATION	00110	NONE	001	_	_	neutral
+)	O	01111	NONE	011	_	_	_
+:	O	000	NONE	000	_	_	_
+-	O	00110	NONE	001	_	_	_
+http://u.nu/6q9w7	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 6050
+I	O	1110	NONE	111	_	_	_
+uploaded	O	00101	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+@YouTube	B-ORGANIZATION	01110	MENTION	011	_	_	neutral
+video	O	01110	NONE	011	_	_	_
+http://t.co/KPlIFhKi	B-URL	NONE	URL	NONE	_	_	_
+Show	O	01111	NONE	011	_	_	_
+Gratitude	O	NONE	NONE	NONE	SENT:negative	THER_SENT_3:positive	_
+To	O	110	NONE	110	_	_	_
+Allah's	B-PERSON	NONE	NONE	NONE	_	_	positive
+Favours	O	NONE	NONE	NONE	_	THER_SENT_3:positive	_
+
+## Tweet 6123
+How	O	110	NONE	110	_	_	_
+Retailers	O	NONE	NONE	NONE	_	_	_
+Are	O	110	NONE	110	_	_	_
+Reinventing	O	NONE	NONE	NONE	_	_	_
+Shopping	O	01111	NONE	011	_	_	_
+-	O	00110	NONE	001	_	_	_
+Harvard	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+Business	I-ORGANIZATION	01111	NONE	011	_	_	neutral
+Review	I-ORGANIZATION	01110	NONE	011	_	_	neutral
+:	O	000	NONE	000	_	_	_
+http://t.co/Dq5YRzKn	B-URL	NONE	URL	NONE	_	_	_
+@Said_Morales	O	NONE	MENTION	NONE	_	_	_
+
+## Tweet 6132
+@deepikapadukone	O	NONE	MENTION	NONE	_	_	_
+happy	O	01110	NONE	011	SENT:positive	THER_SENT_3:positive	_
+birthday	O	0110	NONE	011	_	_	_
+beautiful.may	O	NONE	NONE	NONE	_	_	_
+Allah	B-PERSON	00100	NONE	001	_	_	positive
+gives	O	10111	NONE	101	_	_	_
+you	O	00100	NONE	001	_	_	_
+long	O	01110	NONE	011	SENT:negative	THER_SENT_3:negative	_
+life	O	0110	NONE	011	_	_	_
+
+## Tweet 6133
+The	O	110	NONE	110	_	_	_
+Twitter	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+100	O	01110	NONE	011	_	_	_
+:	O	000	NONE	000	_	_	_
+No	O	110	NONE	110	SENT:positive	_	_
+1	O	01111	NONE	011	_	_	_
+to	O	11110	NONE	111	_	_	_
+10	O	01111	NONE	011	_	_	_
+-	O	00110	NONE	001	_	_	_
+News	O	01111	NONE	011	SENT_MED:positive	_	_
+-	O	00110	NONE	001	_	_	_
+People	O	110	NONE	110	_	_	_
+-	O	00110	NONE	001	_	_	_
+The	O	110	NONE	110	_	_	_
+Independent	O	01111	NONE	011	SENT_MED:negative	_	_
+http://t.co/yQL39tfk	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 6139
+Look	O	110	NONE	110	_	_	_
+further	O	01110	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+It's	O	110	NONE	110	_	_	_
+inside	O	00101	NONE	001	_	_	_
+you	O	00100	NONE	001	_	_	_
+.	O	000	NONE	000	_	_	_
+Greg	B-PERSON	00100	NONE	001	_	_	neutral
+Z	I-PERSON	0110	NONE	011	_	_	neutral
+.	O	000	NONE	000	_	_	_
+
+## Tweet 6150
+Twitpic	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+-	O	00110	NONE	001	_	_	_
+Share	O	01111	NONE	011	_	_	_
+photos	O	0110	NONE	011	_	_	_
+and	O	00110	NONE	001	_	_	_
+videos	O	0110	NONE	011	_	_	_
+on	O	00111	NONE	001	_	_	_
+Twitter	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+http://t.co/kqo4Yk8U	B-URL	NONE	URL	NONE	_	_	_
+via	O	00111	NONE	001	_	_	_
+@twitpic	O	NONE	MENTION	NONE	_	_	_
+
+## Tweet 6216
+http://bit.ly/fJ8HCt	B-URL	NONE	URL	NONE	_	_	_
+Three	O	110	NONE	110	_	_	_
+Tips	O	0110	NONE	011	_	_	_
+to	O	11110	NONE	111	_	_	_
+Achieve	O	00110	NONE	001	_	_	_
+High	O	01111	NONE	011	_	_	_
+Earnings	O	NONE	NONE	NONE	_	_	_
+as	O	00110	NONE	001	_	_	_
+an	O	0100	NONE	010	_	_	_
+Amazon	B-ORGANIZATION	01110	NONE	011	_	_	neutral
+Affiliate	O	01110	NONE	011	_	_	_
+
+## Tweet 625
+Valuable	O	NONE	NONE	NONE	SENT_MED:positive	THER_SENT_3:positive	_
+info	O	0110	NONE	011	_	_	_
+by	O	00111	NONE	001	_	_	_
+industry	O	0110	NONE	011	_	_	_
+!	O	000	NONE	000	_	_	_
+RT	O	01111	NONE	011	_	_	_
+@hubspot	O	NONE	MENTION	NONE	_	_	_
+Twitter	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+or	O	00110	NONE	001	_	_	_
+Facebook	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+:	O	000	NONE	000	_	_	_
+Which	O	110	NONE	110	_	_	_
+Is	O	110	NONE	110	_	_	_
+Right	O	110	NONE	110	SENT_MED:positive	_	_
+for	O	00111	NONE	001	_	_	_
+Your	O	01111	NONE	011	_	_	_
+Business	O	01111	NONE	011	_	_	_
+?	O	000	NONE	000	_	_	_
+http://bit.ly/dmMUC9	B-URL	NONE	URL	NONE	_	_	_
+via	O	00111	NONE	001	_	_	_
+#in	O	000	HASHTAG	000	_	_	_
+
+## Tweet 6316
+Lastly	O	00101	NONE	001	_	_	_
+,	O	00110	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+close-up	O	01110	NONE	011	_	_	_
+of	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+Ziggy	B-PERSON	01110	NONE	011	_	_	positive
+Zag	I-PERSON	01111	NONE	011	_	_	positive
+Knit	O	01111	NONE	011	_	_	_
+Skirt	O	01111	NONE	011	_	_	_
+!	O	000	NONE	000	_	_	_
+Love	O	110	NONE	110	SENT:positive	THER_SENT_3:positive	_
+the	O	0101	NONE	010	_	_	_
+flattering	O	01110	NONE	011	_	THER_SENT_3:positive	_
+silhouette	O	01111	NONE	011	_	_	_
+!	O	000	NONE	000	_	_	_
+We'll	O	1110	NONE	111	_	_	_
+be	O	1000	NONE	100	_	_	_
+back	O	00101	NONE	001	SENT_MED:positive	_	_
+with	O	00111	NONE	001	_	_	_
+more	O	01110	NONE	011	_	_	_
+previews	O	0110	NONE	011	_	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/WiaQQ73w	B-URL	00110	URL	001	_	_	_
+
+## Tweet 6401
+@Natura_Mexico	B-PERSON	01111	MENTION	011	_	_	neutral
+33%	B-PERCENT	01111	NONE	011	_	_	_
+
+## Tweet 649
+@asplinterofice	O	NONE	MENTION	NONE	_	_	_
+what's	O	00101	NONE	001	_	_	_
+wrong	O	01110	NONE	011	SENT:negative	_	_
+?	O	000	NONE	000	_	_	_
+_r	O	NONE	NONE	NONE	_	_	_
+u	O	00100	NONE	001	_	_	_
+ok	O	01111	NONE	011	_	_	_
+now	O	01111	NONE	011	_	_	_
+?	O	000	NONE	000	_	_	_
+I'm	O	00111	NONE	001	_	_	_
+hanging	O	00101	NONE	001	_	_	_
+out	O	00101	NONE	001	SENT:negative	_	_
+with	O	00111	NONE	001	_	_	_
+friends	O	0110	NONE	011	_	_	_
+and	O	00110	NONE	001	_	_	_
+few	O	01110	NONE	011	_	_	_
+new	O	01110	NONE	011	SENT_MED:negative	_	_
+guys	O	00100	NONE	001	_	_	_
+)	O	01111	NONE	011	_	_	_
+)	O	01111	NONE	011	_	_	_
+_one	O	NONE	NONE	NONE	_	_	_
+of	O	00111	NONE	001	_	_	_
+'em	O	00101	NONE	001	_	_	_
+looks	O	00111	NONE	001	_	_	_
+exactly	O	00101	NONE	001	_	_	_
+like	O	00101	NONE	001	SENT_MED:positive	THER_SENT_3:positive	_
+Taylor	B-PERSON	01111	NONE	011	_	_	positive
+Lothner	I-PERSON	NONE	NONE	NONE	_	_	positive
+)	O	01111	NONE	011	_	_	_
+)	O	01111	NONE	011	_	_	_
+
+## Tweet 6549
+What	O	110	NONE	110	_	_	_
+do	O	10100	NONE	101	_	_	_
+you	O	00100	NONE	001	_	_	_
+think	O	10101	NONE	101	SENT_MED:positive	_	_
+about	O	00101	NONE	001	SENT:positive	_	_
+facebook	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+?	O	000	NONE	000	_	_	_
+can	O	11111	NONE	111	_	_	_
+you	O	00100	NONE	001	_	_	_
+believe	O	10101	NONE	101	_	_	_
+facebook	B-ORGANIZATION	01111	NONE	011	_	_	positive
+is	O	00111	NONE	001	_	_	_
+paying	O	01110	NONE	011	SENT:positive	_	_
+people	O	00100	NONE	001	_	_	_
+to	O	11110	NONE	111	_	_	_
+answer	O	1001	NONE	100	_	_	_
+this	O	01111	NONE	011	_	_	_
+question	O	0110	NONE	011	SENT:positive	_	_
+,	O	00110	NONE	001	_	_	_
+check	O	1001	NONE	100	_	_	_
+it	O	00100	NONE	001	_	_	_
+out	O	00101	NONE	001	SENT:negative	_	_
+!	O	000	NONE	000	_	_	_
+http://dld.bz/u4TX	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 6628
+Chinese	O	01110	NONE	011	_	_	_
+President	B-PERSON	0110	NONE	011	_	_	neutral
+Hu	B-PERSON	00100	NONE	001	_	_	neutral
+Jintao	I-PERSON	00111	NONE	001	_	_	neutral
+warns	O	01110	NONE	011	_	_	_
+of	O	00111	NONE	001	_	_	_
+cultural	O	01111	NONE	011	_	_	_
+warfare	O	00100	NONE	001	_	_	_
+from	O	00111	NONE	001	_	_	_
+West	O	0110	NONE	011	_	_	_
+http://t.co/P4umjNqT	B-URL	00100	URL	001	_	_	_
+
+## Tweet 667
+Artificial	O	0101	NONE	010	SENT_MED:negative	_	_
+Tree	O	0110	NONE	011	_	_	_
+s:	O	000	WEST_EMOTICON	000	_	_	_
+Capturing	O	110	NONE	110	_	_	_
+Energy	O	00111	NONE	001	SENT_MED:positive	_	_
+from	O	00111	NONE	001	_	_	_
+Sun	O	0110	NONE	011	_	_	_
+and	O	00110	NONE	001	_	_	_
+Wind	O	01110	NONE	011	_	_	_
+:	O	000	NONE	000	_	_	_
+Discovery	B-ORGANIZATION	01110	NONE	011	SENT_MED:positive	_	neutral
+News	I-ORGANIZATION	01111	NONE	011	SENT_MED:positive	_	neutral
+http://t.co/nQ2Cm0KT	B-URL	00110	URL	001	_	_	_
+
+## Tweet 6679
+Obama	B-PERSON	00100	NONE	001	_	_	negative
+is	O	00111	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+stupid	O	01110	NONE	011	SENT:negative	THER_SENT_3:negative	_
+.	O	000	NONE	000	_	_	_
+People	O	110	NONE	110	_	_	_
+of	O	00111	NONE	001	_	_	_
+Egypt	B-PERSON	00101	NONE	001	_	_	neutral
+don't	O	11111	NONE	111	_	_	_
+want	O	10111	NONE	101	SENT_MED:negative	THER_SENT_3:positive	_
+from	O	00111	NONE	001	_	_	_
+Moubarak	B-PERSON	NONE	NONE	NONE	_	_	negative
+reform	O	0110	NONE	011	SENT_MED:positive	_	_
+,	O	00110	NONE	001	_	_	_
+they	O	00100	NONE	001	_	_	_
+want	O	10111	NONE	101	SENT_MED:negative	THER_SENT_3:positive	_
+him	O	00101	NONE	001	_	_	_
+to	O	11110	NONE	111	_	_	_
+leave	O	1001	NONE	100	_	_	_
+power	O	0110	NONE	011	SENT_MED:negative	_	_
+and	O	00110	NONE	001	_	_	_
+Egypt	B-PLACE	00101	NONE	001	_	_	_
+.	O	000	NONE	000	_	_	_
+
+## Tweet 6723
+Palestinians	O	00101	NONE	001	_	_	_
+under	O	00111	NONE	001	_	_	_
+pressure	O	0110	NONE	011	_	_	_
+to	O	11110	NONE	111	_	_	_
+drop	O	1001	NONE	100	_	_	_
+UN	B-ORGANIZATION	01110	NONE	011	_	_	neutral
+bid	O	01110	NONE	011	_	_	_
+-	O	00110	NONE	001	_	_	_
+Middle	B-PLACE	01111	NONE	011	_	_	_
+East	I-PLACE	01111	NONE	011	_	_	_
+-	O	00110	NONE	001	_	_	_
+Al	B-ORGANIZATION	00100	NONE	001	_	_	neutral
+Jazeera	I-ORGANIZATION	00111	NONE	001	_	_	neutral
+English	O	01110	NONE	011	_	_	_
+http://t.co/NXCD1Qtq	B-URL	0110	URL	011	_	_	_
+via	O	00111	NONE	001	_	_	_
+@ajenglish	O	00101	MENTION	001	_	_	_
+
+## Tweet 6847
+Steve	B-PERSON	00100	NONE	001	_	_	neutral
+â	O	11111	NONE	111	_	_	_
+s	O	00111	NONE	001	_	_	_
+Last	O	110	NONE	110	SENT_MED:negative	_	_
+Laugh	O	110	NONE	110	_	THER_SENT_3:negative	_
+:	O	000	NONE	000	_	_	_
+Adobe	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+Killing	O	110	NONE	110	_	_	_
+Off	O	00101	NONE	001	SENT:negative	_	_
+Flash	O	00101	NONE	001	_	_	_
+For	O	110	NONE	110	_	_	_
+Mobile	O	01111	NONE	011	_	_	_
+Â	O	0101	NONE	010	_	_	_
+Devices	O	NONE	NONE	NONE	_	_	_
+via	O	00111	NONE	001	_	_	_
+@techcrunch	O	NONE	MENTION	NONE	_	_	_
+http://t.co/NJH0bEKO	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 6854
+I	O	1110	NONE	111	_	_	_
+subscribed	O	10111	NONE	101	_	_	_
+to	O	11110	NONE	111	_	_	_
+RajshriKids's	O	0101	NONE	010	_	_	_
+channel	O	0110	NONE	011	_	_	_
+on	O	00111	NONE	001	_	_	_
+YouTube	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+.	O	000	NONE	000	_	_	_
+http://t.co/LI3rtAPZ	B-URL	110	URL	110	_	_	_
+
+## Tweet 6992
+"Humor	O	00100	NONE	001	_	_	_
+is	O	00111	NONE	001	_	_	_
+mankind's	O	0101	NONE	010	_	_	_
+greatest	O	01110	NONE	011	SENT:positive	THER_SENT_3:positive	_
+blessing."	O	01111	NONE	011	_	_	_
+-	O	00110	NONE	001	_	_	_
+Mark	B-PERSON	00100	NONE	001	_	_	positive
+Twain	I-PERSON	00101	NONE	001	_	_	positive
+http://t.co/068z0s9W	B-URL	000	URL	000	_	_	_
+
+## Tweet 7009
+Ray	B-PERSON	1110	NONE	111	_	_	neutral
+J	I-PERSON	01111	NONE	011	_	_	neutral
+Breaks	O	NONE	NONE	NONE	_	_	_
+His	O	110	NONE	110	_	_	_
+Silence	O	0110	NONE	011	_	_	_
+On	O	110	NONE	110	_	_	_
+Whitney	B-PERSON	01111	NONE	011	_	_	neutral
+Houston	I-PERSON	00101	NONE	001	_	_	neutral
+â	O	11111	NONE	111	_	_	_
+s	O	00111	NONE	001	_	_	_
+Death	O	01111	NONE	011	SENT_MED:negative	_	_
+#aolvideo	O	NONE	HASHTAG	NONE	_	_	_
+http://t.co/kvclZaxZ	B-URL	NONE	URL	NONE	_	_	_
+via	O	00111	NONE	001	_	_	_
+@AOL	O	NONE	MENTION	NONE	_	_	_
+
+## Tweet 701
+Stephen	B-PERSON	00101	NONE	001	_	_	neutral
+Hawking	I-PERSON	NONE	NONE	NONE	_	_	neutral
+:	O	000	NONE	000	_	_	_
+'There	O	NONE	NONE	NONE	_	_	_
+is	O	00111	NONE	001	_	_	_
+no	O	00101	NONE	001	SENT:positive	_	_
+heaven	O	00101	NONE	001	_	_	_
+;	O	00110	NONE	001	_	_	_
+it's	O	00111	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+fairy	O	01110	NONE	011	_	_	_
+story'	O	NONE	NONE	NONE	_	_	_
+http://t.co/a35mbP2	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 7049
+Selling	O	00101	NONE	001	_	_	_
+fast	O	01110	NONE	011	SENT_MED:negative	_	_
+on	O	00111	NONE	001	_	_	_
+@GoogleOffers	O	00101	MENTION	001	_	_	_
+:	O	000	NONE	000	_	_	_
+50	B-PERCENT	01111	NONE	011	_	_	_
+%	I-PERCENT	01110	NONE	011	_	_	_
+off	O	00101	NONE	001	SENT:negative	_	_
+at	O	00111	NONE	001	_	_	_
+Michi	B-ORGANIZATION	NONE	NONE	NONE	_	_	positive
+Sushi	I-ORGANIZATION	00100	NONE	001	_	_	positive
+http://t.co/RIQnjfcx	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 7131
+Obama	B-PERSON	00100	NONE	001	_	_	negative
+Turns	O	110	NONE	110	_	_	_
+The	O	110	NONE	110	_	_	_
+Super	O	01111	NONE	011	SENT:positive	THER_SENT_3:positive	_
+Committee	O	01111	NONE	011	_	_	_
+Failure	O	110	NONE	110	SENT_MED:negative	_	_
+Into	O	01111	NONE	011	_	_	_
+A	O	110	NONE	110	_	_	_
+Weapon	O	01110	NONE	011	_	_	_
+Of	O	110	NONE	110	_	_	_
+GOP	B-ORGANIZATION	NONE	NONE	NONE	_	_	negative
+Destruction	O	NONE	NONE	NONE	_	_	_
+http://t.co/blHsWF4H	B-URL	NONE	URL	NONE	_	_	_
+vÃ­a	O	01111	NONE	011	_	_	_
+@politicususa	O	NONE	MENTION	NONE	_	_	_
+
+## Tweet 7171
+Al	B-ORGANIZATION	00100	NONE	001	_	_	neutral
+Jazzera	I-ORGANIZATION	00111	NONE	001	_	_	neutral
+offices	O	00101	NONE	001	_	_	_
+closed	O	00101	NONE	001	SENT_MED:negative	_	_
+by	O	00111	NONE	001	_	_	_
+government	O	0110	NONE	011	_	_	_
+in	O	00111	NONE	001	_	_	_
+Cairo	B-PLACE	00101	NONE	001	_	_	_
+.	O	000	NONE	000	_	_	_
+All	O	110	NONE	110	_	_	_
+the	O	0101	NONE	010	_	_	_
+dictators	O	01110	NONE	011	_	_	_
+do	O	10100	NONE	101	_	_	_
+the	O	0101	NONE	010	_	_	_
+same	O	01110	NONE	011	_	_	_
+stupidities	O	01111	NONE	011	_	THER_SENT_3:negative	_
+,	O	00110	NONE	001	_	_	_
+donÂ´t	O	00110	NONE	001	_	_	_
+they	O	00100	NONE	001	_	_	_
+have	O	10111	NONE	101	SENT_MED:negative	_	_
+any	O	0100	NONE	010	_	_	_
+creativity	O	0110	NONE	011	_	_	_
+?	O	000	NONE	000	_	_	_
+
+## Tweet 7270
+Petrobras	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+CFO	O	NONE	NONE	NONE	_	_	_
+On	O	110	NONE	110	_	_	_
+Becoming	O	NONE	NONE	NONE	SENT:positive	_	_
+Bigger	O	01111	NONE	011	_	_	_
+Than	O	00110	NONE	001	_	_	_
+Exxon	B-ORGANIZATION	01110	NONE	011	_	_	neutral
+And	O	110	NONE	110	_	_	_
+Apple	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+:	O	000	NONE	000	_	_	_
+I	O	1110	NONE	111	_	_	_
+Buy	O	110	NONE	110	_	_	_
+Oil	O	00101	NONE	001	_	_	_
+Every	O	110	NONE	110	_	_	_
+Day	O	01110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+iPads	O	NONE	NONE	NONE	_	_	_
+Every	O	110	NONE	110	_	_	_
+2	B-TIME	01111	NONE	011	_	_	_
+Years	I-TIME	0110	NONE	011	_	_	_
+http://t.co/Wh7xo9b	B-URL	NONE	URL	NONE	_	_	_
+via	O	00111	NONE	001	_	_	_
+@forbes	O	NONE	MENTION	NONE	_	_	_
+
+## Tweet 7368
+some	O	0100	NONE	010	SENT:positive	_	_
+#ThingsThatShouldSTOP	O	01110	HASHTAG	011	_	_	_
+without	O	00111	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+doubt	O	10101	NONE	101	_	THER_SENT_3:negative	_
+:	O	000	NONE	000	_	_	_
+muslims	O	00111	NONE	001	_	_	_
+calling	O	00101	NONE	001	_	_	_
+for	O	00111	NONE	001	_	_	_
+anything	O	01110	NONE	011	_	_	_
+except	O	00110	NONE	001	_	_	_
+Khilafah	B-ORGANIZATION	01111	NONE	011	_	_	positive
+,	O	00110	NONE	001	_	_	_
+muslims	O	00111	NONE	001	_	_	_
+grovelling	O	01110	NONE	011	SENT:positive	_	_
+and	O	00110	NONE	001	_	_	_
+puppeting	O	1001	NONE	100	_	_	_
+for	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+west	B-PLACE	01110	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+
+## Tweet 7408
+Avoiding	O	110	NONE	110	_	_	_
+Copyright	O	01111	NONE	011	_	_	_
+Pitfalls	O	NONE	NONE	NONE	_	_	_
+on	O	00111	NONE	001	_	_	_
+Pinterest	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+http://t.co/C5xnN2GR	B-URL	NONE	URL	NONE	_	_	_
+via	O	00111	NONE	001	_	_	_
+@saving4someday	O	NONE	MENTION	NONE	_	_	_
+
+## Tweet 7459
+Eid	B-DATE	00110	NONE	001	_	_	_
+mubarak	B-PERSON	NONE	NONE	NONE	_	_	positive
+to	O	11110	NONE	111	_	_	_
+every	O	0101	NONE	010	_	_	_
+muslim	O	01110	NONE	011	_	_	_
+around	O	00101	NONE	001	SENT_MED:positive	_	_
+da	O	01111	NONE	011	_	_	_
+globe	O	0110	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+Plz	O	NONE	NONE	NONE	_	_	_
+remember	O	10101	NONE	101	_	_	_
+the	O	0101	NONE	010	_	_	_
+Muslims	O	0110	NONE	011	_	_	_
+who	O	00110	NONE	001	_	_	_
+r	O	10111	NONE	101	_	_	_
+suffering	O	01110	NONE	011	SENT_MED:negative	THER_SENT_3:negative	_
+around	O	00101	NONE	001	SENT_MED:positive	_	_
+the	O	0101	NONE	010	_	_	_
+world	O	0110	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+Pray	O	110	NONE	110	_	_	_
+for	O	00111	NONE	001	_	_	_
+them	O	00101	NONE	001	_	_	_
+all	O	00101	NONE	001	_	_	_
+..	O	00110	..	001	_	_	_
+
+## Tweet 75
+@jbieberkon	O	NONE	MENTION	NONE	_	_	_
+IKR	O	NONE	NONE	NONE	_	_	_
+!	O	000	NONE	000	_	_	_
+Let	O	110	NONE	110	_	_	_
+loose	O	1001	NONE	100	SENT_MED:negative	_	_
+the	O	0101	NONE	010	_	_	_
+talk	O	1001	NONE	100	_	_	_
+of	O	00111	NONE	001	_	_	_
+love	O	10111	NONE	101	SENT:positive	THER_SENT_3:positive	_
+as	O	00110	NONE	001	_	_	_
+justin	B-PERSON	00100	NONE	001	_	_	neutral
+bieber	I-PERSON	NONE	NONE	NONE	_	_	neutral
+said	O	00101	NONE	001	_	_	_
+
+## Tweet 750
+Currently	O	110	NONE	110	_	_	_
+reading	O	01110	NONE	011	_	_	_
+Pirates	O	01110	NONE	011	_	_	_
+in	O	00111	NONE	001	_	_	_
+Iraqi	B-PLACE	01111	NONE	011	_	_	_
+waters	I-PLACE	01110	NONE	011	_	_	_
+on	O	00111	NONE	001	_	_	_
+Mideast	B-ORGANIZATION	0110	NONE	011	_	_	neutral
+Youth	I-ORGANIZATION	01110	NONE	011	_	_	neutral
+:	O	000	NONE	000	_	_	_
+http://www.mideastyouth.com/2010/08/21/pirates-in-iraqi-waters/	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 7537
+Actor	O	01111	NONE	011	_	_	_
+Jim	B-PERSON	01111	NONE	011	_	_	neutral
+Iyke	I-PERSON	01111	NONE	011	_	_	neutral
+Enrolls	O	00101	NONE	001	_	_	_
+for	O	00111	NONE	001	_	_	_
+Anger	O	110	NONE	110	SENT_MED:negative	THER_SENT_3:negative	_
+Management	O	01110	NONE	011	_	_	_
+Class	O	01111	NONE	011	SENT_MED:positive	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/Cb2JupOI	B-URL	01111	URL	011	_	_	_
+
+## Tweet 7601
+9	O	01111	NONE	011	_	_	_
+Anti-Christs	O	NONE	NONE	NONE	_	_	_
+sit	O	1001	NONE	100	_	_	_
+on	O	00111	NONE	001	_	_	_
+Supreme	B-ORGANIZATION	0110	NONE	011	SENT_MED:positive	THER_SENT_3:positive	negative
+Court	I-ORGANIZATION	00100	NONE	001	_	THER_SENT_3:positive	negative
+=	O	01111	NONE	011	_	_	_
+6	O	01111	NONE	011	_	_	_
+Catholics	O	11111	NONE	111	_	_	_
+&	O	00110	NONE	001	_	_	_
+3	O	01110	NONE	011	_	_	_
+Jew	O	0110	NONE	011	_	_	_
+s:	O	000	WEST_EMOTICON	000	_	_	_
+9	O	01111	NONE	011	_	_	_
+Anti-Christs	O	NONE	NONE	NONE	_	_	_
+sit	O	1001	NONE	100	_	_	_
+on	O	00111	NONE	001	_	_	_
+Supreme	B-ORGANIZATION	0110	NONE	011	SENT_MED:positive	THER_SENT_3:positive	negative
+Court	I-ORGANIZATION	00100	NONE	001	_	THER_SENT_3:positive	negative
+=	O	01111	NONE	011	_	_	_
+6	O	01111	NONE	011	_	_	_
+Catholics	O	11111	NONE	111	_	_	_
+&	O	00110	NONE	001	_	_	_
+3	O	01110	NONE	011	_	_	_
+...	O	00110	..	001	_	_	_
+http://bit.ly/adk7yj	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 7607
+Canada	B-PLACE	00101	NONE	001	_	_	_
+pulls	O	10111	NONE	101	_	_	_
+fruit	O	0110	NONE	011	_	_	_
+and	O	00110	NONE	001	_	_	_
+candy	O	01110	NONE	011	_	_	_
+flavoured	O	00110	NONE	001	_	_	_
+cigarettes	O	01111	NONE	011	_	_	_
+off	O	00101	NONE	001	SENT:negative	_	_
+...	O	00110	..	001	_	_	_
+-	O	00110	NONE	001	_	_	_
+Canada	B-PERSON	00101	NONE	001	_	_	neutral
+East	I-PERSON	01111	NONE	011	_	_	neutral
+http://tinyurl.com/2aqcupj	B-URL	01111	URL	011	_	_	_
+
+## Tweet 7726
+is	O	00111	NONE	001	_	_	_
+now	O	01111	NONE	011	_	_	_
+using	O	00101	NONE	001	_	_	_
+Happy	O	110	NONE	110	SENT:positive	THER_SENT_3:positive	_
+Manor	O	NONE	NONE	NONE	_	_	_
+on	O	00111	NONE	001	_	_	_
+Yahoo	B-ORGANIZATION	01111	NONE	011	SENT:negative	_	positive
+!	O	000	NONE	000	_	_	_
+http://y.ahoo.it/sgC6mabQ	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 7751
+@LenaMaher	B-PERSON	NONE	MENTION	NONE	_	_	positive
+yes	O	01111	NONE	011	_	THER_SENT_3:positive	_
+It	O	110	NONE	110	_	_	_
+is	O	00111	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+good	O	01110	NONE	011	SENT:positive	THER_SENT_3:positive	_
+day	O	0110	NONE	011	_	_	_
+for	O	00111	NONE	001	_	_	_
+me	O	00101	NONE	001	_	_	_
+..	O	00110	..	001	_	_	_
+I	O	1110	NONE	111	_	_	_
+feel	O	10111	NONE	101	SENT_MED:positive	_	_
+better	O	01110	NONE	011	SENT:positive	_	_
+:)	O	01111	WEST_EMOTICON	011	_	_	_
+
+## Tweet 7763
+Maximize	O	NONE	NONE	NONE	_	THER_SENT_3:positive	_
+your	O	0101	NONE	010	_	_	_
+twitter	B-ORGANIZATION	01110	NONE	011	_	_	positive
+account	O	0110	NONE	011	SENT_MED:positive	_	_
+with	O	00111	NONE	001	_	_	_
+this	O	01111	NONE	011	_	_	_
+link	O	0110	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+http://bit.ly/Twittank	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 7822
+"How	O	NONE	NONE	NONE	_	_	_
+#	O	01111	NONE	011	_	_	_
+strange	O	01110	NONE	011	_	THER_SENT_3:negative	_
+!	O	000	NONE	000	_	_	_
+You	O	1110	NONE	111	_	_	_
+lose	O	1001	NONE	100	_	_	_
+a	O	0100	NONE	010	_	_	_
+little	O	01110	NONE	011	SENT_MED:negative	THER_SENT_3:negative	_
+from	O	00111	NONE	001	_	_	_
+you	O	00100	NONE	001	_	_	_
+and	O	00110	NONE	001	_	_	_
+you	O	00100	NONE	001	_	_	_
+#	O	01111	NONE	011	_	_	_
+cry	O	1001	NONE	100	SENT_MED:negative	THER_SENT_3:negative	_
+.	O	000	NONE	000	_	_	_
+And	O	110	NONE	110	_	_	_
+your	O	0101	NONE	010	_	_	_
+whole	O	01110	NONE	011	SENT_MED:positive	_	_
+life	O	0110	NONE	011	_	_	_
+is	O	00111	NONE	001	_	_	_
+#wasting	O	NONE	HASHTAG	NONE	_	_	_
+and	O	00110	NONE	001	_	_	_
+you're	O	00111	NONE	001	_	_	_
+#	O	01111	NONE	011	_	_	_
+laughing"	O	NONE	NONE	NONE	_	_	_
+Ibn	B-PERSON	NONE	NONE	NONE	_	_	neutral
+Qayyim	I-PERSON	NONE	NONE	NONE	_	_	neutral
+Al-Jawziyyah	I-PERSON	NONE	NONE	NONE	_	_	neutral
+
+## Tweet 7885
+Traffic	O	110	NONE	110	_	_	_
+has	O	00111	NONE	001	_	_	_
+returned	O	10111	NONE	101	_	_	_
+to	O	11110	NONE	111	_	_	_
+DC	B-PLACE	00101	NONE	001	_	_	_
+.	O	000	NONE	000	_	_	_
+School	O	110	NONE	110	_	_	_
+is	O	00111	NONE	001	_	_	_
+back	O	00101	NONE	001	SENT_MED:positive	_	_
+.	O	000	NONE	000	_	_	_
+DC	B-PLACE	00101	NONE	001	_	_	_
+jumped	O	10111	NONE	101	_	_	_
+to	O	11110	NONE	111	_	_	_
+#	O	01111	NONE	011	_	_	_
+4	O	01110	NONE	011	_	_	_
+in	O	00111	NONE	001	_	_	_
+worst	O	01110	NONE	011	SENT:negative	THER_SENT_3:negative	_
+traffic	O	0110	NONE	011	_	_	_
+according	O	00101	NONE	001	_	_	_
+to	O	11110	NONE	111	_	_	_
+Forbes	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+...	O	00110	..	001	_	_	_
+only	O	11111	NONE	111	_	_	_
+beat	O	1001	NONE	100	SENT_MED:positive	_	_
+by	O	00111	NONE	001	_	_	_
+New	B-PLACE	01111	NONE	011	SENT_MED:negative	_	_
+York	I-PLACE	0110	NONE	011	_	_	_
+,	I-PLACE	00110	NONE	001	_	_	_
+LA	B-PLACE	00101	NONE	001	_	_	_
+,	O	00110	NONE	001	_	_	_
+and	O	00110	NONE	001	_	_	_
+Chicago	B-PLACE	00101	NONE	001	_	_	_
+.	O	000	NONE	000	_	_	_
+
+## Tweet 7909
+Check	O	110	NONE	110	_	_	_
+out	O	00101	NONE	001	SENT:negative	_	_
+Moolala	B-ORGANIZATION	01111	NONE	011	_	_	positive
+,	O	00110	NONE	001	_	_	_
+great	O	01110	NONE	011	SENT_MED:positive	THER_SENT_3:positive	_
+daily	O	01110	NONE	011	_	_	_
+deals	O	0110	NONE	011	_	_	_
+and	O	00110	NONE	001	_	_	_
+an	O	0100	NONE	010	_	_	_
+amazing	O	01110	NONE	011	SENT:positive	THER_SENT_3:positive	_
+rewards	O	01110	NONE	011	_	THER_SENT_3:positive	_
+program	O	0110	NONE	011	_	_	_
+:	O	000	NONE	000	_	_	_
+http://t.co/EejxRsh	B-URL	01111	URL	011	_	_	_
+
+## Tweet 7936
+Fantastic	O	110	NONE	110	SENT_MED:negative	THER_SENT_3:positive	_
+article	O	0110	NONE	011	_	_	_
+on	O	00111	NONE	001	_	_	_
+how	O	00110	NONE	001	_	_	_
+Steve	B-PERSON	00100	NONE	001	_	_	positive
+Jobs'	I-PERSON	00111	NONE	001	_	_	positive
+failures	O	01111	NONE	011	_	_	_
+lead	O	1001	NONE	100	SENT_MED:positive	_	_
+to	O	11110	NONE	111	_	_	_
+his	O	0101	NONE	010	_	_	_
+biggest	O	01110	NONE	011	_	_	_
+successes	O	01111	NONE	011	_	_	_
+http://ow.ly/6cBHz	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 7941
+The	O	110	NONE	110	_	_	_
+Ragged	O	00111	NONE	001	_	THER_SENT_3:negative	_
+Trousered	O	00101	NONE	001	_	_	_
+Philanthropists	O	00101	NONE	001	_	_	_
+by	O	00111	NONE	001	_	_	_
+Robert	B-PERSON	00100	NONE	001	_	_	neutral
+Tressell	I-PERSON	00111	NONE	001	_	_	neutral
+http://onlywire.com/r/30549094	B-URL	000	URL	000	_	_	_
+
+## Tweet 7961
+The	O	110	NONE	110	_	_	_
+facebook	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+easy	O	01110	NONE	011	SENT:positive	_	_
+cash	O	0110	NONE	011	_	_	_
+guide	O	1001	NONE	100	_	_	_
+is	O	00111	NONE	001	_	_	_
+working	O	00101	NONE	001	_	_	_
+much	O	01110	NONE	011	_	_	_
+better	O	01110	NONE	011	SENT:positive	_	_
+than	O	00110	NONE	001	_	_	_
+any	O	0100	NONE	010	_	_	_
+other	O	0110	NONE	011	SENT:negative	_	_
+way	O	0110	NONE	011	_	_	_
+to	O	11110	NONE	111	_	_	_
+make	O	1001	NONE	100	SENT_MED:positive	_	_
+money	O	0110	NONE	011	_	_	_
+and	O	00110	NONE	001	_	_	_
+its	O	00111	NONE	001	_	_	_
+so	O	00101	NONE	001	_	_	_
+easy	O	01110	NONE	011	SENT:positive	_	_
+promo	O	01111	NONE	011	_	_	_
+http://tinyurl.com/y8wynv3	B-URL	000	URL	000	_	_	_
+
+## Tweet 7962
+Indiana	B-PLACE	00101	NONE	001	_	_	_
+AG	O	NONE	NONE	NONE	_	_	_
+Halts	O	NONE	NONE	NONE	_	_	_
+eBay	B-ORGANIZATION	00101	NONE	001	_	_	negative
+Auctions	O	NONE	NONE	NONE	_	_	_
+Due	O	10111	NONE	101	SENT_MED:positive	_	_
+to	O	11110	NONE	111	_	_	_
+Onerous	O	NONE	NONE	NONE	_	THER_SENT_3:negative	_
+Policies	O	NONE	NONE	NONE	_	_	_
+http://bit.ly/bqZ2QP	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 7985
+Just	O	110	NONE	110	SENT:positive	THER_SENT_3:positive	_
+Follow	O	110	NONE	110	_	_	_
+USAMA-NETWORK	B-ORGANIZATION	NONE	NONE	NONE	_	_	positive
+Send	O	110	NONE	110	_	_	_
+to	O	11110	NONE	111	_	_	_
+9900	O	NONE	NONE	NONE	_	_	_
+&	O	00110	NONE	001	_	_	_
+usama_tweet	O	NONE	NONE	NONE	_	_	_
+send	O	1001	NONE	100	_	_	_
+to	O	11110	NONE	111	_	_	_
+40404	O	NONE	NONE	NONE	_	_	_
+
+## Tweet 8026
+Company's	O	NONE	NONE	NONE	_	_	_
+internationalizing	O	NONE	NONE	NONE	_	_	_
+to	O	11110	NONE	111	_	_	_
+Saudi	B-PLACE	00101	NONE	001	_	_	_
+Arabia	I-PLACE	1001	NONE	100	_	_	_
+should	O	11111	NONE	111	_	_	_
+know	O	10101	NONE	101	SENT:positive	_	_
+that	O	00110	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+Shoura	B-ORGANIZATION	NONE	NONE	NONE	_	_	positive
+lists	O	01111	NONE	011	_	_	_
+its	O	00111	NONE	001	_	_	_
+efforts	O	0110	NONE	011	_	_	_
+to	O	11110	NONE	111	_	_	_
+boost	O	1001	NONE	100	_	_	_
+Saudization	O	NONE	NONE	NONE	_	_	_
+http://t.co/SPIdfzFw	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 8031
+Omg	O	110	NONE	110	_	_	_
+...	O	00110	..	001	_	_	_
+New	O	01111	NONE	011	SENT_MED:negative	_	_
+song	O	0110	NONE	011	_	_	_
+to	O	11110	NONE	111	_	_	_
+Rihanna	B-PERSON	00100	NONE	001	_	_	positive
+is	O	00111	NONE	001	_	_	_
+very	O	00101	NONE	001	SENT_MED:positive	_	_
+cool	O	01110	NONE	011	SENT:negative	_	_
+...	O	00110	..	001	_	_	_
+Man	O	110	NONE	110	_	_	_
+down	O	00101	NONE	001	SENT_MED:negative	_	_
+:D	O	110	WEST_EMOTICON	110	_	_	_
+(	O	01111	NONE	011	_	_	_
+music	O	0110	NONE	011	SENT_MED:positive	_	_
+)	O	01111	NONE	011	_	_	_
+
+## Tweet 8085
+Welcome	O	00101	NONE	001	_	THER_SENT_3:positive	_
+to	O	11110	NONE	111	_	_	_
+our	O	0101	NONE	010	_	_	_
+New	O	01111	NONE	011	SENT_MED:negative	_	_
+Member	O	01111	NONE	011	_	_	_
+of	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+Day	O	01110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+John	B-PERSON	00100	NONE	001	_	_	positive
+Polk	I-PERSON	NONE	NONE	NONE	_	_	positive
+from	O	00111	NONE	001	_	_	_
+Texas	B-PLACE	00101	NONE	001	_	_	_
+who	O	00110	NONE	001	_	_	_
+joined	O	10111	NONE	101	_	_	_
+our	O	0101	NONE	010	_	_	_
+Gold	O	01111	NONE	011	_	_	_
+Level	O	00110	NONE	001	SENT:positive	_	_
+.	O	000	NONE	000	_	_	_
+
+## Tweet 8089
+Grand	B-PERSON	01111	NONE	011	SENT_MED:positive	_	neutral
+Ayatollah	B-PERSON	01111	NONE	011	_	_	neutral
+Sistani	I-PERSON	01111	NONE	011	_	_	neutral
+declares	O	00101	NONE	001	_	_	_
+that	O	00110	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+people	O	00100	NONE	001	_	_	_
+of	O	00111	NONE	001	_	_	_
+Iran	B-PLACE	00100	NONE	001	_	_	_
+have	O	10111	NONE	101	SENT_MED:negative	_	_
+a	O	0100	NONE	010	_	_	_
+right	O	01110	NONE	011	SENT_MED:positive	_	_
+to	O	11110	NONE	111	_	_	_
+demonstrate	O	1001	NONE	100	_	_	_
+against	O	00111	NONE	001	_	_	_
+Government	B-ORGANIZATION	0110	NONE	011	_	_	neutral
+-	O	00110	NONE	001	_	_	_
+#SoG	O	01111	HASHTAG	011	_	_	_
+#Iranelection	O	01111	HASHTAG	011	_	_	_
+
+## Tweet 814
+Manny	B-PERSON	00100	NONE	001	_	_	neutral
+Pacquiao	I-PERSON	NONE	NONE	NONE	_	_	neutral
+vs	O	00111	NONE	001	_	_	_
+Antonio	B-PERSON	0110	NONE	011	_	_	neutral
+Margarito	I-PERSON	NONE	NONE	NONE	_	_	neutral
+[	O	01111	NONE	011	_	_	_
+Full	O	110	NONE	110	_	_	_
+Fight	O	01111	NONE	011	_	_	_
+]	O	01111	NONE	011	_	_	_
+@vodpod	B-PERSON	NONE	MENTION	NONE	_	_	neutral
+http://t.co/RfJZcxz	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 8230
+@eldarmurtazin	O	0101	MENTION	010	_	_	_
+Nokia	B-ORGANIZATION	0110	NONE	011	_	_	neutral
+will	O	11111	NONE	111	_	THER_SENT_3:positive	_
+open	O	1001	NONE	100	SENT_MED:negative	_	_
+a	O	0100	NONE	010	_	_	_
+research	O	01110	NONE	011	_	_	_
+center	O	0110	NONE	011	_	_	_
+at	O	00111	NONE	001	_	_	_
+Russia	B-PLACE	00101	NONE	001	_	_	_
+high-technology	O	01110	NONE	011	_	_	_
+hub	O	0110	NONE	011	_	_	_
+Skolkovo	B-PLACE	01111	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+hopes	O	0110	NONE	011	_	THER_SENT_3:positive	_
+will	O	11111	NONE	111	_	THER_SENT_3:positive	_
+compete	O	1001	NONE	100	_	_	_
+with	O	00111	NONE	001	_	_	_
+California's	B-PLACE	01111	NONE	011	_	_	_
+Silicon	I-PLACE	01111	NONE	011	_	_	_
+Valley	I-PLACE	01111	NONE	011	_	_	_
+
+## Tweet 8253
+Cmon	O	01111	NONE	011	_	_	_
+Erra	B-PERSON	01111	NONE	011	_	_	positive
+!	O	000	NONE	000	_	_	_
+You	O	1110	NONE	111	_	_	_
+know	O	10101	NONE	101	SENT:positive	_	_
+you	O	00100	NONE	001	_	_	_
+are	O	00111	NONE	001	_	_	_
+strong	O	01110	NONE	011	SENT_MED:positive	_	_
+.	O	000	NONE	000	_	_	_
+So	O	110	NONE	110	_	_	_
+please	O	00100	NONE	001	SENT:positive	THER_SENT_3:positive	_
+stay	O	1001	NONE	100	_	_	_
+strong	O	01110	NONE	011	SENT_MED:positive	_	_
+!	O	000	NONE	000	_	_	_
+ðª	O	110	NONE	110	_	_	_
+:')	O	000	WEST_EMOTICON	000	_	_	_
+
+## Tweet 8290
+It	O	110	NONE	110	_	_	_
+can	O	11111	NONE	111	_	_	_
+be	O	1000	NONE	100	_	_	_
+knowledge	O	0110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+it	O	00100	NONE	001	_	_	_
+can	O	11111	NONE	111	_	_	_
+be	O	1000	NONE	100	_	_	_
+wealth	O	0110	NONE	011	SENT_MED:negative	_	_
+.	O	000	NONE	000	_	_	_
+We	O	1110	NONE	111	_	_	_
+all	O	00101	NONE	001	_	_	_
+crave	O	10111	NONE	101	_	THER_SENT_3:positive	_
+for	O	00111	NONE	001	_	_	_
+something	O	01110	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+I'm	O	00111	NONE	001	_	_	_
+craving	O	01110	NONE	011	_	THER_SENT_3:positive	_
+for	O	00111	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+fat-less	O	NONE	NONE	NONE	_	_	_
+KFC	B-ORGANIZATION	NONE	NONE	NONE	_	_	positive
+2	O	01111	NONE	011	_	_	_
+piece	O	01110	NONE	011	_	_	_
+meal	O	0110	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+
+## Tweet 8339
+Alain	B-PERSON	00110	NONE	001	_	_	neutral
+Renaud	I-PERSON	00100	NONE	001	_	_	neutral
+taking	O	00101	NONE	001	SENT:positive	_	_
+HSBC	B-ORGANIZATION	0101	NONE	010	_	_	neutral
+global	I-ORGANIZATION	01110	NONE	011	_	_	neutral
+M	O	01111	NONE	011	_	_	_
+&	O	00110	NONE	001	_	_	_
+A	O	110	NONE	110	_	_	_
+role-source	O	01111	NONE	011	_	_	_
+s:	O	000	WEST_EMOTICON	000	_	_	_
+LONDON	B-PLACE	110	NONE	110	_	_	_
+(	O	01111	NONE	011	_	_	_
+Reuters	B-ORGANIZATION	00110	NONE	001	_	_	neutral
+)	O	01111	NONE	011	_	_	_
+-	O	00110	NONE	001	_	_	_
+Alain	B-PERSON	00110	NONE	001	_	_	neutral
+Renaud	I-PERSON	00100	NONE	001	_	_	neutral
+is	O	00111	NONE	001	_	_	_
+replacing	O	00101	NONE	001	_	_	_
+Andrew	B-PERSON	00100	NONE	001	_	_	neutral
+Bell	I-PERSON	0110	NONE	011	_	_	neutral
+as	O	00110	NONE	001	_	_	_
+gl	O	00100	NONE	001	_	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/8uzcV6Gs	B-URL	00110	URL	001	_	_	_
+
+## Tweet 8390
+So	O	110	NONE	110	_	_	_
+I	O	1110	NONE	111	_	_	_
+tell	O	1001	NONE	100	SENT_MED:negative	_	_
+you	O	00100	NONE	001	_	_	_
+,	O	00110	NONE	001	_	_	_
+whatever	O	01111	NONE	011	_	_	_
+you	O	00100	NONE	001	_	_	_
+ask	O	1001	NONE	100	_	_	_
+for	O	00111	NONE	001	_	_	_
+in	O	00111	NONE	001	_	_	_
+prayer	O	01110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+believe	O	10101	NONE	101	_	_	_
+that	O	00110	NONE	001	_	_	_
+you	O	00100	NONE	001	_	_	_
+have	O	10111	NONE	101	SENT_MED:negative	_	_
+received	O	10111	NONE	101	_	_	_
+it	O	00100	NONE	001	_	_	_
+,	O	00110	NONE	001	_	_	_
+and	O	00110	NONE	001	_	_	_
+it	O	00100	NONE	001	_	_	_
+will	O	11111	NONE	111	_	THER_SENT_3:positive	_
+be	O	1000	NONE	100	_	_	_
+yours	O	00100	NONE	001	_	_	_
+.	O	000	NONE	000	_	_	_
+-	O	00110	NONE	001	_	_	_
+Mark	B-PERSON	00100	NONE	001	_	_	neutral
+11	O	01111	NONE	011	_	_	_
+:	O	000	NONE	000	_	_	_
+24	O	01111	NONE	011	_	_	_
+
+## Tweet 8404
+Colts	B-ORGANIZATION	0110	NONE	011	_	_	neutral
+fans	O	0110	NONE	011	_	_	_
+disappointed	O	01110	NONE	011	_	THER_SENT_3:negative	_
+but	O	00110	NONE	001	_	_	_
+respectful	O	01110	NONE	011	SENT:positive	THER_SENT_3:positive	_
+of	O	00111	NONE	001	_	_	_
+Saint	B-ORGANIZATION	00111	NONE	001	SENT_MED:positive	THER_SENT_3:positive	positive
+s:	I-ORGANIZATION	000	WEST_EMOTICON	000	_	_	positive
+Colts	B-ORGANIZATION	0110	NONE	011	_	_	neutral
+fan	O	0110	NONE	011	_	_	_
+Tony	B-PERSON	00100	NONE	001	_	_	neutral
+Joyner	I-PERSON	NONE	NONE	NONE	_	_	neutral
+of	O	00111	NONE	001	_	_	_
+Indianapolis	B-PLACE	NONE	NONE	NONE	_	_	_
+couldn't	O	11111	NONE	111	_	_	_
+believe	O	10101	NONE	101	_	_	_
+Manning	B-PERSON	NONE	NONE	NONE	_	_	neutral
+s	O	00111	NONE	001	_	_	_
+...	O	00110	..	001	_	_	_
+http://bit.ly/a82fFc	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 850
+It's	O	110	NONE	110	_	_	_
+such	O	00101	NONE	001	_	_	_
+joy	O	0110	NONE	011	SENT:positive	THER_SENT_3:positive	_
+to	O	11110	NONE	111	_	_	_
+see	O	1001	NONE	100	SENT_MED:positive	_	_
+my	O	0101	NONE	010	_	_	_
+friends	O	0110	NONE	011	_	_	_
+getting	O	00101	NONE	001	_	_	_
+married	O	00101	NONE	001	_	_	_
+one	O	01110	NONE	011	SENT_MED:positive	_	_
+by	O	00111	NONE	001	_	_	_
+one	O	01110	NONE	011	SENT_MED:positive	_	_
+.	O	000	NONE	000	_	_	_
+Congrats	O	110	NONE	110	_	_	_
+LN	B-PERSON	NONE	NONE	NONE	_	_	positive
+and	O	00110	NONE	001	_	_	_
+jacklyn	B-PERSON	NONE	NONE	NONE	_	_	positive
+.	O	000	NONE	000	_	_	_
+
+## Tweet 8541
+Forgiveness	O	00100	NONE	001	_	THER_SENT_3:positive	_
+is	O	00111	NONE	001	_	_	_
+an	O	0100	NONE	010	_	_	_
+act	O	10111	NONE	101	_	_	_
+of	O	00111	NONE	001	_	_	_
+self-love	O	00101	NONE	001	SENT:negative	_	_
+.	O	000	NONE	000	_	_	_
+-	O	00110	NONE	001	_	_	_
+don	B-PERSON	10110	NONE	101	_	_	neutral
+Miguel	I-PERSON	00110	NONE	001	_	_	neutral
+Ruiz	I-PERSON	00100	NONE	001	_	_	neutral
+http://ow.ly/3vHSe	B-URL	00111	URL	001	_	_	_
+
+## Tweet 8676
+Everything	O	110	NONE	110	_	_	_
+should	O	11111	NONE	111	_	_	_
+be	O	1000	NONE	100	_	_	_
+as	O	00110	NONE	001	_	_	_
+simple	O	01110	NONE	011	SENT_MED:positive	_	_
+as	O	00110	NONE	001	_	_	_
+it	O	00100	NONE	001	_	_	_
+is	O	00111	NONE	001	_	_	_
+,	O	00110	NONE	001	_	_	_
+but	O	00110	NONE	001	_	_	_
+not	O	00101	NONE	001	SENT:negative	_	_
+simpler	O	0110	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+-Albert	B-PERSON	NONE	NONE	NONE	_	_	positive
+Einstein	I-PERSON	01111	NONE	011	_	_	positive
+
+## Tweet 8722
+Warrior	B-ORGANIZATION	01111	NONE	011	_	_	positive
+Fit	I-ORGANIZATION	01111	NONE	011	SENT:positive	THER_SENT_3:positive	positive
+Body	I-ORGANIZATION	00110	NONE	001	_	_	positive
+Solution	I-ORGANIZATION	000	NONE	000	_	_	positive
+Boise	B-PLACE	110	NONE	110	_	_	_
+,	I-PLACE	00110	NONE	001	_	_	_
+ID	I-PLACE	0110	NONE	011	_	_	_
+Half	B-PERCENT	110	NONE	110	_	_	_
+Off	O	00101	NONE	001	SENT:negative	_	_
+Regular	O	01111	NONE	011	_	_	_
+Bootcamp	O	01111	NONE	011	_	_	_
+http://t.co/ivu2uj8	B-URL	01111	URL	011	_	_	_
+Boise	B-PLACE	110	NONE	110	_	_	_
+Health	O	01111	NONE	011	SENT:positive	_	_
+Clubs	O	01111	NONE	011	_	_	_
+&	O	00110	NONE	001	_	_	_
+Gyms	O	00101	NONE	001	_	_	_
+#coupon	O	00111	HASHTAG	001	_	_	_
+
+## Tweet 893
+Le	O	01111	NONE	011	_	_	_
+Petit	O	00111	NONE	001	_	_	_
+Prince	O	00101	NONE	001	_	_	_
+limited-edition	O	0101	NONE	010	_	_	_
+notebook	O	0110	NONE	011	_	_	_
+collection	O	0110	NONE	011	_	_	_
+by	O	00111	NONE	001	_	_	_
+Moleskine	B-ORGANIZATION	000	NONE	000	_	_	neutral
+
+## Tweet 8963
+China	B-PLACE	00101	NONE	001	_	_	_
+to	O	11110	NONE	111	_	_	_
+Get	O	110	NONE	110	_	_	_
+Its	O	110	NONE	110	_	_	_
+Own	O	00101	NONE	001	_	_	_
+'Gossip	O	NONE	NONE	NONE	_	_	_
+Girl'	O	NONE	NONE	NONE	_	_	_
+Under	O	110	NONE	110	_	_	_
+Warner	O	01110	NONE	011	_	_	_
+Deal	O	01111	NONE	011	_	_	_
+:	O	000	NONE	000	_	_	_
+A	O	110	NONE	110	_	_	_
+30-episode	O	NONE	NONE	NONE	_	_	_
+hour-long	O	00110	NONE	001	_	_	_
+teen	O	01110	NONE	011	_	_	_
+drama	O	0110	NONE	011	SENT_MED:positive	THER_SENT_3:negative	_
+series	O	0110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+starring	O	00111	NONE	001	_	THER_SENT_3:positive	_
+Yang	B-PERSON	NONE	NONE	NONE	_	_	positive
+Mi	I-PERSON	0101	NONE	010	_	_	positive
+...	O	00110	..	001	_	_	_
+http://t.co/rDsiSGHn	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 8986
+Advice	O	000	NONE	000	_	_	_
+is	O	00111	NONE	001	_	_	_
+what	O	00110	NONE	001	_	_	_
+we	O	00100	NONE	001	_	_	_
+ask	O	1001	NONE	100	_	_	_
+for	O	00111	NONE	001	_	_	_
+when	O	00110	NONE	001	_	_	_
+we	O	00100	NONE	001	_	_	_
+already	O	11111	NONE	111	_	_	_
+know	O	10101	NONE	101	SENT:positive	_	_
+the	O	0101	NONE	010	_	_	_
+answer	O	1001	NONE	100	_	_	_
+but	O	00110	NONE	001	_	_	_
+wish	O	10101	NONE	101	SENT_MED:negative	THER_SENT_3:positive	_
+we	O	00100	NONE	001	_	_	_
+didn't	O	11111	NONE	111	_	_	_
+.	O	000	NONE	000	_	_	_
+~Erica	B-PERSON	110	NONE	110	_	_	neutral
+Jong	I-PERSON	00111	NONE	001	_	_	neutral
+,	O	00110	NONE	001	_	_	_
+
+## Tweet 9027
+@annashoutss	O	NONE	MENTION	NONE	_	_	_
+cant	O	11111	NONE	111	_	_	_
+beat	O	1001	NONE	100	SENT_MED:positive	_	_
+my	O	0101	NONE	010	_	_	_
+pint	O	01110	NONE	011	_	_	_
+of	O	00111	NONE	001	_	_	_
+B	B-ORGANIZATION	0110	NONE	011	_	_	positive
+&	I-ORGANIZATION	00110	NONE	001	_	_	positive
+J	I-ORGANIZATION	01111	NONE	011	_	_	positive
+!	O	000	NONE	000	_	_	_
+hahahaha	O	01111	hahaha	011	_	_	_
+s	O	00111	NONE	001	_	_	_
+
+## Tweet 907
+That	O	110	NONE	110	_	_	_
+is	O	00111	NONE	001	_	_	_
+cool	O	01110	NONE	011	SENT:negative	_	_
+and	O	00110	NONE	001	_	_	_
+great	O	01110	NONE	011	SENT_MED:positive	THER_SENT_3:positive	_
+.	O	000	NONE	000	_	_	_
+(	O	01111	NONE	011	_	_	_
+YouTube	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+http://youtu.be/pIIdAuyFLhk?a)	B-URL	000	URL	000	_	_	_
+
+## Tweet 9087
+&	O	00110	NONE	001	_	_	_
+another	O	0101	NONE	010	_	_	_
+lose	O	1001	NONE	100	_	_	_
+for	O	00111	NONE	001	_	_	_
+the	B-ORGANIZATION	0101	NONE	010	_	_	negative
+heat	I-ORGANIZATION	0110	NONE	011	SENT_MED:positive	_	negative
+oh	O	00110	NONE	001	_	_	_
+yeah'	O	NONE	NONE	NONE	_	_	_
+this	O	01111	NONE	011	_	_	_
+completed	O	00101	NONE	001	_	_	_
+my	O	0101	NONE	010	_	_	_
+weekend	O	0110	NONE	011	_	_	_
+&	O	00110	NONE	001	_	_	_
+lt	O	01111	NONE	011	_	_	_
+;	O	00110	NONE	001	_	_	_
+4	O	01110	NONE	011	_	_	_
+
+## Tweet 910
+@JenniferCirpici	B-PERSON	NONE	MENTION	NONE	_	_	positive
+happy	O	01110	NONE	011	SENT:positive	THER_SENT_3:positive	_
+birthday	O	0110	NONE	011	_	_	_
+jennifer	B-PERSON	00100	NONE	001	_	_	positive
+hope	I-PERSON	10101	NONE	101	SENT_MED:positive	THER_SENT_3:positive	positive
+to	O	11110	NONE	111	_	_	_
+you	O	00100	NONE	001	_	_	_
+enjoy	O	1001	NONE	100	SENT_MED:positive	_	_
+your	O	0101	NONE	010	_	_	_
+day	O	0110	NONE	011	_	_	_
+...	O	00110	..	001	_	_	_
+:D	O	110	WEST_EMOTICON	110	_	_	_
+..	O	00110	..	001	_	_	_
+like	O	00101	NONE	001	SENT_MED:positive	THER_SENT_3:positive	_
+your	O	0101	NONE	010	_	_	_
+Work	O	110	NONE	110	SENT_MED:positive	_	_
+..	O	00110	..	001	_	_	_
+
+## Tweet 9115
+@Is_a_Belle_	B-PERSON	000	MENTION	000	_	_	neutral
+i	O	1110	NONE	111	_	_	_
+wonder	O	10110	NONE	101	SENT:positive	THER_SENT_3:positive	_
+what	O	00110	NONE	001	_	_	_
+you	O	00100	NONE	001	_	_	_
+were	O	00111	NONE	001	_	_	_
+browsing	O	00101	NONE	001	_	_	_
+huh	O	01111	NONE	011	_	_	_
+jajajaja	O	000	jajaja	000	_	_	_
+
+## Tweet 9140
+Apple	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+planning	O	00101	NONE	001	_	_	_
+iBooks	O	00101	NONE	001	_	_	_
+and	O	00110	NONE	001	_	_	_
+publishing	O	NONE	NONE	NONE	_	_	_
+NYC	B-PLACE	00101	NONE	001	_	_	_
+event	O	0110	NONE	011	_	_	_
+for	O	00111	NONE	001	_	_	_
+January	B-TELEPHONE	00101	NONE	001	_	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/AdFHutxq	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 9177
+2010	B-DATE	01111	NONE	011	_	_	_
+NFL	B-ORGANIZATION	01110	NONE	011	_	_	neutral
+training	O	0110	NONE	011	SENT_MED:positive	_	_
+cam	O	10111	NONE	101	_	_	_
+ps:	O	NONE	WEST_EMOTICON	NONE	_	_	_
+Carolina	B-ORGANIZATION	00101	NONE	001	_	_	neutral
+Panthers	I-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+WR	O	01111	NONE	011	_	_	_
+Steve	B-PERSON	00100	NONE	001	_	_	neutral
+Smith	I-PERSON	01111	NONE	011	_	_	neutral
+activated	O	00110	NONE	001	_	_	_
+,	O	00110	NONE	001	_	_	_
+catches	O	00111	NONE	001	_	_	_
+passes	O	00111	NONE	001	_	_	_
+http://mybrandz.com/2bA	B-URL	NONE	URL	NONE	_	_	_
+#NFL	O	000	HASHTAG	000	_	_	_
+
+## Tweet 9219
+Support	O	01111	NONE	011	_	THER_SENT_3:positive	_
+La	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+Roja	I-ORGANIZATION	01111	NONE	011	_	_	neutral
+,	O	00110	NONE	001	_	_	_
+add	O	1001	NONE	100	SENT:positive	_	_
+a	O	0100	NONE	010	_	_	_
+#twibbon	O	01110	HASHTAG	011	_	_	_
+to	O	11110	NONE	111	_	_	_
+your	O	0101	NONE	010	_	_	_
+avatar	O	01111	NONE	011	_	_	_
+now	O	01111	NONE	011	_	_	_
+!	O	000	NONE	000	_	_	_
+-	O	00110	NONE	001	_	_	_
+http://twb.ly/bToZOP	B-URL	01111	URL	011	_	_	_
+
+## Tweet 9278
+President	B-PERSON	0110	NONE	011	_	_	neutral
+Zardari	I-PERSON	NONE	NONE	NONE	_	_	neutral
+May	O	01111	NONE	011	_	_	_
+Return	O	00101	NONE	001	_	_	_
+Pakistan	B-PLACE	00100	NONE	001	_	_	_
+Tonight	B-TIME	110	NONE	110	_	_	_
+http://t.co/hBki8ySL	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 9314
+Free	O	110	NONE	110	SENT_MED:negative	_	_
+workshop	O	0110	NONE	011	_	_	_
+on	O	00111	NONE	001	_	_	_
+Internet	O	0110	NONE	011	_	_	_
+marketing	O	01110	NONE	011	_	_	_
+for	O	00111	NONE	001	_	_	_
+artists	O	00100	NONE	001	_	_	_
+being	O	00101	NONE	001	_	_	_
+hosted	O	NONE	NONE	NONE	_	_	_
+by	O	00111	NONE	001	_	_	_
+Salem	B-PLACE	NONE	NONE	NONE	_	_	_
+County	I-PLACE	0110	NONE	011	_	_	_
+...	O	00110	..	001	_	_	_
+:	O	000	NONE	000	_	_	_
+By	O	110	NONE	110	_	_	_
+Today's	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+Sunbeam	I-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+SALEM	B-PLACE	NONE	NONE	NONE	_	_	_
+â	O	000	NONE	000	_	_	_
+The	O	110	NONE	110	_	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/k9NrZyGX	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 9347
+Twitter	B-ORGANIZATION	01111	NONE	011	_	_	positive
+Recommendation	O	NONE	NONE	NONE	_	THER_SENT_3:positive	_
+:	O	000	NONE	000	_	_	_
+Great	O	110	NONE	110	SENT_MED:positive	THER_SENT_3:positive	_
+guide	O	1001	NONE	100	_	_	_
+to	O	11110	NONE	111	_	_	_
+setting	O	00101	NONE	001	_	_	_
+up	O	00101	NONE	001	SENT_MED:positive	_	_
+Twitter	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+Vending	O	NONE	NONE	NONE	_	_	_
+Machines	O	NONE	NONE	NONE	_	_	_
+http://ow.ly/1sl87	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 949
+New	O	01111	NONE	011	SENT_MED:negative	_	_
+blog	O	0110	NONE	011	_	_	_
+post	O	1001	NONE	100	_	_	_
+Vera	B-PERSON	NONE	NONE	NONE	_	_	neutral
+Wang	I-PERSON	NONE	NONE	NONE	_	_	neutral
+S/S	O	NONE	NONE	NONE	_	_	_
+2009	B-DATE	00100	NONE	001	_	_	_
+Fashion	O	110	NONE	110	_	_	_
+Show	O	01111	NONE	011	_	_	_
+Part	O	110	NONE	110	_	_	_
+2	O	01111	NONE	011	_	_	_
+http://tinyurl.com/23rbwpc	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 9525
+@joeteh	O	000	MENTION	000	_	_	_
+Hey	O	110	NONE	110	_	_	_
+Joe	B-PERSON	00100	NONE	001	_	_	neutral
+,	O	00110	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+update	O	1001	NONE	100	_	_	_
+for	O	00111	NONE	001	_	_	_
+the	O	0101	NONE	010	_	_	_
+android	O	01110	NONE	011	_	_	_
+version	O	01110	NONE	011	_	_	_
+should	O	11111	NONE	111	_	_	_
+be	O	1000	NONE	100	_	_	_
+out	O	00101	NONE	001	SENT:negative	_	_
+by	O	00111	NONE	001	_	_	_
+12th	B-DATE	01110	NONE	011	_	_	_
+Feb	I-DATE	0110	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+Hope	O	110	NONE	110	SENT_MED:positive	THER_SENT_3:positive	_
+it	O	00100	NONE	001	_	_	_
+helps	O	10111	NONE	101	_	_	_
+.	O	000	NONE	000	_	_	_
+
+## Tweet 9533
+@nglizhu	O	00101	MENTION	001	_	_	_
+why	O	00110	NONE	001	_	_	_
+are	O	00111	NONE	001	_	_	_
+you	O	00100	NONE	001	_	_	_
+answering	O	01110	NONE	011	_	_	_
+your	O	0101	NONE	010	_	_	_
+own	O	01110	NONE	011	_	_	_
+question	O	0110	NONE	011	SENT:positive	_	_
+on	O	00111	NONE	001	_	_	_
+twitter	B-ORGANIZATION	01110	NONE	011	_	_	neutral
+?	O	000	NONE	000	_	_	_
+
+## Tweet 96
+STOCKS	O	NONE	NONE	NONE	_	_	_
+vs	O	00111	NONE	001	_	_	_
+.	O	000	NONE	000	_	_	_
+GOLD	O	NONE	NONE	NONE	_	_	_
+&	O	00110	NONE	001	_	_	_
+SILVER	O	NONE	NONE	NONE	_	_	_
+:	O	000	NONE	000	_	_	_
+10-Year	B-TIME	NONE	NONE	NONE	_	_	_
+Dow	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+Jones	I-ORGANIZATION	01111	NONE	011	_	_	neutral
+=	O	01111	NONE	011	_	_	_
++6	B-PERCENT	NONE	NONE	NONE	_	_	_
+%	I-PERCENT	01110	NONE	011	_	_	_
+|	O	000	NONE	000	_	_	_
+10-Year	B-TIME	NONE	NONE	NONE	_	_	_
+Gold	O	01111	NONE	011	_	_	_
+=	O	01111	NONE	011	_	_	_
++300	B-PERCENT	NONE	NONE	NONE	_	_	_
+%	I-PERCENT	01110	NONE	011	_	_	_
+|	O	000	NONE	000	_	_	_
+10-Year	B-TIME	NONE	NONE	NONE	_	_	_
+Silver	O	110	NONE	110	_	_	_
+=	O	01111	NONE	011	_	_	_
++250	B-PERCENT	NONE	NONE	NONE	_	_	_
+%	I-PERCENT	01110	NONE	011	_	_	_
+http://bit.ly/9XdGv4	I-PERCENT	NONE	URL	NONE	_	_	_
+
+## Tweet 9604
+@BarackObama	B-PERSON	NONE	MENTION	NONE	_	_	neutral
+a	O	0100	NONE	010	_	_	_
+November	B-DATE	00101	NONE	001	_	_	_
+20	I-DATE	01110	NONE	011	_	_	_
+,	I-DATE	00110	NONE	001	_	_	_
+1925	I-DATE	NONE	NONE	NONE	_	_	_
+:	O	000	NONE	000	_	_	_
+Birth	O	NONE	NONE	NONE	_	_	_
+of	O	00111	NONE	001	_	_	_
+Robert	B-PERSON	00100	NONE	001	_	_	neutral
+F	I-PERSON	01110	NONE	011	_	_	neutral
+.	I-PERSON	000	NONE	000	_	_	neutral
+Kennedy	I-PERSON	01111	NONE	011	_	_	neutral
+,	O	00110	NONE	001	_	_	_
+American	O	01110	NONE	011	_	_	_
+politician	O	0110	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+
+## Tweet 9632
+if	O	00110	NONE	001	_	_	_
+Birmingham	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+can	O	11111	NONE	111	_	_	_
+tie	O	1001	NONE	100	_	_	_
+Chelsea	B-ORGANIZATION	01110	NONE	011	_	_	neutral
+at	O	00111	NONE	001	_	_	_
+Stamford	B-PLACE	NONE	NONE	NONE	_	_	_
+1-1	O	NONE	NONE	NONE	_	_	_
+,	O	00110	NONE	001	_	_	_
+Sunderland	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+beat	O	1001	NONE	100	SENT_MED:positive	_	_
+Arsenal	B-ORGANIZATION	01110	NONE	011	_	_	neutral
+2-0	O	01110	NONE	011	_	_	_
+at	O	00111	NONE	001	_	_	_
+Lights	B-PLACE	01111	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+did	O	10100	NONE	101	_	_	_
+the	O	0101	NONE	010	_	_	_
+stars	O	0110	NONE	011	_	THER_SENT_3:positive	_
+wrote	O	10111	NONE	101	_	_	_
+Brighton	B-PLACE	NONE	NONE	NONE	_	_	_
+will	O	11111	NONE	111	_	THER_SENT_3:positive	_
+beat	O	1001	NONE	100	SENT_MED:positive	_	_
+Liverpork	B-PLACE	NONE	NONE	NONE	_	_	_
+2nite	B-DATE	01111	NONE	011	_	_	_
+?	O	000	NONE	000	_	_	_
+
+## Tweet 9638
+Ma	O	110	NONE	110	SENT:positive	_	_
+Fi	O	0101	NONE	010	_	_	_
+Metlo	O	0110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+soon	O	01111	NONE	011	_	_	_
+on	O	00111	NONE	001	_	_	_
+MTV	B-ORGANIZATION	01110	NONE	011	_	_	neutral
+!	O	000	NONE	000	_	_	_
+http://t.co/VbSQrDkz	B-URL	110	URL	110	_	_	_
+
+## Tweet 9771
+Captain	B-PERSON	01110	NONE	011	_	_	neutral
+America	I-PERSON	00101	NONE	001	_	_	neutral
+and	O	00110	NONE	001	_	_	_
+Thor	B-PERSON	110	NONE	110	_	_	neutral
+Battle	O	01110	NONE	011	_	_	_
+In	O	110	NONE	110	_	_	_
+New	O	01111	NONE	011	SENT_MED:negative	_	_
+The	O	110	NONE	110	_	_	_
+Avengers	O	000	NONE	000	_	_	_
+Image	O	NONE	NONE	NONE	_	_	_
+:	O	000	NONE	000	_	_	_
+Marvel	B-ORGANIZATION	NONE	NONE	NONE	SENT:positive	THER_SENT_3:positive	neutral
+recently	O	01111	NONE	011	_	_	_
+released	O	00101	NONE	001	_	_	_
+a	O	0100	NONE	010	_	_	_
+new	O	01110	NONE	011	SENT_MED:negative	_	_
+photo	O	0110	NONE	011	_	_	_
+from	O	00111	NONE	001	_	_	_
+their	O	0101	NONE	010	_	_	_
+upcom	O	NONE	NONE	NONE	_	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/xwkli87y	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 9780
+@ParisHilton	B-PERSON	NONE	MENTION	NONE	_	_	positive
+finally	O	11111	NONE	111	_	_	_
+found	O	10111	NONE	101	_	_	_
+Paris	B-PERSON	00101	NONE	001	_	_	positive
+Hilton	I-PERSON	01111	NONE	011	_	_	positive
+shop	O	0110	NONE	011	_	_	_
+in	O	00111	NONE	001	_	_	_
+ibn	B-PLACE	NONE	NONE	NONE	_	_	_
+battuta	I-PLACE	NONE	NONE	NONE	_	_	_
+mall	I-PLACE	0110	NONE	011	_	_	_
+and	O	00110	NONE	001	_	_	_
+found	O	10111	NONE	101	_	_	_
+her	O	00101	NONE	001	_	_	_
+signature	O	0110	NONE	011	_	_	_
+On	O	110	NONE	110	_	_	_
+the	O	0101	NONE	010	_	_	_
+this	O	01111	NONE	011	_	_	_
+pic	O	0110	NONE	011	_	_	_
+.	O	000	NONE	000	_	_	_
+Exciting	O	110	NONE	110	_	THER_SENT_3:positive	_
+http://t.co/iJEuKSWw	B-URL	NONE	URL	NONE	_	_	_
+
+## Tweet 9789
+Health	O	01111	NONE	011	SENT:positive	_	_
+care	O	10101	NONE	101	SENT_MED:negative	_	_
+helps	O	10111	NONE	101	_	_	_
+job	O	0110	NONE	011	SENT_MED:negative	_	_
+market	O	0110	NONE	011	_	_	_
+heal	O	1001	NONE	100	SENT_MED:positive	_	_
+(	O	01111	NONE	011	_	_	_
+Rick	B-PERSON	00100	NONE	001	_	_	neutral
+Haglund	I-PERSON	00111	NONE	001	_	_	neutral
+column	O	0110	NONE	011	_	_	_
+):	O	01111	WEST_EMOTICON	011	_	_	_
+Compare	O	0110	NONE	011	SENT:positive	_	_
+that	O	00110	NONE	001	_	_	_
+to	O	11110	NONE	111	_	_	_
+auto	O	01111	NONE	011	_	_	_
+and	O	00110	NONE	001	_	_	_
+parts	O	01110	NONE	011	_	_	_
+manufacturing	O	0110	NONE	011	_	_	_
+,	O	00110	NONE	001	_	_	_
+which	O	00110	NONE	001	_	_	_
+emp	O	00100	NONE	001	_	_	_
+...	O	00110	..	001	_	_	_
+http://t.co/BWbvBTHC	B-URL	00110	URL	001	_	_	_
+
+## Tweet 9790
+Facebook	B-ORGANIZATION	00101	NONE	001	_	_	positive
+Isn't	O	110	NONE	110	_	_	_
+Just	O	110	NONE	110	SENT:positive	THER_SENT_3:positive	_
+For	O	110	NONE	110	_	_	_
+Looking	O	110	NONE	110	_	_	_
+Up	O	01111	NONE	011	SENT_MED:positive	_	_
+Your	O	01111	NONE	011	_	_	_
+Ex	O	000	NONE	000	_	_	_
+You	O	1110	NONE	111	_	_	_
+Can	O	110	NONE	110	_	_	_
+Use	O	110	NONE	110	_	_	_
+It	O	110	NONE	110	_	_	_
+To	O	110	NONE	110	_	_	_
+Make	O	110	NONE	110	SENT_MED:positive	_	_
+Money	B-MONEY	110	NONE	110	_	_	_
+Too	O	110	NONE	110	_	_	_
+Easy	O	110	NONE	110	SENT:positive	_	_
+!	O	000	NONE	000	_	_	_
+http://t.co/ve93AJY9	B-URL	110	URL	110	_	_	_
+
+## Tweet 9876
+Ky	B-PLACE	00100	NONE	001	_	_	_
+.	O	000	NONE	000	_	_	_
+Tornado	O	01111	NONE	011	_	_	_
+Death	O	01111	NONE	011	SENT_MED:negative	_	_
+Toll	O	11111	NONE	111	_	_	_
+Rises	O	10111	NONE	101	_	_	_
+to	O	11110	NONE	111	_	_	_
+19	O	01111	NONE	011	_	_	_
+-	O	00110	NONE	001	_	_	_
+ABC	B-ORGANIZATION	01111	NONE	011	_	_	neutral
+News	I-ORGANIZATION	01111	NONE	011	SENT_MED:positive	_	neutral
+http://t.co/SvLiWzoh	B-URL	000	URL	000	_	_	_
+
+## Tweet 9910
+Wantickets	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+United	B-PLACE	01110	NONE	011	_	_	_
+States	I-PLACE	0110	NONE	011	_	_	_
+-	O	00110	NONE	001	_	_	_
+United	B-PLACE	01110	NONE	011	_	_	_
+States	I-PLACE	0110	NONE	011	_	_	_
+Wantickets	B-ORGANIZATION	NONE	NONE	NONE	_	_	neutral
+Events	O	01110	NONE	011	_	_	_
+http://t.co/XmMbqzw1	B-URL	NONE	URL	NONE	_	_	_
