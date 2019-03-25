@@ -103,7 +103,8 @@ class NetworkModel(nn.Module):
         if optimizer == 'adam':
             optimizer = torch.optim.Adam(parameters)
         elif optimizer == 'sgd':
-            optimizer = torch.optim.SGD(parameters,lr=NetworkConfig.NEURAL_LEARNING_RATE)
+            print(colored("Using SGD: lr is: {}, L2 regularization is: {}".format(NetworkConfig.NEURAL_LEARNING_RATE, NetworkConfig.l2), 'yellow'))
+            optimizer = torch.optim.SGD(parameters,lr=NetworkConfig.NEURAL_LEARNING_RATE, weight_decay=NetworkConfig.l2)
         else:
             print(colored('Unsupported optimizer:', 'red'), optimizer)
             return
