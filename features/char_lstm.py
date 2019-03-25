@@ -26,13 +26,13 @@ class CharBiLSTM(nn.Module):
         self.char_lstm = nn.LSTM(self.char_emb_size, self.hidden // 2, num_layers=1, batch_first=True, bidirectional=True).to(self.device)
 
 
-    def random_embedding(self, vocab_size, embedding_dim):
-        print("Randomly initialize character embedding with scale")
-        pretrain_emb = np.empty([vocab_size, embedding_dim])
-        scale = np.sqrt(3.0 / embedding_dim)
-        for index in range(vocab_size):
-            pretrain_emb[index, :] = np.random.uniform(-scale, scale, [1, embedding_dim])
-        return pretrain_emb
+    # def random_embedding(self, vocab_size, embedding_dim):
+    #     print("Randomly initialize character embedding with scale")
+    #     pretrain_emb = np.empty([vocab_size, embedding_dim])
+    #     scale = np.sqrt(3.0 / embedding_dim)
+    #     for index in range(vocab_size):
+    #         pretrain_emb[index, :] = np.random.uniform(-scale, scale, [1, embedding_dim])
+    #     return pretrain_emb
 
     def get_last_hiddens(self, char_seq_tensor, char_seq_len):
         """
@@ -59,7 +59,8 @@ class CharBiLSTM(nn.Module):
         # char_rnn_out, _ = pad_packed_sequence(char_rnn_out)
         ## transpose because the first dimension is num_direction x num-layer
         hidden = char_hidden[0].transpose(1,0).contiguous().view(batch_size * sent_len, 1, -1)   ### before view, the size is ( batch_size * sent_len, 2, lstm_dimension) 2 means 2 direciton..
-        return hidden[recover_idx].view(batch_size, sent_len, -1)
+        output = hidden[recover_idx].view(batch_size, sent_len, -1)
+        return output
 
 
     def forward(self, char_input, seq_lengths):

@@ -115,12 +115,13 @@ def load_emb_glove(path, word2idx, random_embedding_dim = 100, UNK = 'unk', sep 
                 first_col = tokens[0]
                 embedding[first_col] = embedd
 
-            if UNK not in embedding:
-                scale = np.sqrt(3.0 / embedding_dim)
-                embedding[UNK] = np.random.uniform(-scale, scale, [1, embedding_dim])
+            # if UNK not in embedding:
+            #     scale = np.sqrt(3.0 / embedding_dim)
+            #     embedding[UNK] = np.random.uniform(-scale, scale, [1, embedding_dim])
 
 
     if len(embedding) > 0:
+        scale = np.sqrt(3.0 / embedding_dim)
         print("[Info] Use the pretrained word embedding to initialize: %d x %d" % (len(word2idx), embedding_dim))
         word_embedding = np.empty([len(word2idx), embedding_dim])
         for word in word2idx:
@@ -129,9 +130,8 @@ def load_emb_glove(path, word2idx, random_embedding_dim = 100, UNK = 'unk', sep 
             elif word.lower() in embedding:
                 word_embedding[word2idx[word]] = embedding[word.lower()]
             else:
-                word_embedding[word2idx[word]] = embedding[UNK]
-                # self.word_embedding[self.word2idx[word], :] = np.random.uniform(-scale, scale, [1, self.embedding_dim])
-        del embedding
+                word_embedding[word2idx[word], :] = np.random.uniform(-scale, scale, [1, embedding_dim])
+        # del embedding
     else:
         embedding_dim = random_embedding_dim
         scale = np.sqrt(3.0 / embedding_dim)
