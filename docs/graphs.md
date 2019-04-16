@@ -37,8 +37,11 @@ class NERNetworkCompiler(NetworkCompiler):
 ## Graphical Representation
 Before jumping into the actual implementation of network compiler, let's look at the labeled network and unlabeled network representation of the linear-chain CRF.
 
-![alt text](labeled-net.png)
-![alt text](unlabeled-net.png)
+The first one is the labeled network where the gold sequence is defined.
+![alt text](/docs/labeled-net.png)
+
+The second one is the unlabeled network where we can obtain all the possible label sequence. 
+![alt text](/docs/unlabeled-net.png)
 
 We need to define the nodes in the above figure. 
 
