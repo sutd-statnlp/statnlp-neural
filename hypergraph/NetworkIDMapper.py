@@ -21,7 +21,7 @@ class NetworkIDMapper:
             u = NetworkIDMapper.to_hybrid_node_array(NetworkIDMapper.to_hybrid_node_ID(v))
             if not np.array_equal(u, v):
                 raise Exception("The capacity appears to be too large: ", new_capacity)
-        eprint("Capacity successfully set to: ", new_capacity)
+        print("Capacity successfully set to: {}".format(new_capacity))
 
     @staticmethod
     def to_hybrid_node_array(value):
