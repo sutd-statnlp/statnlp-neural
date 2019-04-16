@@ -1,8 +1,8 @@
 # StatNLP-PyTorch (V0.1)
 The PyTorch version of StatNLP implementation V0.1. Please also make sure you understand the fundamental knowledge of the framework as well as the [Java framework](https://gitlab.com/sutd_nlp/statnlp-core).
 * [1. Requirements and Installation](#requirements-and-installation)
-* [2. Examples](#examples)
-* [3. Implementation Tutorials](#implementation-tutorials)
+* [2. Implementation Tutorials](#implementation-tutorials)
+* [3. Examples](#examples)
 
 ## Requirements and Installation
 The project is based on PyTorch 0.4+ and Python 3.5+.
