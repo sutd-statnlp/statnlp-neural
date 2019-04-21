@@ -8,10 +8,9 @@ import torch.nn as nn
 from hypergraph.Utils import *
 from common.TreeInstance import TreeInstance
 from common.eval import constituent_eval
-import re
+from examples.parsingtree import trees
 from termcolor import colored
 from enum import Enum
-import examples.parsingtree.trees as trees
 import functools
 from hypergraph.NetworkConfig import LossType
 

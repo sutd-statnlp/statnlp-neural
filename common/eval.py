@@ -4,7 +4,8 @@ import re
 import math
 import os
 import subprocess
-import examples.parsingtree.trees as trees
+from examples.parsingtree import  trees
+
 
 class Span:
 
