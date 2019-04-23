@@ -672,9 +672,9 @@ if __name__ == "__main__":
     DEBUG = False
     visual = False
     TRIAL = False
-    num_train = -1
-    num_dev = -1
-    num_test = -1
+    num_train = 20
+    num_dev = 20
+    num_test = 20
     num_iter = 40
     batch_size = 1
     #device = "cpu"

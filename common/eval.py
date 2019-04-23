@@ -220,6 +220,9 @@ class constituent_eval(Eval):
         pred_path = 'tmp/pred.txt'
         result_path = 'tmp/result.txt'
 
+        if not os.path.exists('tmp'):
+            os.makedirs('tmp')
+
         fgold = open(gold_path, 'w', encoding='utf-8')
         fpred = open(pred_path, 'w', encoding='utf-8')
         golds = []
