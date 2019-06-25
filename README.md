@@ -28,10 +28,10 @@ Follow the tutorials below to build your model.
 
 ## Examples
 We have built some existing models with this framework for your references:
-* [Linear CRF for Named Entity Recognition](/examples/linearner.py)
-* [Semi-Markov CRF for NP Chunking](/examples/seminer.py)
-* [CNN for Text Classification](/examples/me_standard.py)
-* [Constituency Parsing CRF Model](/examples/parsingtree.py)
+* [Linear CRF for Named Entity Recognition](/statnlp/examples/linearner.py)
+* [Semi-Markov CRF for NP Chunking](/statnlp/examples/seminer.py)
+* [CNN for Text Classification](/statnlp/examples/me_standard.py)
+* [Constituency Parsing CRF Model](/statnlp/examples/parsingtree.py)
   * Download the [evaluation file](https://drive.google.com/file/d/1E58DGwlS3x3n5IZpNXW_l2PNZUYLNo3P/view?usp=sharing) (for parsing) and put it under project folder. 
    
 ## Contributing
